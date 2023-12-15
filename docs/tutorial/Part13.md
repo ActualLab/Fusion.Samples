@@ -90,7 +90,7 @@ The second call registers an RPC endpoint (`/rpc/ws`) and maps it to a WebSocket
 **3.** If you're using Fusion authentication, configure its endpoints like this:
 ```cs
 fusionServer.ConfigureAuthEndpoint(_ => new() {
-    DefaultScheme = MicrosoftAccountDefaults.AuthenticationScheme,
+    DefaultSignInScheme = MicrosoftAccountDefaults.AuthenticationScheme,
     SignInPropertiesBuilder = (_, properties) => {
         properties.IsPersistent = true;
     }

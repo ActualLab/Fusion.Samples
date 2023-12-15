@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.3" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.10" />
   </ItemGroup>
 
 </Project>

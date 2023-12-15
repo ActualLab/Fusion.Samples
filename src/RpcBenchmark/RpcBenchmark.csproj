@@ -30,9 +30,9 @@
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.59.0" />
     <PackageReference Include="MagicOnion" Version="5.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.3" />
-    <PackageReference Include="ActualLab.Rpc.Server" Version="7.0.3" />
-    <PackageReference Include="ActualLab.RestEase" Version="7.0.3" />
+    <PackageReference Include="ActualLab.Fusion" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Rpc.Server" Version="7.0.10" />
+    <PackageReference Include="ActualLab.RestEase" Version="7.0.10" />
     <PackageReference Include="StreamJsonRpc" Version="2.17.8" />
   </ItemGroup>
 
@@ -44,7 +44,7 @@
     </PackageReference>
     <PackageReference Include="Ookii.CommandLine" Version="4.0.1" />
     <PackageReference Include="RestEase.SourceGenerator" Version="1.6.4" />
-    <PackageReference Include="ActualLab.Generators" Version="7.0.3" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.10" />
   </ItemGroup>
 
   <!-- Protobuf files -->

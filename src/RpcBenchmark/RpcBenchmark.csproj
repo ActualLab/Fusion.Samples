@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.56.0" />
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.56.0" />
-    <PackageReference Include="MagicOnion" Version="4.5.2" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.59.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.59.0" />
+    <PackageReference Include="MagicOnion" Version="5.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
     <PackageReference Include="ActualLab.Fusion" Version="7.0.3" />
     <PackageReference Include="ActualLab.Rpc.Server" Version="7.0.3" />

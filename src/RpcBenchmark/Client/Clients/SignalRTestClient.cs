@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.SignalR.Client;
-using Stl.Rpc;
+using ActualLab.Rpc;
 
 namespace Samples.RpcBenchmark.Client;
 

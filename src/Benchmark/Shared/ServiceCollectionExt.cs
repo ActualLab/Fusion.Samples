@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Stl.Fusion.EntityFramework;
+using ActualLab.Fusion.EntityFramework;
 
 namespace Samples.Benchmark;
 

@@ -16,16 +16,16 @@ using Microsoft.Extensions.Hosting;
 using Samples.Blazor.Abstractions;
 using Samples.Blazor.Server.Services;
 using Samples.Blazor.UI.Services;
-using Stl.DependencyInjection;
-using Stl.Fusion.Authentication;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Blazor.Authentication;
-using Stl.Fusion.EntityFramework;
-using Stl.Fusion.Server;
-using Stl.IO;
-using Stl.RestEase;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.DependencyInjection;
+using ActualLab.Fusion.Authentication;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Blazor.Authentication;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.Fusion.Server;
+using ActualLab.IO;
+using ActualLab.RestEase;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 
 namespace Samples.Blazor.Server;
 
@@ -53,7 +53,7 @@ public class Startup
                 logging.AddFilter("Microsoft", LogLevel.Warning);
                 logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
                 logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
-                logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+                logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
             }
         });
 

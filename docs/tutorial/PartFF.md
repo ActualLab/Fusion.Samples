@@ -17,6 +17,6 @@ If you're looking for more content to read, check out these posts:
 
 #### [Tutorial Home](./README.md) | [Documentation Home]
 
-[Documentation Home]: https://github.com/servicetitan/Stl.Fusion/blob/master/docs/README.md
+[Documentation Home]: https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/README.md
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6
-[Fusion Samples]: https://github.com/servicetitan/Stl.Fusion.Samples
+[Fusion Samples]: https://github.com/servicetitan/ActualLab.Fusion.Samples

@@ -1,5 +1,5 @@
 using Grpc.Net.Client;
-using Stl.Rpc;
+using ActualLab.Rpc;
 
 namespace Samples.RpcBenchmark.Client;
 

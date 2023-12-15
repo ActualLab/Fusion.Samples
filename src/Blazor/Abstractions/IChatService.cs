@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore;
-using Stl.Fusion.Authentication;
+using ActualLab.Fusion.Authentication;
 
 namespace Samples.Blazor.Abstractions;
 

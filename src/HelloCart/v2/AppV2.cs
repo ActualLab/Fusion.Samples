@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Stl.Fusion.EntityFramework;
-using Stl.IO;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.IO;
 
 namespace Samples.HelloCart.V2;
 
@@ -14,7 +14,7 @@ public class AppV2 : AppBase
             logging.AddConsole();
             logging.SetMinimumLevel(LogLevel.Error);
             // logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
-            // logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+            // logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
         });
 
         services.AddFusion(fusion => {

@@ -1,6 +1,6 @@
 using System.Net.Sockets;
 
-namespace Stl.Benchmarking;
+namespace ActualLab.Benchmarking;
 
 public static class TcpProbe
 {

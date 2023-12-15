@@ -1,7 +1,7 @@
 Welcome to a collection of [Fusion] samples!
 
 > All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
-> [![Build](https://github.com/servicetitan/Stl.Fusion.Samples/workflows/Build/badge.svg)](https://github.com/servicetitan/Stl.Fusion.Samples/actions?query=workflow%3A%22Build%22)
+> [![Build](https://github.com/servicetitan/ActualLab.Fusion.Samples/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion.Samples/actions?query=workflow%3A%22Build%22)
 > [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)  
 
 ## What's Inside?
@@ -11,7 +11,7 @@ Welcome to a collection of [Fusion] samples!
 ### 0. Solution Templates
 
 We don't provide `dotnet new`-based templates yet, but you can find
-template solutions to copy in [`templates/*` folders](https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/templates).
+template solutions to copy in [`templates/*` folders](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/templates).
 
 ![](img/Samples-Template.gif)
 
@@ -58,7 +58,7 @@ modified to reveal some Fusion powers. Contrary to the original app:
 If you're curious how big is the difference between the code of
 these samples and a similar code without any real-time
 features, 
-[check out this part of Fusion README.md](https://github.com/servicetitan/Stl.Fusion#enough-talk-show-me-the-code).
+[check out this part of Fusion README.md](https://github.com/servicetitan/ActualLab.Fusion#enough-talk-show-me-the-code).
 
 [HelloBlazorHybrid] is the same sample, but modified to support both
 Blazor Server and Blazor WebAssembly modes.
@@ -88,10 +88,10 @@ also properly updates everything. It shows Fusion's ability to use both local `I
 instances and client-side replicas of similar server-side instances to compute a new value
 that properly tracks all these dependencies and updates accordingly: 
 * First panel's UI model is 
-  [composed on the server-side](https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/src/Blazor/Server/Services/ComposerService.cs);
+  [composed on the server-side](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/Blazor/Server/Services/ComposerService.cs);
   its client-side replica is bound to the component displaying the panel
 * And the second panel uses an UI model
-  [composed completely on the client](https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/src/Blazor/UI/Services/LocalComposerService.cs) 
+  [composed completely on the client](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/Blazor/UI/Services/LocalComposerService.cs) 
   by combining server-side replicas of all the values used there.
 * **The surprising part:** two above files are almost identical!
 
@@ -118,27 +118,27 @@ Local services:
 
 Remote services:
   Fusion Client -> Fusion Service    480 readers: 114.51M 117.23M 116.82M 116.83M -> 117.23M calls/s
-  Stl.Rpc Client -> Fusion Service  4800 readers: 603.72K 659.89K 658.37K 671.06K -> 671.06K calls/s
+  ActualLab.Rpc Client -> Fusion Service  4800 readers: 603.72K 659.89K 658.37K 671.06K -> 671.06K calls/s
   HTTP Client -> Fusion Service     2400 readers: 147.16K 156.39K 154.63K 154.98K -> 156.39K calls/s
   HTTP Client -> Regular Service    2400 readers:  62.56K  64.70K  63.63K  63.88K ->  64.70K calls/s
 ```
 
 What's interesting in "Remote services" part of the output?
 - Fusion Client performs nearly as quickly as the local Fusion service, delivering ~ **120M calls/s**. The number looks crazy, but that's exactly what Fusion does - by eliminating a large portion of RPC calls which results are known to be identical to the ones client already has. And that's what allows all Blazor samples here to share the same code in both WASM and Blazor Server modes: Fusion Clients are nearly indistinguishable from local services.
-- Besides that, Fusion uses `Stl.Rpc` client instead of an HTTP client. And the next test shows `Stl.Rpc` client is much faster than HTTP-based one. And this test doesn't demonstrate its full potential - `RpcBenchmark` sample (read further) shows it can squeeze up to **3.3M RPS** on the same machine!
+- Besides that, Fusion uses `ActualLab.Rpc` client instead of an HTTP client. And the next test shows `ActualLab.Rpc` client is much faster than HTTP-based one. And this test doesn't demonstrate its full potential - `RpcBenchmark` sample (read further) shows it can squeeze up to **3.3M RPS** on the same machine!
 - An HTTP API endpoint backed by Fusion service delivers **156K RPS** with both client & server running on the same machine (that's a disadvantage).
 - Identical EF Core-based API endpoint (that's what most people typically use now) scales to just **64K RPS**.
 
 ### 5. RpcBenchmark Sample
 
-It's a console app built to compare the throughput of different RPC-over-HTTP protocols on .NET, including Fusion's own `Stl.Rpc`. 
+It's a console app built to compare the throughput of different RPC-over-HTTP protocols on .NET, including Fusion's own `ActualLab.Rpc`. 
 
-Check out [RpcBenchmark page](./rpc-benchmark.md) to read its detailed description and see its most recent results, but overall, Stl.Rpc is the fastest RPC-over-HTTP protocol for .NET right now. Some charts from this page:
+Check out [RpcBenchmark page](./rpc-benchmark.md) to read its detailed description and see its most recent results, but overall, ActualLab.Rpc is the fastest RPC-over-HTTP protocol for .NET right now. Some charts from this page:
 
 ![](./img/RpcBenchmark-LAN.gif)
 ![](./img/RpcBenchmark-Local.gif)
 
-Stl.Rpc and SignalR are in its own league on this test: they seem to be the only libraries capable of automatic batching / custom framing, which minimizes the number of transmitted packets by embedding multiple queued messages into a single transmission unit.
+ActualLab.Rpc and SignalR are in its own league on this test: they seem to be the only libraries capable of automatic batching / custom framing, which minimizes the number of transmitted packets by embedding multiple queued messages into a single transmission unit.
 
 Automatic batching scenario is quite important in Fusion's case:
 - All Fusion's [Compute Services] are concurrent, including their clients, so typically you use just a single instance of every service.
@@ -154,7 +154,7 @@ So contrary to commonly used "fetch as much as you can with a single RPC call" p
 - Once any of these tasks completes, you call `GetOnlinePresenceState` for every `Contact` which has `UserId` field
 - And so on.
 
-If this is the first time your client runs these calls, a lot of them will be thrown concurrently - and that's where Stl.Rpc kicks in by batching similarly-timed calls and call results into a single transmission unit.
+If this is the first time your client runs these calls, a lot of them will be thrown concurrently - and that's where ActualLab.Rpc kicks in by batching similarly-timed calls and call results into a single transmission unit.
 
 And if it's not the first time you client does this, the situation is even better, coz 95%-99% of these calls will be eliminated by Fusion Clients - i.e. they'll simply resolve instantly without incurring any RPC.  
 
@@ -199,26 +199,26 @@ please help us to make it better by completing [Fusion Feedback Form]
 (1&hellip;3 min).
 
 
-[Fusion]: https://github.com/servicetitan/Stl.Fusion
-[Fusion repository on GitHub]: https://github.com/servicetitan/Stl.Fusion
+[Fusion]: https://github.com/servicetitan/ActualLab.Fusion
+[Fusion repository on GitHub]: https://github.com/servicetitan/ActualLab.Fusion
 
-[HelloCart]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/HelloCart
-[HelloWorld]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/HelloWorld
-[HelloBlazorServer]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/HelloBlazorServer
-[HelloBlazorHybrid]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/HelloBlazorHybrid
-[Blazor Samples]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/Blazor
-[Caching]: https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/Caching
+[HelloCart]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart
+[HelloWorld]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloWorld
+[HelloBlazorServer]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloBlazorServer
+[HelloBlazorHybrid]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloBlazorHybrid
+[Blazor Samples]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Blazor
+[Caching]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Caching
 [Tutorial]: tutorial/README.md
 [Fusion Tutorial]: tutorial/README.md
-[Documentation Home]: https://github.com/servicetitan/Stl.Fusion/blob/master/docs/README.md
+[Documentation Home]: https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/README.md
 [Actual Chat]: https://actual.chat
 
-[Compute Services]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part01.md
-[Compute Service]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part01.md
-[`IComputed<T>`]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part02.md
-[Computed Value]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part02.md
-[Live State]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part03.md
-[Replica Services]: https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/tutorial/Part04.md
+[Compute Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part01.md
+[Compute Service]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part01.md
+[`IComputed<T>`]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part02.md
+[Computed Value]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part02.md
+[Live State]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part03.md
+[Replica Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part04.md
 [Fusion In Simple Terms]: https://medium.com/@alexyakunin/stl-fusion-in-simple-terms-65b1975967ab?source=friends_link&sk=04e73e75a52768cf7c3330744a9b1e38
 
 [Discord Server]: https://discord.gg/EKEwv6d

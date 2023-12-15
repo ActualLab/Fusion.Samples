@@ -13,19 +13,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Stl.DependencyInjection;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Blazor.Authentication;
-using Stl.Fusion.Server;
-using Stl.Fusion.EntityFramework;
-using Stl.Fusion.EntityFramework.Npgsql;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.Server.Middlewares;
-using Stl.Interception.Interceptors;
-using Stl.IO;
-using Stl.Multitenancy;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.DependencyInjection;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Blazor.Authentication;
+using ActualLab.Fusion.Server;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.Fusion.EntityFramework.Npgsql;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.Server.Middlewares;
+using ActualLab.Interception.Interceptors;
+using ActualLab.IO;
+using ActualLab.Multitenancy;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 using Templates.TodoApp.Abstractions;
 using Templates.TodoApp.UI;
 
@@ -52,9 +52,9 @@ public class Startup(IConfiguration cfg, IWebHostEnvironment environment)
                 logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
                 logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
                 // logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Transaction", LogLevel.Debug);
-                logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
-                logging.AddFilter("Stl.Fusion.EntityFramework", LogLevel.Debug);
-                logging.AddFilter("Stl.Fusion.EntityFramework.Operations", LogLevel.Debug);
+                logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
+                logging.AddFilter("ActualLab.Fusion.EntityFramework", LogLevel.Debug);
+                logging.AddFilter("ActualLab.Fusion.EntityFramework.Operations", LogLevel.Debug);
             }
         });
 

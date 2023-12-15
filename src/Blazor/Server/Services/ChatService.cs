@@ -2,8 +2,8 @@ using System.Security.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Samples.Blazor.Abstractions;
-using Stl.Fusion.Authentication;
-using Stl.Fusion.EntityFramework;
+using ActualLab.Fusion.Authentication;
+using ActualLab.Fusion.EntityFramework;
 
 namespace Samples.Blazor.Server.Services;
 

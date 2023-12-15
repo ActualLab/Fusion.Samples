@@ -31,18 +31,18 @@
     <Using Include="System.Threading" />
     <Using Include="System.Threading.Tasks" />
     <Using Include="System.Threading.Channels" />
-    <Using Include="Stl" />
-    <Using Include="Stl.Async" />
-    <Using Include="Stl.Collections" />
-    <Using Condition="$(UseFusion)" Include="Stl.CommandR" />
-    <Using Condition="$(UseFusion)" Include="Stl.CommandR.Configuration" />
-    <Using Condition="$(UseFusion)" Include="Stl.CommandR.Commands" />
-    <Using Condition="$(UseFusion)" Include="Stl.Fusion" />
-    <Using Condition="$(UseFusion)" Include="Stl.Fusion.Operations" />
-    <Using Include="Stl.Reflection" />
-    <Using Include="Stl.Serialization" />
-    <Using Include="Stl.Text" />
-    <Using Include="Stl.Time" />
+    <Using Include="ActualLab" />
+    <Using Include="ActualLab.Async" />
+    <Using Include="ActualLab.Collections" />
+    <Using Condition="$(UseFusion)" Include="ActualLab.CommandR" />
+    <Using Condition="$(UseFusion)" Include="ActualLab.CommandR.Configuration" />
+    <Using Condition="$(UseFusion)" Include="ActualLab.CommandR.Commands" />
+    <Using Condition="$(UseFusion)" Include="ActualLab.Fusion" />
+    <Using Condition="$(UseFusion)" Include="ActualLab.Fusion.Operations" />
+    <Using Include="ActualLab.Reflection" />
+    <Using Include="ActualLab.Serialization" />
+    <Using Include="ActualLab.Text" />
+    <Using Include="ActualLab.Time" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="Microsoft.Extensions.Logging" />
     <Using Include="Microsoft.Extensions.Logging.Abstractions" />

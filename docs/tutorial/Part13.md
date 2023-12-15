@@ -5,15 +5,15 @@
 
 **1.** Upgrade all Fusion package references to v6.1+.
 
-**2.** Replace all references to `Stl.Fusion.Client` to `Stl.Fusion` - there is no separate client assembly in v6.1+, `Stl.Fusion.dll` contains the client.
+**2.** Replace all references to `ActualLab.Fusion.Client` to `ActualLab.Fusion` - there is no separate client assembly in v6.1+, `ActualLab.Fusion.dll` contains the client.
 
 **3.** If you are using Fusion authentication (e.g. `IAuth`, `User`, etc. - in fact, almost everything related to Fusion authentication except `Session`), reference:
-- `Stl.Fusion.Ext.Contracts` - from your contracts / client-side projects
-- `Stl.Fusion.Ext.Services` - from your server-side projects.
+- `ActualLab.Fusion.Ext.Contracts` - from your contracts / client-side projects
+- `ActualLab.Fusion.Ext.Services` - from your server-side projects.
 
 **4.** If you are using some projects declaring just `IXxxClientDef` types, remove these projects.
 
-**5.** Any project that declares compute or command services must reference `Stl.Generators`.
+**5.** Any project that declares compute or command services must reference `ActualLab.Generators`.
 
 **6.** Any project that declares `[MemoryPackable]` types must reference `MemoryPack.Generator`.
 
@@ -22,7 +22,7 @@
 
 **1.** Any compute service should implement `IComputeService`, any command service should implement `ICommandService`. 
 
-These interfaces are just tagging ones, i.e. there are no any methods. `Stl.Generators` analyzers require them to generate proxies for such services.
+These interfaces are just tagging ones, i.e. there are no any methods. `ActualLab.Generators` analyzers require them to generate proxies for such services.
 
 Most likely you declare interfaces for any of such services to consume them on the client - and in this case the interface must be inherited from either `IComputeService` or `ICommandService`.
 
@@ -83,9 +83,9 @@ var fusion = services.AddFusion(RpcServiceMode.Server, true);
 var fusionServer = fusion.AddWebServer();
 ```
 
-The first line tells that any `FusionBuilder` (including `fusion`) we'll use further must publish any service registered via `AddService` call via `Stl.Rpc` - in other words, it "turns" any `AddService` call to `AddServer` call further.
+The first line tells that any `FusionBuilder` (including `fusion`) we'll use further must publish any service registered via `AddService` call via `ActualLab.Rpc` - in other words, it "turns" any `AddService` call to `AddServer` call further.
 
-The second call registers an RPC endpoint (`/rpc/ws`) and maps it to a WebSocket server from `Stl.Rpc.Server` package.
+The second call registers an RPC endpoint (`/rpc/ws`) and maps it to a WebSocket server from `ActualLab.Rpc.Server` package.
 
 **3.** If you're using Fusion authentication, configure its endpoints like this:
 ```cs
@@ -128,10 +128,10 @@ fusion.AddDbAuthService<AppDbContext, ...>();
 
 
 **6.** If you're using `fusionAuth.js` script to open sign-in/sign-out popup in Blazor, update its location:
-- Search for `_content/Stl.Fusion.Blazor/scripts/fusionAuth.js` - most likely you'll find it in `_Host.cshtml`
-- Replace it with `_content/Stl.Fusion.Blazor.Authentication/scripts/fusionAuth.js`
+- Search for `_content/ActualLab.Fusion.Blazor/scripts/fusionAuth.js` - most likely you'll find it in `_Host.cshtml`
+- Replace it with `_content/ActualLab.Fusion.Blazor.Authentication/scripts/fusionAuth.js`
 
-As you might notice, this also means you need to reference `Stl.Fusion.Blazor.Authentication` package.
+As you might notice, this also means you need to reference `ActualLab.Fusion.Blazor.Authentication` package.
 
 ## Client-side changes
 
@@ -162,7 +162,7 @@ You can do this in two steps:
 1. Replace `fusionClient.AddReplicaService` with `fusion.AddClient`
 2. Remove the extra argument.
 
-**2.** Add new `Stl.Rpc` WebSocket client:
+**2.** Add new `ActualLab.Rpc` WebSocket client:
 ```cs
 fusion.Rpc.AddWebSocketClient(builder.HostEnvironment.BaseAddress);
 ```
@@ -175,7 +175,7 @@ fusion.AddAuthClient();
 
 ## Blazor related changes
 
-**1.** If you're using Fusion authentication, reference `Stl.Fusion.Blazor.Authentication` package. The authentication components are optional now, so they're extracted to dedicated assemblies.
+**1.** If you're using Fusion authentication, reference `ActualLab.Fusion.Blazor.Authentication` package. The authentication components are optional now, so they're extracted to dedicated assemblies.
 
 
 **2.** To add Fusion's Blazor components / integrations, run the following calls:
@@ -207,9 +207,9 @@ These calls must be executed:
 
 ## Other changes
 
-**1.** Authentication and other optional extensions were moved to `Stl.Fusion.Ext.Contracts` and `Stl.Fusion.Ext.Services` packages - with corresponding namespace changes. So most likely you'll need to replace:
-- `using Stl.Fusion.EntityFramework.Authentication` to `using Stl.Fusion.Authentication`; on the server side, you'll also need to add `using Stl.Fusion.Authentication.Services`.
-- `using Stl.Fusion.EntityFramework.Extensions` (if you are using `IKeyValueStore`, etc.) to `using Stl.Fusion.Extensions`; on the server side, you'll also need to add `using Stl.Fusion.Extensions.Services`.
+**1.** Authentication and other optional extensions were moved to `ActualLab.Fusion.Ext.Contracts` and `ActualLab.Fusion.Ext.Services` packages - with corresponding namespace changes. So most likely you'll need to replace:
+- `using ActualLab.Fusion.EntityFramework.Authentication` to `using ActualLab.Fusion.Authentication`; on the server side, you'll also need to add `using ActualLab.Fusion.Authentication.Services`.
+- `using ActualLab.Fusion.EntityFramework.Extensions` (if you are using `IKeyValueStore`, etc.) to `using ActualLab.Fusion.Extensions`; on the server side, you'll also need to add `using ActualLab.Fusion.Extensions.Services`.
 
 
 **2.** `TaskSource<T>` type is gone (its performance was arguable). Use `TaskCompletionSource<T>` instead. You can use `TaskCompletionSourceExt.New` instead of `TaskSource.New` - it behaves identically, but returns similarly configured `TaskCompletionSource` instead of `TaskSource`.

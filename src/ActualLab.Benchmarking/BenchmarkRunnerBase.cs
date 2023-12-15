@@ -1,4 +1,4 @@
-namespace Stl.Benchmarking;
+namespace ActualLab.Benchmarking;
 
 public abstract class BenchmarkRunnerBase<TResult>
 {

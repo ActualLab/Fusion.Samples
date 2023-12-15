@@ -1,6 +1,6 @@
 using Grpc.Net.Client;
 using MagicOnion.Client;
-using Stl.Rpc;
+using ActualLab.Rpc;
 
 namespace Samples.RpcBenchmark.Client;
 

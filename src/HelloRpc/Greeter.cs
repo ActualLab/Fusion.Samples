@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using MemoryPack;
-using Stl.Rpc;
-using Stl.Rpc.Infrastructure;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
 
 namespace Samples.HelloRpc;
 

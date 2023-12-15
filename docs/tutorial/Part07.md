@@ -3,8 +3,7 @@
 Unfortunately, right now Fusion doesn't have a fully working JavaScript
 client. But we're working on this, and if you're interested
 in the most current state of this work - check out
-[react-client-wip branch](https://github.com/servicetitan/Stl.Fusion.Samples/tree/react-client-wip)
+[react-client-wip branch](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/react-client-wip)
 in this repository.
 
 #### [Next: Part 8 &raquo;](./Part08.md) | [Tutorial Home](./README.md)
-

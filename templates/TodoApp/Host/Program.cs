@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
-using Stl.Fusion.EntityFramework;
-using Stl.Multitenancy;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.Multitenancy;
 using Templates.TodoApp.Host;
 using Templates.TodoApp.Services;
 

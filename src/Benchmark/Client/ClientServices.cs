@@ -1,5 +1,5 @@
 using Samples.Benchmark.Server;
-using Stl.RestEase;
+using ActualLab.RestEase;
 
 namespace Samples.Benchmark.Client;
 

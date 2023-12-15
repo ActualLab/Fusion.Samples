@@ -1,4 +1,4 @@
-using Stl.Benchmarking;
+using ActualLab.Benchmarking;
 
 namespace Samples.Benchmark.Client;
 using static Settings;

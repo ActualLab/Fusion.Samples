@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Samples.HelloWorld;
-using Stl.Fusion;
+using ActualLab.Fusion;
 using static System.Console;
 
 var services = new ServiceCollection()

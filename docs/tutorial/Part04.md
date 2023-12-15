@@ -22,11 +22,11 @@ Namely:
   the "computation" with "RPC call".
 
 Compute Service clients communicate with the server over WebSocket channel -
-internally they use `Stl.Rpc` infrastructure to make such calls, as well as
+internally they use `ActualLab.Rpc` infrastructure to make such calls, as well as
 to receive notifications about server-side invalidations.
 
 Resilience (reconnect on disconnect, refresh of every replica of `Computed<T>` on reconnect, etc.)
-is bundled - `Stl.Rpc` and `Stl.Fusion.Client` take care of that.
+is bundled - `ActualLab.Rpc` and `ActualLab.Fusion.Client` take care of that.
 
 Finally, Compute Service clients are just interfaces. They typically
 declare every method of a Compute Service they "mimic".

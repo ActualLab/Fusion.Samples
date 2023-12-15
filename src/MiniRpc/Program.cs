@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Samples.MiniRpc;
-using Stl.Fusion.Server;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.Fusion.Server;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 using static System.Console;
 
 #pragma warning disable ASP0000

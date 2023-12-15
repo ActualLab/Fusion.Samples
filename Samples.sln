@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{ED07515D-6CBC-46
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stl.Benchmarking", "src\Stl.Benchmarking\Stl.Benchmarking.csproj", "{EFD00978-099C-4F82-A411-AE27C7DB1A29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActualLab.Benchmarking", "src\ActualLab.Benchmarking\ActualLab.Benchmarking.csproj", "{EFD00978-099C-4F82-A411-AE27C7DB1A29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloRpc", "src\HelloRpc\HelloRpc.csproj", "{FAD9ABF0-290F-4FD3-9A0B-B12B69764F00}"
 EndProject

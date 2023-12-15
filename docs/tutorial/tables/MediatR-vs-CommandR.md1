@@ -2,7 +2,7 @@
 | --- | --- |
 | `IMediator` | `ICommander`
 | `IServiceCollection.AddMediatR` | `IServiceCollection.AddCommander`
-| `IServiceCollection.AddMediatR(assembly)` | `IServiceCollection.AttributeScanner().AddServicesFrom(assembly)` assuming you tag your command handler services with `[AddCommandHandlers]` or `[CommandService]` - in other words, CommandR doesn't have its own type scanner, but listed attributes allow you to use `AttributeScanner` from `Stl.DependencyInjection` to get the same result (and even more - e.g. scope-based registration)
+| `IServiceCollection.AddMediatR(assembly)` | `IServiceCollection.AttributeScanner().AddServicesFrom(assembly)` assuming you tag your command handler services with `[AddCommandHandlers]` or `[CommandService]` - in other words, CommandR doesn't have its own type scanner, but listed attributes allow you to use `AttributeScanner` from `ActualLab.DependencyInjection` to get the same result (and even more - e.g. scope-based registration)
 | `IServiceProvider.GetRequiredService<IMediator>` | `IServiceProvider.GetRequiredService<ICommander>` or `IServiceProvider.Commander()`
 | `IMediatR.Send(command, cancellationToken)` | `ICommander.CallAsync(command, cancellationToken)`
 | `IRequest<TResult>` | `ICommand<TResult>`

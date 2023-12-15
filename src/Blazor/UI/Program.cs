@@ -4,15 +4,15 @@ using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Samples.Blazor.Abstractions;
 using Samples.Blazor.UI.Services;
-using Stl.Fusion.Client;
-using Stl.OS;
-using Stl.DependencyInjection;
-using Stl.Fusion.Authentication;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Blazor.Authentication;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.UI;
-using Stl.Rpc;
+using ActualLab.Fusion.Client;
+using ActualLab.OS;
+using ActualLab.DependencyInjection;
+using ActualLab.Fusion.Authentication;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Blazor.Authentication;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.UI;
+using ActualLab.Rpc;
 
 namespace Samples.Blazor.UI;
 

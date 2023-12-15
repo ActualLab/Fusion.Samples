@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using MemoryPack;
-using Stl.Rpc;
+using ActualLab.Rpc;
 
 namespace Samples.Blazor.Abstractions;
 

@@ -3,7 +3,7 @@ using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Ookii.CommandLine.Validation;
 using Samples.RpcBenchmark.Client;
-using Stl.OS;
+using ActualLab.OS;
 
 namespace Samples.RpcBenchmark;
 

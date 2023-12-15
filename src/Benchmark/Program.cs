@@ -2,9 +2,9 @@
 using Samples.Benchmark;
 using Samples.Benchmark.Client;
 using Samples.Benchmark.Server;
-using Stl.Fusion.Server;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.Fusion.Server;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 
 #pragma warning disable ASP0000
 
@@ -86,7 +86,7 @@ async Task RunClient()
     WriteLine();
     WriteLine("Remote services:");
     await new BenchmarkRunner("Fusion Client -> Fusion Service", ClientServices.RemoteFusionServiceFactory).Run();
-    await new BenchmarkRunner("Stl.Rpc Client -> Fusion Service", ClientServices.RemoteFusionServiceViaRpcFactory, 10).Run();
+    await new BenchmarkRunner("ActualLab.Rpc Client -> Fusion Service", ClientServices.RemoteFusionServiceViaRpcFactory, 10).Run();
     await new BenchmarkRunner("HTTP Client -> Fusion Service", ClientServices.RemoteFusionServiceViaHttpFactory, 5).Run();
     await new BenchmarkRunner("HTTP Client -> Regular Service", ClientServices.RemoteDbServiceViaHttpFactory, 5).Run();
 

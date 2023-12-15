@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using MemoryPack;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Extensions;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Extensions;
 
 namespace Templates.TodoApp.Abstractions;
 

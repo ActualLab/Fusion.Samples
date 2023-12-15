@@ -5,11 +5,11 @@ using System.Net.WebSockets;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
-using Stl.RestEase;
-using Stl.Rpc;
-using Stl.Rpc.Clients;
-using Stl.Rpc.Infrastructure;
-using Stl.Rpc.WebSockets;
+using ActualLab.RestEase;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Clients;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.WebSockets;
 
 namespace Samples.RpcBenchmark.Client;
 
@@ -25,7 +25,7 @@ public sealed class ClientFactories
 
     public (string Name, Func<ITestService> Factory) this[LibraryKind libraryKind]
         => libraryKind switch {
-            LibraryKind.StlRpc => ("Stl.Rpc", Rpc),
+            LibraryKind.StlRpc => ("ActualLab.Rpc", Rpc),
             LibraryKind.SignalR => ("SignalR", SignalR),
             LibraryKind.StreamJsonRpc => ("StreamJsonRpc", StreamJsonRpc),
             LibraryKind.MagicOnion => ("MagicOnion", MagicOnion),

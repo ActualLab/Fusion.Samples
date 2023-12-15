@@ -1,4 +1,4 @@
-using Stl.OS;
+using ActualLab.OS;
 
 namespace Samples.RpcBenchmark.Client;
 

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 using MemoryPack;
-using Stl.Fusion.Authentication;
+using ActualLab.Fusion.Authentication;
 
 namespace Samples.Blazor.Abstractions;
 

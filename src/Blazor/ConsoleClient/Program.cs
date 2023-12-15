@@ -1,8 +1,8 @@
 using Samples.Blazor.Abstractions;
-using Stl.Fusion.Authentication;
-using Stl.Fusion.Client;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.UI;
+using ActualLab.Fusion.Authentication;
+using ActualLab.Fusion.Client;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.UI;
 using static System.Console;
 
 var services = CreateServiceProvider();

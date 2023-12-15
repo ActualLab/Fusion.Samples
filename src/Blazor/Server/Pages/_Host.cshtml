@@ -1,9 +1,9 @@
 ﻿@page "/"
 @namespace Samples.Blazor.Server.Pages
 @using Samples.Blazor.UI
-@using Stl.Fusion.Blazor
-@using Stl.Fusion.Server.Authentication
-@using Stl.Fusion.Server.Endpoints
+@using ActualLab.Fusion.Blazor
+@using ActualLab.Fusion.Server.Authentication
+@using ActualLab.Fusion.Server.Endpoints
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject ServerAuthHelper ServerAuthHelper
 @inject BlazorCircuitContext BlazorCircuitContext
@@ -21,12 +21,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Stl.Samples.Blazor</title>
+    <title>ActualLab.Samples.Blazor</title>
     <base href="~/" />
     <link href="css/app.css" rel="stylesheet" />
 
     <partial name="Blazorise.Head" />
-    <script src="_content/Stl.Fusion.Blazor.Authentication/scripts/fusionAuth.js"></script>
+    <script src="_content/ActualLab.Fusion.Blazor.Authentication/scripts/fusionAuth.js"></script>
     <script>
         window.FusionAuth.schemas = "@authSchemas";
     </script>

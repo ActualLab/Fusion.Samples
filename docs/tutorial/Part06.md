@@ -10,15 +10,15 @@ There are a few "flavors" of the `IState` - the most important ones are:
 
 You can use these abstractions directly in your Blazor components, but
 usually it's more convenient to use `ComputedStateComponent<TState>` and
-`MixedStateComponent<TState, TMutableState>` from `Stl.Fusion.Blazor` NuGet package.
+`MixedStateComponent<TState, TMutableState>` from `ActualLab.Fusion.Blazor` NuGet package.
 I'll describe how they work further, but since the classes
 are tiny, the link to their source code might explain it even better:
 
-- [StatefulComponentBase.cs](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/StatefulComponentBase.cs) (common base type)
-- [ComputedStateComponent.cs](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/ComputedStateComponent.cs)
-- [MixedStateComponent.cs](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/MixedStateComponent.cs) (inherits from `ComputedStateComponent<TState>`).
+- [StatefulComponentBase.cs](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/StatefulComponentBase.cs) (common base type)
+- [ComputedStateComponent.cs](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/ComputedStateComponent.cs)
+- [MixedStateComponent.cs](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/MixedStateComponent.cs) (inherits from `ComputedStateComponent<TState>`).
 
-## StatefulComponentBase&lt;T&gt; ([source](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/StatefulComponentBase.cs))
+## StatefulComponentBase&lt;T&gt; ([source](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/StatefulComponentBase.cs))
 
 Any `StatefulComponentBase` has `State` property, which can be
 any `IState`.
@@ -62,7 +62,7 @@ Finally, it also disposes the state once the component gets disposed -
 unless its `OwnsState` property is set to `false`. And that's nearly all
 it does.
 
-## ComputedStateComponent&lt;T&gt; ([source](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/ComputedStateComponent.cs))
+## ComputedStateComponent&lt;T&gt; ([source](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/ComputedStateComponent.cs))
 
 This class tweaks a behavior of `StatefulComponentBase` to deal `IComputedState<T>`.
 
@@ -92,7 +92,7 @@ public abstract class ComputedStateComponent<TState> : StatefulComponentBase<ICo
         async Task<TState> SynchronizedComputeState(IComputedState<TState> _, CancellationToken cancellationToken)
         {
             // Synchronizes ComputeState call as per:
-            // https://github.com/servicetitan/Stl.Fusion/issues/202
+            // https://github.com/servicetitan/ActualLab.Fusion/issues/202
             var ts = TaskSource.New<TState>(false);
             await InvokeAsync(async () => {
                 try {
@@ -147,7 +147,7 @@ Compute Service (or a set of such services) changes, all you need is to:
 - Possibly, override its `GetStateOptions` method.
 
 A good example of such component is `Counter.razor` from "HelloBlazorServer" example -
-check out [its source code](https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/src/HelloBlazorServer/Pages/Counter.razor).
+check out [its source code](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/HelloBlazorServer/Pages/Counter.razor).
 Note that it already computes a complex value using two compute methods
 (`CounterService.GetCounterAsync` and `GetMomentsAgoAsync`):
 
@@ -160,7 +160,7 @@ protected override async Task<string> ComputeState(CancellationToken cancellatio
 }
 ```
 
-## MixedStateComponent&lt;T, TLocals&gt; ([source](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/MixedStateComponent.cs))
+## MixedStateComponent&lt;T, TLocals&gt; ([source](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/MixedStateComponent.cs))
 
 It's pretty common for UI components to have its own (local) state
 (e.g. a text entered into a few form fields)
@@ -192,7 +192,7 @@ of option 3:
 - Moreover, it calls `State.Recompute()` on `MutableState` changes,
   so there is no update delay for this chain.
 
-Check out [its 30 lines of code](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion.Blazor/Components/MixedStateComponent.cs) to see how it works.
+Check out [its 30 lines of code](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.Blazor/Components/MixedStateComponent.cs) to see how it works.
 
 ## Real-time UI in Server-Side Blazor apps
 
@@ -235,7 +235,7 @@ probably already know that WASM case actually isn't that different:
 
 - Server-side should be configured to "share" Compute Services -
   i.e. its DI container should be able to resolve Compute Services and
-  `Stl.Rpc.RpcHub` should expose them as servers (services available 
+  `ActualLab.Rpc.RpcHub` should expose them as servers (services available 
   for remote clients).
 - Client-side should be configured to properly build Compute Service clients. 
   And since these clients behave exactly as Compute Services
@@ -314,7 +314,7 @@ All you need is to:
   and register its client via `fusion.AddClient<IService>()` call.
 - Ensure the server can host Blazor components from the client
   in SSB mode. You need to host Blazor hub + a bit
-  [tweaked _Host.cshtml](https://github.com/servicetitan/Stl.Fusion.Samples/blob/master/src/Blazor/Server/Pages/_Host.cshtml)
+  [tweaked _Host.cshtml](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/Blazor/Server/Pages/_Host.cshtml)
   capable of serving the HTML of the Blazor app for both modes.
 - Configure the server-side DI container to resolve 
   an actual implementation of your Compute Service. 
@@ -323,7 +323,7 @@ All you need is to:
 - And finally, implement something allowing clients to switch
   from SSB to WASM mode and vice versa.
 
-Check out [Blazor Sample](https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/Blazor)
+Check out [Blazor Sample](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Blazor)
 to see how all of this works together.
 
 #### [Next: Part 7 &raquo;](./Part07.md) | [Tutorial Home](./README.md)

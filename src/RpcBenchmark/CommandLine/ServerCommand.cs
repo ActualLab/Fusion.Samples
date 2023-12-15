@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Samples.RpcBenchmark.Server;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 
 namespace Samples.RpcBenchmark;
 

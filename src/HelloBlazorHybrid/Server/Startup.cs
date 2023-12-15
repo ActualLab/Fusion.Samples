@@ -10,11 +10,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Samples.HelloBlazorHybrid.Abstractions;
 using Samples.HelloBlazorHybrid.Services;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.Server;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.Server;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 
 namespace Samples.HelloBlazorHybrid.Server;
 
@@ -40,7 +40,7 @@ public class Startup
             if (Env.IsDevelopment()) {
                 logging.AddFilter("Microsoft", LogLevel.Warning);
                 logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
-                logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+                logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
             }
         });
 

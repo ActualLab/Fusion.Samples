@@ -105,7 +105,7 @@ Overall, its key properties include:
 * `IComputedImpl` — an interface  allowing computed instances
   to list themselves as dependencies of other computed instances.
   Most likely you won't ever need to use it, which is why the interface
-  is declared in `Stl.Fusion.Internal` namespace and implemented explicitly.
+  is declared in `ActualLab.Fusion.Internal` namespace and implemented explicitly.
   It's mentioned here mostly to explain that dependency graph in Fusion
   is explicit, and this interface provides a way to update it. Most of
   other frameworks rely on event handlers to implement cascading invalidations,

@@ -1,9 +1,9 @@
 # Fusion Tutorial
 
 > All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
-> [![Build](https://github.com/servicetitan/Stl.Fusion/workflows/Build/badge.svg)](https://github.com/servicetitan/Stl.Fusion/actions?query=workflow%3A%22Build%22)
-> [![codecov](https://codecov.io/gh/servicetitan/Stl.Fusion/branch/master/graph/badge.svg)](https://codecov.io/gh/servicetitan/Stl.Fusion)
-> [![NuGetVersion](https://img.shields.io/nuget/v/Stl.Fusion)](https://www.nuget.org/packages?q=Owner%3Aservicetitan+Tags%3Astl_fusion)
+> [![Build](https://github.com/servicetitan/ActualLab.Fusion/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion/actions?query=workflow%3A%22Build%22)
+> [![codecov](https://codecov.io/gh/servicetitan/ActualLab.Fusion/branch/master/graph/badge.svg)](https://codecov.io/gh/servicetitan/ActualLab.Fusion)
+> [![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Fusion)](https://www.nuget.org/packages?q=Owner%3Aservicetitan+Tags%3Astl_fusion)
 > [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)
 
 Welcome to [Fusion] Tutorial! It used to be interactive, but thanks to Microsoft's inability to maintain `dotnet try` tool, this nice feature currently doesn't work.
@@ -23,13 +23,13 @@ Welcome to [Fusion] Tutorial! It used to be interactive, but thanks to Microsoft
 * [Part 9: CommandR](./Part09.md)
 * [Part 10: Multi-Host Invalidation and CQRS with Operations Framework](./Part10.md)
 * [Part 11: Authentication in Fusion](./Part11.md) 
-* <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Part 12: Stl.Rpc in Fusion 6.1+](./Part12.md) 
+* <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Part 12: ActualLab.Rpc in Fusion 6.1+](./Part12.md) 
 * <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Part 13: Migration to Fusion 6.1+](./Part13.md) 
 * [Epilogue](./PartFF.md)
   
 Finally, check out:
 - <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Fusion Cheat Sheet](./Fusion-Cheat-Sheet.md) - consider adding it to Favorites :)
-- [Overview](https://github.com/servicetitan/Stl.Fusion/blob/master/docs/Overview.md) - a high-level description of Fusion abstractions.
+- [Overview](https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/Overview.md) - a high-level description of Fusion abstractions.
 
 Join our [Discord Server] to ask questions and track project updates.
 
@@ -54,7 +54,7 @@ Alternatively, you can run it with `dotnet try` CLI tool:
 - Open https://localhost:50005/README.md.
 
 
-[Fusion]: https://github.com/servicetitan/Stl.Fusion
+[Fusion]: https://github.com/servicetitan/ActualLab.Fusion
 [Discord Server]: https://discord.gg/EKEwv6d
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6
 [Try .NET]: https://github.com/dotnet/try/blob/master/DotNetTryLocal.md

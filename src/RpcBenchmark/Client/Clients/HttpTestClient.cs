@@ -1,5 +1,5 @@
 using RestEase;
-using Stl.Rpc;
+using ActualLab.Rpc;
 
 namespace Samples.RpcBenchmark.Client;
 

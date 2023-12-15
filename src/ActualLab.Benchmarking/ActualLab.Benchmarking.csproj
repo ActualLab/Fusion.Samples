@@ -4,11 +4,11 @@
         <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
-        <AssemblyName>Stl.Benchmarking</AssemblyName>
-        <RootNamespace>Stl.Benchmarking</RootNamespace>
+        <AssemblyName>ActualLab.Benchmarking</AssemblyName>
+        <RootNamespace>ActualLab.Benchmarking</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Stl.Fusion" Version="6.8.11"/>
+        <PackageReference Include="ActualLab.Fusion" Version="7.0.3"/>
     </ItemGroup>
 </Project>

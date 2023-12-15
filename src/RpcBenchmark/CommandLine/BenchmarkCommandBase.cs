@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Ookii.CommandLine.Validation;
-using Stl.OS;
+using ActualLab.OS;
 
 namespace Samples.RpcBenchmark;
 
@@ -23,7 +23,7 @@ public abstract class BenchmarkCommandBase : AsyncCommandBase
     public int MinIOThreads { get; set; } = HardwareInfo.ProcessorCount * 10;
 
     [CommandLineArgument]
-    [Description("ByteSerializer to use in Stl.Rpc tests.")]
+    [Description("ByteSerializer to use in ActualLab.Rpc tests.")]
     [ValueDescription("MessagePack,MemoryPack")]
     [ValidateRange(0, null)]
     [Alias("bs")]

@@ -1,6 +1,6 @@
 @page "/authentication"
 @using UAParser
-@inherits ComputedStateComponent<(Stl.Fusion.Authentication.User? User, List<AuthenticationPage.SessionInfoModel>? Sessions)>
+@inherits ComputedStateComponent<(ActualLab.Fusion.Authentication.User? User, List<AuthenticationPage.SessionInfoModel>? Sessions)>
 @inject Session Session
 @inject IAuth Auth
 @inject ClientAuthHelper ClientAuthHelper
@@ -154,7 +154,7 @@
         }
     }
 
-    protected override async Task<(Stl.Fusion.Authentication.User?, List<SessionInfoModel>?)> ComputeState(CancellationToken cancellationToken)
+    protected override async Task<(ActualLab.Fusion.Authentication.User?, List<SessionInfoModel>?)> ComputeState(CancellationToken cancellationToken)
     {
         var user = await Auth.GetUser(Session, cancellationToken);
         var sessionInfos = await Auth.GetUserSessions(Session, cancellationToken).ConfigureAwait(false);

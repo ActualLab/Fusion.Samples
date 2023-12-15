@@ -1,5 +1,5 @@
 using Samples.Blazor.Abstractions;
-using Stl.Fusion.Authentication;
+using ActualLab.Fusion.Authentication;
 
 namespace Samples.Blazor.UI.Services;
 

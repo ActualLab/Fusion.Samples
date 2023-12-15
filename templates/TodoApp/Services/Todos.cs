@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using Stl.Fusion.Extensions;
+using ActualLab.Fusion.Extensions;
 using Templates.TodoApp.Abstractions;
 
 namespace Templates.TodoApp.Services;

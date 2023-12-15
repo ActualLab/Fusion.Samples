@@ -4,12 +4,12 @@ using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Samples.HelloBlazorHybrid.Abstractions;
 using Samples.HelloBlazorHybrid.Services;
-using Stl.Fusion.Client;
-using Stl.OS;
-using Stl.DependencyInjection;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.UI;
+using ActualLab.Fusion.Client;
+using ActualLab.OS;
+using ActualLab.DependencyInjection;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.UI;
 
 namespace Samples.HelloBlazorHybrid.UI;
 

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Toolkit.HighPerformance;
 using Samples.MultiServerRpc;
-using Stl.Fusion.Server;
-using Stl.Rpc;
-using Stl.Rpc.Clients;
-using Stl.Rpc.Server;
+using ActualLab.Fusion.Server;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Clients;
+using ActualLab.Rpc.Server;
 using static System.Console;
 
 #pragma warning disable ASP0000

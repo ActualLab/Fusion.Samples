@@ -1,13 +1,13 @@
 # RpcBenchmark
 
-The benchmark measures the performance of mainstream web RPC libraries for .NET (RPC over HTTP / WebSockets), as well as the performance of the new contender - Stl.Rpc from [Fusion](https://github.com/servicetitan/Stl.Fusion).
+The benchmark measures the performance of mainstream web RPC libraries for .NET (RPC over HTTP / WebSockets), as well as the performance of the new contender - ActualLab.Rpc from [Fusion](https://github.com/servicetitan/ActualLab.Fusion).
 
 <img src="https://img.shields.io/badge/-NOTE:-red" valign="middle"> RpcBenchmark is quite new, so there is a chance that our test setup isn't optimal for some of the tested libraries - even though we did a fair amount of research to maximize the throughput of each one of them. If you'll find any issues, please let us know / send us a Pull Request.
 
 
 ## Tested libraries
 
-- [Stl.Rpc](https://www.nuget.org/packages/Stl.Rpc) &ndash; a communication library used by [Fusion](https://github.com/servicetitan/Stl.Fusion), which can be used independently as well.
+- [ActualLab.Rpc](https://www.nuget.org/packages/ActualLab.Rpc) &ndash; a communication library used by [Fusion](https://github.com/servicetitan/ActualLab.Fusion), which can be used independently as well.
 - [SignalR](https://github.com/SignalR/SignalR)
 - [StreamJsonRpc](https://github.com/microsoft/vs-streamjsonrpc)
 - [MagicOnion](https://github.com/Cysharp/MagicOnion)
@@ -29,7 +29,7 @@ Here is what RpcBenchmark does:
 
 ## How can I run it?
 
-1. Clone the repository: `git clone git@github.com:servicetitan/Stl.Fusion.Samples.git`
+1. Clone the repository: `git clone git@github.com:servicetitan/ActualLab.Fusion.Samples.git`
 2. Run `dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj`
 
 ## Command line arguments
@@ -92,7 +92,7 @@ Client settings:
   Client concurrency:   500
   Client count:         20
 
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      : 862.27K   1.19M   1.17M   1.19M ->   1.19M calls/s
   GetUser  : 821.86K 809.93K 807.60K 811.07K -> 821.86K calls/s
   SayHello : 482.01K 479.82K 480.23K 480.94K -> 482.01K calls/s
@@ -135,7 +135,7 @@ Client settings:
   Client concurrency:   10
   Client count:         1000
 
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      : 542.45K 497.41K 548.56K 498.03K -> 548.56K calls/s
   GetUser  : 489.61K 461.83K 457.90K 413.73K -> 489.61K calls/s
   SayHello : 352.40K 345.78K 366.69K 327.86K -> 366.69K calls/s
@@ -165,7 +165,7 @@ Commands:
 - Client: `Run-RpcBenchmark-Client.cmd https://192.168.1.11:22444/ -cc 1 -w 200`
 
 ```
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      : 125.10K 123.65K 124.99K 124.50K -> 125.10K calls/s
   GetUser  : 105.78K 103.09K 103.36K 103.45K -> 105.78K calls/s
   SayHello :  94.78K  94.30K  92.85K  94.26K ->  94.78K calls/s
@@ -211,7 +211,7 @@ Client settings:
   Client concurrency:   120
   Client count:         120
 
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      :   2.67M   3.14M   3.30M   3.19M ->   3.30M calls/s
   GetUser  :   2.66M   2.59M   2.64M   2.65M ->   2.66M calls/s
   SayHello :   1.75M   1.74M   1.75M   1.72M ->   1.75M calls/s
@@ -269,7 +269,7 @@ Use:
 - `Run-RpcBenchmark-Server.cmd <CoreCount>` to start the server **pinned to the first N CPU cores** (the default is 6)
 - `Run-RpcBenchmark-Client.cmd [url] [client options]` to run the client. It's the same command as  `dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj -- client [url] [client options]` 
 
-### 6-core server, best settings for Stl.Rpc & SignalR
+### 6-core server, best settings for ActualLab.Rpc & SignalR
 
 Commands:
 - `Run-RpcBenchmark-Server.cmd`
@@ -286,7 +286,7 @@ Client settings:
   Client concurrency:   100
   Client count:         100
 
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      :   1.04M   1.04M   1.05M   1.05M ->   1.05M calls/s
   GetUser  : 753.31K 760.69K 761.49K 772.16K -> 772.16K calls/s
   SayHello : 499.23K 501.05K 499.70K 499.56K -> 501.05K calls/s
@@ -329,7 +329,7 @@ Client settings:
   Client concurrency:   1000
   Client count:         10
 
-Stl.Rpc:
+ActualLab.Rpc:
   Sum      : 959.11K 912.14K 910.62K 888.58K -> 959.11K calls/s
   GetUser  : 624.38K 615.48K 623.40K 631.55K -> 631.55K calls/s
   SayHello : 409.44K 423.51K 414.74K 421.74K -> 423.51K calls/s

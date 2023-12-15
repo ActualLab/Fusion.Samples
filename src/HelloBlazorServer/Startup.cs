@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Samples.HelloBlazorServer.Services;
-using Stl.Fusion.Blazor;
-using Stl.Fusion.Extensions;
-using Stl.Fusion.UI;
+using ActualLab.Fusion.Blazor;
+using ActualLab.Fusion.Extensions;
+using ActualLab.Fusion.UI;
 
 namespace Samples.HelloBlazorServer;
 
@@ -31,7 +31,7 @@ public class Startup
             if (Env.IsDevelopment()) {
                 logging.AddFilter("Microsoft", LogLevel.Warning);
                 logging.AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
-                logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+                logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
             }
         });
 

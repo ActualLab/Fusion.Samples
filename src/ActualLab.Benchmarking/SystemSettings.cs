@@ -1,6 +1,6 @@
 using MessagePack;
 
-namespace Stl.Benchmarking;
+namespace ActualLab.Benchmarking;
 
 public static class SystemSettings
 {
@@ -20,7 +20,7 @@ public static class SystemSettings
             ThreadPool.SetMinThreads(currentMinWorkerThreads, currentMinIOThreads);
             ThreadPool.SetMaxThreads(16_384, 16_384);
 
-            // Stl.Rpc serializer
+            // ActualLab.Rpc serializer
             var serializer = serializerKind switch {
                 ByteSerializerKind.MemoryPack => (IByteSerializer)MemoryPackByteSerializer.Default,
                 ByteSerializerKind.MessagePack => MessagePackByteSerializer.Default,

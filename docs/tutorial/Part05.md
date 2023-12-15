@@ -2,7 +2,7 @@
 
 Even though Fusion supports RPC, you can use it on server-side to cache recurring computations. 
 Below is the output of
-[Caching Sample](https://github.com/servicetitan/Stl.Fusion.Samples/tree/master/src/Caching) (slightly outdated):
+[Caching Sample](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Caching) (slightly outdated):
 
 ```text
 Local services:
@@ -275,7 +275,7 @@ Besides that, Fusion offers two built-in options:
 * `[ComputeMethod(MinCacheDuration = TimeInSeconds)]`,
   ensures a strong reference w/ specified expiration
   time is added to
-  [Timeouts.KeepAlive](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion/Internal/Timeouts.cs)
+  [Timeouts.KeepAlive](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Internal/Timeouts.cs)
   timer set every time the output is used. In fact, it sets a minimum
   time the output of a function stays in RAM.
 * `[Swap(SwapTime = TimeInSeconds)]` enables swapping feature
@@ -380,19 +380,19 @@ A few tips on how to use it:
   Alternatively, you can use
   [freezable pattern](https://github.com/jbe2277/waf/wiki/Freezable-Pattern)
   implementation from
-  [Stl.Frozen](https://github.com/servicetitan/Stl.Fusion/tree/master/src/Stl/Frozen);
+  [ActualLab.Frozen](https://github.com/servicetitan/ActualLab.Fusion/tree/master/src/Stl/Frozen);
   actually, you can use any implementation, though if Fusion sees you return
-  `Stl.Frozen.IFrozen` from compute method, it automatically freezes the output.
+  `ActualLab.Frozen.IFrozen` from compute method, it automatically freezes the output.
 
 **P.S.** If you love algorithms and data structures, check out
-[ConcurrentTimerSet<TTimer>](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl/Time/ConcurrentTimerSet.cs) -
+[ConcurrentTimerSet<TTimer>](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/Stl/Time/ConcurrentTimerSet.cs) -
 Fusion uses its own implementation of timers to ensure they
 scale much better than `Task.Delay` (which relies on
 [TimerQueue](https://referencesource.microsoft.com/#mscorlib/system/threading/timer.cs,29)),
 though this comes at cost of fire precision: Fusion timers fire only
-[4 times per second](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl.Fusion/Internal/Timeouts.cs#L20).
+[4 times per second](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Internal/Timeouts.cs#L20).
 Under the hood, `ConcurrentTimerSet` uses
-[RadixHeapSet](https://github.com/servicetitan/Stl.Fusion/blob/master/src/Stl/Collections/RadixHeapSet.cs) -
+[RadixHeapSet](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/Stl/Collections/RadixHeapSet.cs) -
 basically, a [Radix Heap](http://ssp.impulsetrain.com/radix-heap.html)
 supporting `O(1)` find and delete operations.
 

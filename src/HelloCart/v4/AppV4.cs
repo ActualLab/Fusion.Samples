@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Samples.HelloCart.V2;
-using Stl.Fusion.EntityFramework;
-using Stl.Fusion.EntityFramework.Redis;
-using Stl.Fusion.Server;
-using Stl.IO;
-using Stl.Rpc;
-using Stl.Rpc.Server;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.Fusion.EntityFramework.Redis;
+using ActualLab.Fusion.Server;
+using ActualLab.IO;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Server;
 
 namespace Samples.HelloCart.V4;
 
@@ -85,7 +85,7 @@ public class AppV4 : AppBase
             logging.AddConsole();
             logging.SetMinimumLevel(LogLevel.Error);
             // logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
-            // logging.AddFilter("Stl.Fusion.Operations", LogLevel.Information);
+            // logging.AddFilter("ActualLab.Fusion.Operations", LogLevel.Information);
         });
     }
 

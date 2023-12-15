@@ -1,5 +1,5 @@
 using System.Net.WebSockets;
-using Stl.Rpc;
+using ActualLab.Rpc;
 using StreamJsonRpc;
 
 namespace Samples.RpcBenchmark.Client;

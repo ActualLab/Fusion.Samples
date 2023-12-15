@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Stl.Fusion;
+using ActualLab.Fusion;
 using static System.Console;
 
 namespace Tutorial

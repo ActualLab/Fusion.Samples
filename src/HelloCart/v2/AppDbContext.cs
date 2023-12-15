@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using Stl.Fusion.EntityFramework;
-using Stl.Fusion.EntityFramework.Operations;
+using ActualLab.Fusion.EntityFramework;
+using ActualLab.Fusion.EntityFramework.Operations;
 
 namespace Samples.HelloCart.V2;
 
@@ -30,7 +30,7 @@ public class AppDbContext(DbContextOptions options) : DbContextBase(options)
     public DbSet<DbCart> Carts { get; protected set; } = null!;
     public DbSet<DbCartItem> CartItems { get; protected set; } = null!;
 
-    // Stl.Fusion.EntityFramework tables
+    // ActualLab.Fusion.EntityFramework tables
     public DbSet<DbOperation> Operations { get; protected set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

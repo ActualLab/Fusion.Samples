@@ -119,7 +119,7 @@ What happens here?
     has a change to ignore any of its own notifications.
   - Right now there are no other log change tracking options, but
     more are upcoming. And it's fairly easy to add your own -
-    e.g. [PostgreSQL log change tracking](https://github.com/servicetitan/ActualLab.Fusion/tree/master/src/ActualLab.Fusion.EntityFramework.Npgsql/Operations)
+    e.g. [PostgreSQL log change tracking](https://github.com/ActualLab/Fusion/tree/master/src/ActualLab.Fusion.EntityFramework.Npgsql/Operations)
     requires less than 200 lines of code, and you need to change
     maybe just 30-40 of these lines in your own tracker.
 
@@ -259,7 +259,7 @@ That's mostly it. Now, if you're curious how it works - continue reading.
 Otherwise you can simply try this. To see this in action, try running:
 
 - `Run-Sample-Blazor-MultiHost.cmd` from
-  [Fusion Samples](https://github.com/servicetitan/ActualLab.Fusion.Samples)
+  [Fusion Samples](https://github.com/ActualLab/Fusion.Samples)
 - `Run-MultiHost.cmd` from
   [Board Games](https://github.com/alexyakunin/BoardGames).
 
@@ -293,7 +293,7 @@ The only command that currently implements validation is
 `ServerSideCommandBase<TResult>` - actually, a super-important
 base type for commands that can be invoked on server-side only.
 Check out
-[its source code](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.CommandR/Commands/ServerSideCommandBase.cs) -
+[its source code](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.CommandR/Commands/ServerSideCommandBase.cs) -
 it's super simple, and it's clear how it's supposed to work:
 
 - If you inherit your command from `ServerSideCommandBase<TResult>`
@@ -347,19 +347,19 @@ to the underlying storage. Here is how this happens, if we're
 talking about EF:
 
 - `DbOperationScopeProvider<TDbContext>`
-  [creates and "injects"](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Operations/DbOperationScopeProvider.cs#L54)
+  [creates and "injects"](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Operations/DbOperationScopeProvider.cs#L54)
   `DbOperationScope<TDbContext>` into
   `CommandContext.GetCurrent().Items` collection.
 - Once your service needs to access `AppDbContext` from the
   command handler, it typically calls its protected
   `CreateCommandDbContext` method, which
-  ["pulls" the `DbOperationScope<AppDbContext>`](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbServiceBase.cs#L38)
+  ["pulls" the `DbOperationScope<AppDbContext>`](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbServiceBase.cs#L38)
   and asks it to provide actual `AppDbContext`.
 - Finally, `DbOperationScope.CreateDbContext` does all the magic:
   when you call this method for the first time, not only it creates
   "primary" `DbContext`, but also starts a new transaction there.
   And when you call it later, it creates a `DbContext` that
-  [shares the same `DbConnection`](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationScope.cs#L107)
+  [shares the same `DbConnection`](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationScope.cs#L107)
   as the the "primary" one.
 
 In other words, `DbOperationScope` ensures that all `DbContext`-s
@@ -367,7 +367,7 @@ you get via it share the same connection and transaction.
 In addition, it ensures that
 [an operation entry is added to the operation log before this
 transaction gets committed, and the fact commit actually  happened
-is verified in case of failure](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationScope.cs#L133).
+is verified in case of failure](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationScope.cs#L133).
 If you're curious why it makes sense to do this,
 [see this page](https://docs.microsoft.com/en-us/ef/ef6/fundamentals/connection-resiliency/commit-failures).
 
@@ -400,7 +400,7 @@ complete. So once `NotifyCompletedAsync` completes, you
 can be certain that every of these "follow up" actions is already
 completed as well.
 
-[`CompletionProducer` (check it out, it's tiny)](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Operations/Internal/CompletionProducer.cs#L34) -
+[`CompletionProducer` (check it out, it's tiny)](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/Internal/CompletionProducer.cs#L34) -
 is probably the most important one of such listeners.
 The critical part of its job is actually a single line:
 
@@ -410,7 +410,7 @@ await Commander.Call(Completion.New(operation), true).ConfigureAwait(false);
 
 Two things are happening here:
 
-1. It creates [`Completion<TCommand>` object](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Operations/Completion.cs) -
+1. It creates [`Completion<TCommand>` object](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/Completion.cs) -
    in fact, a command as well!
 2. It runs this command via `Commander.Call(completion, true)`.
 
@@ -490,7 +490,7 @@ is completed for it as well - including invalidation.
 > Q: What else invokes `NotifyCompletedAsync`?
 
 Just `DbOperationLogReader` -
-[see how it does this](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Operations/DbOperationLogReader.cs#L51).
+[see how it does this](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Operations/DbOperationLogReader.cs#L51).
 
 As you might notice, it skips all local commands, and a big
 comment there explains why it does so.
@@ -571,7 +571,7 @@ This is why your command handlers need a branch checking for
 `Computed.IsInvalidating() == true` running the invalidation logic
 there!
 
-You're [welcome to see what it actually does](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Operations/Internal/InvalidateOnCompletionCommandHandler.cs#L45) -
+You're [welcome to see what it actually does](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/Internal/InvalidateOnCompletionCommandHandler.cs#L45) -
 it's a fairly simple code, the only tricky piece is related to nested operations.
 
 On a positive side, `InvalidateOnCompletionCommandHandler` is the last
@@ -587,7 +587,7 @@ some data together with the operation - so once its completion
 is "played" on this or other hosts, this data is readily available.
 
 I'll show how it's used in one of Fusion's built-in command handlers -
-[`SignOutCommand` handler of `DbAuthService`](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Authentication/DbAuthService.cs#L39):
+[`SignOutCommand` handler of `DbAuthService`](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/Authentication/DbAuthService.cs#L39):
 
 ```cs
 public override async Task SignOut(
@@ -665,7 +665,7 @@ They aren't persisted anywhere, and thus they won't be available
 on peer hosts too.
 
 But importantly, both these objects are `OptionSet`-s.
-Check out [its source code](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/Stl/Collections/OptionSet.cs)
+Check out [its source code](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Core/Collections/OptionSet.cs)
 to learn how it works - again, it's a fairly tiny class.
 
 ## Nested command logging
@@ -700,8 +700,8 @@ Framework is to see the implementation of `DbContextBuilder.AddOperations`
 and `IServiceCollection.AddFusion`. Both methods invoke corresponding 
 builder's constructor first, which I highly recommend to view: 
 
-- https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationsBuilder.cs#L25
-- https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/FusionBuilder.cs#L46
+- https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbOperationsBuilder.cs#L25
+- https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/FusionBuilder.cs#L46
 
 Below is a brief description of some of the services I didn't mention yet;
 as for anything else, above code is the best place to start digging
@@ -709,7 +709,7 @@ into the Operations Framework a bit deeper.
 
 `AgentInfo` is a simple type allowing Operations Framework to check 
 if an operation is originating from this or some other process.
-Check out its [source code](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Operations/AgentInfo.cs) -
+Check out its [source code](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/AgentInfo.cs) -
 it's tiny.
 
 > You might be confused by `Symbol` type there - it's actually
@@ -737,7 +737,7 @@ a given command requires invalidation.
 Its default implementation returns `true` for any command with
 a final handler that lives inside `IComputeService`, but
 not `IReplicaService`
-([details](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Fusion/Operations/InvalidationInfoProvider.cs#L38)).
+([details](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/InvalidationInfoProvider.cs#L38)).
 
 Why not `IReplicaService`, you might guess? Because
 replica services are allowed to register their command

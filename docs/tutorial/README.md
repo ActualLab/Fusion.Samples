@@ -1,9 +1,8 @@
 # Fusion Tutorial
 
 > All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
-> [![Build](https://github.com/servicetitan/ActualLab.Fusion/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion/actions?query=workflow%3A%22Build%22)
-> [![codecov](https://codecov.io/gh/servicetitan/ActualLab.Fusion/branch/master/graph/badge.svg)](https://codecov.io/gh/servicetitan/ActualLab.Fusion)
-> [![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Fusion)](https://www.nuget.org/packages?q=Owner%3Aservicetitan+Tags%3Astl_fusion)
+> [![Build](https://github.com/ActualLab/Fusion/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion/actions?query=workflow%3A%22Build%22)
+> [![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Core)](https://www.nuget.org/packages?q=tags%3A%22actual_lab_fusion%22+Owner%3A%22Actual.chat%22)
 > [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)
 
 Welcome to [Fusion] Tutorial! It used to be interactive, but thanks to Microsoft's inability to maintain `dotnet try` tool, this nice feature currently doesn't work.
@@ -29,7 +28,7 @@ Welcome to [Fusion] Tutorial! It used to be interactive, but thanks to Microsoft
   
 Finally, check out:
 - <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Fusion Cheat Sheet](./Fusion-Cheat-Sheet.md) - consider adding it to Favorites :)
-- [Overview](https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/Overview.md) - a high-level description of Fusion abstractions.
+- [Overview](https://github.com/ActualLab/Fusion/blob/master/docs/Overview.md) - a high-level description of Fusion abstractions.
 
 Join our [Discord Server] to ask questions and track project updates.
 
@@ -54,7 +53,7 @@ Alternatively, you can run it with `dotnet try` CLI tool:
 - Open https://localhost:50005/README.md.
 
 
-[Fusion]: https://github.com/servicetitan/ActualLab.Fusion
+[Fusion]: https://github.com/ActualLab/Fusion
 [Discord Server]: https://discord.gg/EKEwv6d
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6
 [Try .NET]: https://github.com/dotnet/try/blob/master/DotNetTryLocal.md

@@ -10,7 +10,7 @@ The content below implies you can browse, build, and run
 [HelloCart Sample], so before you start reading further,
 it's highly recommended to:
 
-1. Clone [https://github.com/servicetitan/ActualLab.Fusion.Samples](https://github.com/servicetitan/ActualLab.Fusion.Samples)
+1. Clone [https://github.com/ActualLab/Fusion.Samples](https://github.com/ActualLab/Fusion.Samples)
 2. Open `Samples.sln` in your favorite IDE.
 
 ## What is HelloCart sample?
@@ -22,7 +22,7 @@ that uses EF Core, can be called remotely, and scales
 horizontally relying on multi-host invalidation.
 
 The API it implements is defined in
-[Abstractions.cs](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/HelloCart/Abstractions.cs).
+[Abstractions.cs](https://github.com/ActualLab/Fusion.Samples/blob/master/src/HelloCart/Abstractions.cs).
 
 There are two immutable model types:
 
@@ -287,7 +287,7 @@ public async Task WatchProduct(string productId, CancellationToken cancellationT
 Let's postpone the discussion of above code for now.
 The only remark I want to make at this point is that
 `Watch` is started in fire-and-forgot fashion
-in [`Program.cs`, line ~50](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/HelloCart/Program.cs#L52).
+in [`Program.cs`, line ~50](https://github.com/ActualLab/Fusion.Samples/blob/master/src/HelloCart/Program.cs#L52).
 
 Finally, the looped section in `Program.cs` starts to
 as you to enter `[productId]=[price]` expression, parses it,
@@ -329,7 +329,7 @@ and `ICartService`.
 
 ## Version 1: ConcurrentDictionary-based implementation
 
-Code: [src/HelloCart/v1](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart/v1)
+Code: [src/HelloCart/v1](https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart/v1)
 
 > ☝ This is the most complex, but also the most important part
 > of this document, because it explains nearly all key abstractions.
@@ -649,7 +649,7 @@ And a few final remarks on this:
 
 ## Version 2: Switching to EF Core
 
-Code: [src/HelloCart/v2](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart/v2)
+Code: [src/HelloCart/v2](https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart/v2)
 
 > ☝ We will move WAY FASTER now - this and every following version
 > will require just about 5 minutes of your time.
@@ -776,7 +776,7 @@ And that's it. So to use Fusion with EF, you must:
 
 ## Version 3: Production-grade EF Core code
 
-Code: [src/HelloCart/v3](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart/v3)
+Code: [src/HelloCart/v3](https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart/v3)
 
 The `v2` code is actually already good enough, but one small improvement
 can make it way better:
@@ -868,7 +868,7 @@ has to nearly zero there**.
 
 ## Version 4: Distributed Reactive Computing
 
-Code: [src/HelloCart/v4](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart/v4)
+Code: [src/HelloCart/v4](https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart/v4)
 
 So far we've learned how to build a version of our API
 that works locally. What does it take to convert it to
@@ -977,7 +977,7 @@ So welcome to Distributed Reactive Computing!
 
 ## Version 5: Multi-host Scenario
 
-Code: [src/HelloCart/v5](https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart/v5)
+Code: [src/HelloCart/v5](https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart/v5)
 
 You already know that Fusion is capable to "propagate" the
 invalidations to every host sharing the same data.
@@ -1041,5 +1041,5 @@ The parts we didn't touch at all are:
 
 #### [Next: Part 0 &raquo;](./Part00.md) | [Tutorial Home](./README.md)
 
-[HelloCart]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart
-[HelloCart Sample]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart
+[HelloCart]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart
+[HelloCart Sample]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart

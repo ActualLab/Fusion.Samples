@@ -1,9 +1,9 @@
 # Part 0: NuGet packages
 
 All Fusion packages are
-[available on NuGet](https://www.nuget.org/packages?q=Owner%3Aservicetitan+Tags%3Astl_fusion):\
-[![Build](https://github.com/servicetitan/ActualLab.Fusion/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion/actions?query=workflow%3A%22Build%22)
-[![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Fusion)](https://www.nuget.org/packages?q=Owner%3Aservicetitan+Tags%3Astl_fusion)
+[available on NuGet](https://www.nuget.org/packages?q=tags%3A%22actual_lab_fusion%22+Owner%3A%22Actual.chat%22):\
+[![Build](https://github.com/ActualLab/Fusion/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion/actions?query=workflow%3A%22Build%22)
+[![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Core)](https://www.nuget.org/packages?q=tags%3A%22actual_lab_fusion%22+Owner%3A%22Actual.chat%22)
 
 Your should reference:
 
@@ -19,29 +19,26 @@ Your should reference:
 
 The list of Fusion packages:
 
-* [Stl](https://www.nuget.org/packages/Stl/) - stands for "ServiceTitan Library"
-  (yeah, every company needs its own [STL](https://en.wikipedia.org/wiki/Standard_Template_Library)).
-  It's a collection of relatively isolated abstractions and helpers we couldn't find in BCL.
-  `Stl` depends on [Castle.Core](https://www.nuget.org/packages/Castle.Core/) & maybe some other
-  third-party packages.
+* [ActualLab.Core](https://www.nuget.org/packages/ActualLab.Core/) -
+  a collection of relatively isolated abstractions and helpers we couldn't find in BCL.
 * [ActualLab.Generators](https://www.nuget.org/packages/ActualLab.Generators/) - has no dependencies.
   It's a Roslyn-based code generation library focused on proxies / call interception.
   All Fusion proxies are implemented with it. 
-* [ActualLab.Interception](https://www.nuget.org/packages/ActualLab.Interception/) - depends on `Stl`.
+* [ActualLab.Interception](https://www.nuget.org/packages/ActualLab.Interception/) - depends on `ActualLab.Core`.
   Implements a number of call interception helpers which are used by [ActualLab.Generators].
-* [ActualLab.Rpc](https://www.nuget.org/packages/ActualLab.Rpc/) - depends on `Stl`.
+* [ActualLab.Rpc](https://www.nuget.org/packages/ActualLab.Rpc/) - depends on `ActualLab.Core`.
   An RPC API that Fusion uses to implement Compute Service Clients.
   It's probably the fastest RPC implementation over WebSockets that's currently available on .NET - even for plain RPC calls.
 * [ActualLab.Rpc.Server](https://www.nuget.org/packages/ActualLab.Rpc.Server/) - depends on `ActualLab.Rpc`.
   An implementation of `ActualLab.Rpc` server for ASP.NET Core, which uses WebSockets.
 * [ActualLab.Rpc.Server.NetFx](https://www.nuget.org/packages/ActualLab.Rpc.Server.NetFx/) - depends on `ActualLab.Rpc`.
   An implementation of `ActualLab.Rpc` server for ASP.NET / .NET Framework 4.X, which uses WebSockets.
-* [ActualLab.CommandR](https://www.nuget.org/packages/ActualLab.CommandR/) - depends on `Stl` and `ActualLab.Interception`.
+* [ActualLab.CommandR](https://www.nuget.org/packages/ActualLab.CommandR/) - depends on `ActualLab.Core` and `ActualLab.Interception`.
   CommandR is "[MediatR](hhttps://github.com/jbogard/MediatR) on steroids" designed to support
   not only interface-based command handlers, but also AOP-style handlers written as
   regular methods. Besides that, it unifies command handler API (pipeline behaviors and handlers
   are the same there) and helps to eliminate nearly all boilerplate code you'd have otherwise.
-* [ActualLab.Fusion](https://www.nuget.org/packages/ActualLab.Fusion/) - depends on `Stl`, `ActualLab.Interception`, and `ActualLab.CommandR`.
+* [ActualLab.Fusion](https://www.nuget.org/packages/ActualLab.Fusion/) - depends on `ActualLab.Core`, `ActualLab.Interception`, and `ActualLab.CommandR`.
   Nearly everything related to Fusion is there.
 * [ActualLab.Fusion.Ext.Contracts](https://www.nuget.org/packages/ActualLab.Fusion.Ext.Contracts/) - depends on `ActualLab.Fusion`.
   Contracts for some handy extensions (ready-to-use Fusion services) - e.g. Fusion-based authentication is there.
@@ -72,7 +69,7 @@ The list of Fusion packages:
 
 There are some other packages, but more likely than not you won't need them. 
 The complete list can be found here (the packages with the most recent version aren't obsolete): 
-- https://www.nuget.org/packages?q=Tags%3A%22stl_fusion%22 
+- https://www.nuget.org/packages?q=tags%3A%22actual_lab_fusion%22+Owner%3A%22Actual.chat%22 
 
 
 #### [Next: Part 1 &raquo;](./Part01.md) | [Tutorial Home](./README.md)

@@ -1,7 +1,7 @@
 Welcome to a collection of [Fusion] samples!
 
 > All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
-> [![Build](https://github.com/servicetitan/ActualLab.Fusion.Samples/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion.Samples/actions?query=workflow%3A%22Build%22)
+> [![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
 > [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)  
 
 ## What's Inside?
@@ -11,7 +11,7 @@ Welcome to a collection of [Fusion] samples!
 ### 0. Solution Templates
 
 We don't provide `dotnet new`-based templates yet, but you can find
-template solutions to copy in [`templates/*` folders](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/templates).
+template solutions to copy in [`templates/*` folders](https://github.com/ActualLab/Fusion.Samples/blob/master/templates).
 
 ![](img/Samples-Template.gif)
 
@@ -58,7 +58,7 @@ modified to reveal some Fusion powers. Contrary to the original app:
 If you're curious how big is the difference between the code of
 these samples and a similar code without any real-time
 features, 
-[check out this part of Fusion README.md](https://github.com/servicetitan/ActualLab.Fusion#enough-talk-show-me-the-code).
+[check out this part of Fusion README.md](https://github.com/ActualLab/Fusion#enough-talk-show-me-the-code).
 
 [HelloBlazorHybrid] is the same sample, but modified to support both
 Blazor Server and Blazor WebAssembly modes.
@@ -88,10 +88,10 @@ also properly updates everything. It shows Fusion's ability to use both local `I
 instances and client-side replicas of similar server-side instances to compute a new value
 that properly tracks all these dependencies and updates accordingly: 
 * First panel's UI model is 
-  [composed on the server-side](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/Blazor/Server/Services/ComposerService.cs);
+  [composed on the server-side](https://github.com/ActualLab/Fusion.Samples/blob/master/src/Blazor/Server/Services/ComposerService.cs);
   its client-side replica is bound to the component displaying the panel
 * And the second panel uses an UI model
-  [composed completely on the client](https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/src/Blazor/UI/Services/LocalComposerService.cs) 
+  [composed completely on the client](https://github.com/ActualLab/Fusion.Samples/blob/master/src/Blazor/UI/Services/LocalComposerService.cs) 
   by combining server-side replicas of all the values used there.
 * **The surprising part:** two above files are almost identical!
 
@@ -199,26 +199,26 @@ please help us to make it better by completing [Fusion Feedback Form]
 (1&hellip;3 min).
 
 
-[Fusion]: https://github.com/servicetitan/ActualLab.Fusion
-[Fusion repository on GitHub]: https://github.com/servicetitan/ActualLab.Fusion
+[Fusion]: https://github.com/ActualLab/Fusion
+[Fusion repository on GitHub]: https://github.com/ActualLab/Fusion
 
-[HelloCart]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloCart
-[HelloWorld]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloWorld
-[HelloBlazorServer]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloBlazorServer
-[HelloBlazorHybrid]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/HelloBlazorHybrid
-[Blazor Samples]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Blazor
-[Caching]: https://github.com/servicetitan/ActualLab.Fusion.Samples/tree/master/src/Caching
+[HelloCart]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloCart
+[HelloWorld]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloWorld
+[HelloBlazorServer]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloBlazorServer
+[HelloBlazorHybrid]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/HelloBlazorHybrid
+[Blazor Samples]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/Blazor
+[Caching]: https://github.com/ActualLab/Fusion.Samples/tree/master/src/Caching
 [Tutorial]: tutorial/README.md
 [Fusion Tutorial]: tutorial/README.md
-[Documentation Home]: https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/README.md
+[Documentation Home]: https://github.com/ActualLab/Fusion/blob/master/docs/README.md
 [Actual Chat]: https://actual.chat
 
-[Compute Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part01.md
-[Compute Service]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part01.md
-[`IComputed<T>`]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part02.md
-[Computed Value]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part02.md
-[Live State]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part03.md
-[Replica Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/tutorial/Part04.md
+[Compute Services]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part01.md
+[Compute Service]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part01.md
+[`IComputed<T>`]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part02.md
+[Computed Value]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part02.md
+[Live State]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part03.md
+[Replica Services]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part04.md
 [Fusion In Simple Terms]: https://medium.com/@alexyakunin/stl-fusion-in-simple-terms-65b1975967ab?source=friends_link&sk=04e73e75a52768cf7c3330744a9b1e38
 
 [Discord Server]: https://discord.gg/EKEwv6d

@@ -1,10 +1,10 @@
 Welcome to the collection of [Fusion] samples!
 
 > All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
-> [![Build](https://github.com/servicetitan/ActualLab.Fusion.Samples/workflows/Build/badge.svg)](https://github.com/servicetitan/ActualLab.Fusion.Samples/actions?query=workflow%3A%22Build%22)
+> [![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
 > [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)  
 
-Don't know what Fusion is? [You should!](https://github.com/servicetitan/ActualLab.Fusion) 
+Don't know what Fusion is? [You should!](https://github.com/ActualLab/Fusion) 
 Fusion is your #1 partner in crime if you're 
 building a real-time app (an online app delivering
 some or all updates in real-time) or a high-load app.
@@ -90,8 +90,8 @@ please help us to make it better by completing [Fusion Feedback Form]
 (1&hellip;3 min).
 
 
-[Fusion]: https://github.com/servicetitan/ActualLab.Fusion
-[Fusion repository on GitHub]: https://github.com/servicetitan/ActualLab.Fusion
+[Fusion]: https://github.com/ActualLab/Fusion
+[Fusion repository on GitHub]: https://github.com/ActualLab/Fusion
 
 [HelloCart]: src/HelloCart
 [HelloWorld]: src/HelloWorld
@@ -104,16 +104,16 @@ please help us to make it better by completing [Fusion Feedback Form]
 [RpcBenchmark]: src/RpcBenchmark
 [Tutorial]: docs/tutorial/README.md
 [Fusion Tutorial]: docs/tutorial/README.md
-[Documentation Home]: https://github.com/servicetitan/ActualLab.Fusion/blob/master/docs/README.md
+[Documentation Home]: https://github.com/ActualLab/Fusion/blob/master/docs/README.md
 [Actual Chat]: https://actual.chat
 
-[Compute Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part01.md
-[Compute Service]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part01.md
-[`IComputed<T>`]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part02.md
-[Computed Value]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part02.md
-[Live State]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part03.md
-[Replica Services]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part04.md
-[Compute Service Clients]: https://github.com/servicetitan/ActualLab.Fusion.Samples/blob/master/docs/tutorial/Part04.md
+[Compute Services]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part01.md
+[Compute Service]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part01.md
+[`IComputed<T>`]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part02.md
+[Computed Value]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part02.md
+[Live State]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part03.md
+[Replica Services]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part04.md
+[Compute Service Clients]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part04.md
 [Fusion In Simple Terms]: https://medium.com/@alexyakunin/stl-fusion-in-simple-terms-65b1975967ab?source=friends_link&sk=04e73e75a52768cf7c3330744a9b1e38
 
 [Discord Server]: https://discord.gg/EKEwv6d

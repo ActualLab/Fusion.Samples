@@ -236,9 +236,9 @@ Command context allows to:
   helping to store any info associated with the current command.
 
 Finally, `CommandContext` is a class, but there is also
-[`ICommandContext` - an internal interface defining its API](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.CommandR/Internal/ICommandContext.cs) - check it out.
+[`ICommandContext` - an internal interface defining its API](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.CommandR/Internal/ICommandContext.cs) - check it out.
 And if you're looking for details, check out
-[`CommandContext` itself](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.CommandR/CommandContext.cs).
+[`CommandContext` itself](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.CommandR/CommandContext.cs).
 
 So when you call a command, a new `CommandContext` is created.
 But what about the service scope? The code from `CommandContext<TResult>`
@@ -276,12 +276,13 @@ var tailSum = await context.Commander.Call(
 
 ## Ways To Run A Command
 
-[`ICommander` offers just a single method to run the command](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.CommandR/ICommander.cs), but in reality,
+[`ICommander` offers just a single method to run the command](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.CommandR/ICommander.cs), but in reality,
 it's the most "low-level" option, so you'll rarely need it.
 
 The actual options are implemented in
-[`CommanderEx` type](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.CommandR/CommanderEx.cs)
-(`Ex` is a shortcut for `Extensions` that's used everywhere in `Stl` for such classes).
+[`CommanderExt` type](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.CommandR/CommanderEx.cs)
+(`Ext` is a shortcut for `Extensions` that's used everywhere in 
+`ActualLab` projects for such classes).
 
 - `Call` is the one you should normally use.
   It "invokes" the command and returns its result.

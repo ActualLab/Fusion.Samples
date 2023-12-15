@@ -9,7 +9,8 @@ public static class LibraryKindExt
             return result;
 
         return value switch {
-            "rpc" => LibraryKind.StlRpc,
+            "rpc" => LibraryKind.ActualLabRpc,
+            "stlrpc" => LibraryKind.ActualLabRpc,
             "sr" => LibraryKind.SignalR,
             "jsonrpc" => LibraryKind.StreamJsonRpc,
             "vsjsonrpc" => LibraryKind.StreamJsonRpc,

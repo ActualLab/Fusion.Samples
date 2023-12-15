@@ -1,13 +1,13 @@
 # RpcBenchmark
 
-The benchmark measures the performance of mainstream web RPC libraries for .NET (RPC over HTTP / WebSockets), as well as the performance of the new contender - ActualLab.Rpc from [Fusion](https://github.com/servicetitan/ActualLab.Fusion).
+The benchmark measures the performance of mainstream web RPC libraries for .NET (RPC over HTTP / WebSockets), as well as the performance of the new contender - ActualLab.Rpc from [Fusion](https://github.com/ActualLab/Fusion).
 
 <img src="https://img.shields.io/badge/-NOTE:-red" valign="middle"> RpcBenchmark is quite new, so there is a chance that our test setup isn't optimal for some of the tested libraries - even though we did a fair amount of research to maximize the throughput of each one of them. If you'll find any issues, please let us know / send us a Pull Request.
 
 
 ## Tested libraries
 
-- [ActualLab.Rpc](https://www.nuget.org/packages/ActualLab.Rpc) &ndash; a communication library used by [Fusion](https://github.com/servicetitan/ActualLab.Fusion), which can be used independently as well.
+- [ActualLab.Rpc](https://www.nuget.org/packages/ActualLab.Rpc) &ndash; a communication library used by [Fusion](https://github.com/ActualLab/Fusion), which can be used independently as well.
 - [SignalR](https://github.com/SignalR/SignalR)
 - [StreamJsonRpc](https://github.com/microsoft/vs-streamjsonrpc)
 - [MagicOnion](https://github.com/Cysharp/MagicOnion)
@@ -46,7 +46,7 @@ Key client options:
 - `-w <WorkerCount>` - the total number of worker tasks
 - `-d <TestDuration>` - the duration of each test in seconds, the default is `5`
 - `-n <TryCount>` - the number of times to run each test to select the best result, the default is `4`
-- `-b <Benchmarks>` - comma-separated list of tests to run, which must be a subset of `StlRpc,SignalR,StreamJsonRpc,MagicOnion,gRPC,HTTP`, the default is full set of tests
+- `-b <Benchmarks>` - comma-separated list of tests to run, which must be a subset of `ActualLabRpc,SignalR,StreamJsonRpc,MagicOnion,gRPC,HTTP`, the default is full set of tests
 - `-wait` - wait for a key press before terminating.
 
 The default client options are:

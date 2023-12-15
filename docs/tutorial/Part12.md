@@ -67,7 +67,7 @@ rpc.AddServer<IMyService, MyService>(); // Expose IMyService resolved as MyServi
 rpc.AddServer<IMyService>("myService"); // Expose IMyService under "myService" name
 ```
 
-See [RpcBuilder](https://github.com/servicetitan/ActualLab.Fusion/blob/master/src/ActualLab.Rpc/RpcBuilder.cs) for other overloads of `AddServer`.
+See [RpcBuilder](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Rpc/RpcBuilder.cs) for other overloads of `AddServer`.
 
 #3: Expose a WebSocket endpoint RPC clients will connect to:
 ```
@@ -109,7 +109,7 @@ Console.WriteLine(await myService.Ping());
 ## What else ActualLab.Rpc can do?
 
 Besides powering Fusion's client compute services (formerly - replica services), it also allows you to:
-- Route calls to different servers based on call parameters - in other words, run a mesh of services & route calls to them transparently. See https://github.com/servicetitan/ActualLab.Fusion/tree/master/samples/MultiServerRpcApp
+- Route calls to different servers based on call parameters - in other words, run a mesh of services & route calls to them transparently. See https://github.com/ActualLab/Fusion/tree/master/samples/MultiServerRpcApp
 - Use server-side call routers - a service wrappers routing calls to either a local service implementation or an RPC client. This model allows any of your service shards on the server side consume data from any shard (including itself), but w/o triggering any RPC at all for the local data. Unfortunately, there is no sample for this yet.
 
 #### [Part 13: Migration to Fusion 6.1+ &raquo;](./Part13.md) | [Tutorial Home](./README.md)

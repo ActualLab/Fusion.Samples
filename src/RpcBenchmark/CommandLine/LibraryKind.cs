@@ -2,7 +2,7 @@ namespace Samples.RpcBenchmark;
 
 public enum LibraryKind
 {
-    StlRpc = 0,
+    ActualLabRpc = 0,
     SignalR,
     StreamJsonRpc,
     MagicOnion,

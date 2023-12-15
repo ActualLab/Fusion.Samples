@@ -25,7 +25,7 @@ public sealed class ClientFactories
 
     public (string Name, Func<ITestService> Factory) this[LibraryKind libraryKind]
         => libraryKind switch {
-            LibraryKind.StlRpc => ("ActualLab.Rpc", Rpc),
+            LibraryKind.ActualLabRpc => ("ActualLab.Rpc", Rpc),
             LibraryKind.SignalR => ("SignalR", SignalR),
             LibraryKind.StreamJsonRpc => ("StreamJsonRpc", StreamJsonRpc),
             LibraryKind.MagicOnion => ("MagicOnion", MagicOnion),

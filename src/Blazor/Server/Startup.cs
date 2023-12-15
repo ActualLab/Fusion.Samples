@@ -8,18 +8,14 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Samples.Blazor.Abstractions;
 using Samples.Blazor.Server.Services;
-using Samples.Blazor.UI.Services;
 using ActualLab.DependencyInjection;
 using ActualLab.Fusion.Authentication;
-using ActualLab.Fusion.Blazor;
-using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.EntityFramework;
 using ActualLab.Fusion.Server;
 using ActualLab.IO;
@@ -119,7 +115,7 @@ public class Startup
 
         // ASP.NET Core authentication providers
         services.AddAuthentication(options => {
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         }).AddCookie(options => {
             options.LoginPath = "/signIn";
             options.LogoutPath = "/signOut";

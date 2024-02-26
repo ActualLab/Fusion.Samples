@@ -11,11 +11,11 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.0" />
-    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.10" />
-    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.38" />
   </ItemGroup>
 
   <ItemGroup>

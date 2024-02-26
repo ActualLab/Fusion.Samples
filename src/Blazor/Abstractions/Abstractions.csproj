@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.0-rc.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.10" />
-    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Fusion" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" Version="7.0.38" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
   </ItemGroup>
 
 </Project>

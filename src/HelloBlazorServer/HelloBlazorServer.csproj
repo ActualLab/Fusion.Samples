@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.0.10" />
-    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.38" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
   <ItemGroup>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
   </ItemGroup>
 </Project>

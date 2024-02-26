@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Fusion" Version="7.0.38" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
   <ItemGroup>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.10" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
   </ItemGroup>
 </Project>

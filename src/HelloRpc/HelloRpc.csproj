@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Rpc.Server" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Rpc.Server" Version="7.0.41" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
@@ -19,7 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.41" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Properties\launchSettings.json" />

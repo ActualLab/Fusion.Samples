@@ -11,9 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
-    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.38" />
-    <PackageReference Include="ActualLab.Fusion.EntityFramework.Redis" Version="7.0.38" />
-    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework.Redis" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.41" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.41" />
   </ItemGroup>
 
 </Project>

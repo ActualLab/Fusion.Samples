@@ -15,9 +15,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.38" />
-    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" Version="7.0.38" />
-    <PackageReference Include="ActualLab.Generators" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Generators" Version="7.0.41" />
   </ItemGroup>
 
 </Project>

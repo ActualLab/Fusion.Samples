@@ -27,9 +27,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.1" />
-    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.38" />
-    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.38" />
-    <PackageReference Include="ActualLab.RestEase" Version="7.0.38" />
+    <PackageReference Include="ActualLab.Fusion.Server" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.41" />
+    <PackageReference Include="ActualLab.RestEase" Version="7.0.41" />
   </ItemGroup>
 
   <ItemGroup>

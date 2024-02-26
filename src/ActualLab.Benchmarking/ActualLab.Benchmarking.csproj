@@ -9,6 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ActualLab.Fusion" Version="7.0.38"/>
+        <PackageReference Include="ActualLab.Fusion" Version="7.0.41"/>
     </ItemGroup>
 </Project>

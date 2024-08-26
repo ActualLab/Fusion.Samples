@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <RootNamespace>Samples.HelloBlazorHybrid.UI</RootNamespace>
     <AssemblyName>Samples.HelloBlazorHybrid.UI</AssemblyName>
@@ -16,18 +13,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise" Version="1.4.2" />
-    <PackageReference Include="Blazorise.Bootstrap" Version="1.4.2" />
-    <PackageReference Include="Blazorise.DataGrid" Version="1.4.2" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.2" />
-    <PackageReference Include="Blazorise.Sidebar" Version="1.4.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="ActualLab.Fusion.Blazor" Version="7.0.41" />
-    <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" Version="7.0.41" />
-    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" Version="7.0.41" />
-    <PackageReference Include="UAParser" Version="3.1.47" />
+    <PackageReference Include="Blazorise" />
+    <PackageReference Include="Blazorise.Bootstrap" />
+    <PackageReference Include="Blazorise.DataGrid" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" />
+    <PackageReference Include="Blazorise.Sidebar" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="ActualLab.Fusion.Blazor" />
+    <PackageReference Include="ActualLab.Fusion.Blazor.Authentication" />
+    <PackageReference Include="ActualLab.Fusion.Ext.Contracts" />
+    <PackageReference Include="UAParser" />
   </ItemGroup>
 
   <ItemGroup>

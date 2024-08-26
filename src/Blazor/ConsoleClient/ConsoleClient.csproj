@@ -2,15 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
     <RootNamespace>Samples.Blazor.ConsoleUI</RootNamespace>
     <AssemblyName>Samples.Blazor.ConsoleUI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion" />
   </ItemGroup>
 
   <ItemGroup>

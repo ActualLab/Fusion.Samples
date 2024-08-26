@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
     <RootNamespace>Samples.HelloBlazorHybrid.Services</RootNamespace>
     <AssemblyName>Samples.HelloBlazorHybrid.Services</AssemblyName>
   </PropertyGroup>
@@ -14,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion.EntityFramework" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework" />
   </ItemGroup>
 
 </Project>

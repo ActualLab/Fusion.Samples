@@ -1,19 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
     <AssemblyName>Samples.HelloCommandR</AssemblyName>
     <RootNamespace>Samples.HelloCommandR</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActualLab.Fusion" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Fusion" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->
   <ItemGroup>
-    <PackageReference Include="ActualLab.Generators" Version="7.0.41" />
+    <PackageReference Include="ActualLab.Generators" />
   </ItemGroup>
 </Project>

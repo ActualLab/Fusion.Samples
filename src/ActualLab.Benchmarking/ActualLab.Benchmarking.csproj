@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Library</OutputType>
-        <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-        <Nullable>enable</Nullable>
-        <LangVersion>preview</LangVersion>
-        <AssemblyName>ActualLab.Benchmarking</AssemblyName>
-        <RootNamespace>ActualLab.Benchmarking</RootNamespace>
-    </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="ActualLab.Fusion" Version="7.0.41"/>
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+    <AssemblyName>ActualLab.Benchmarking</AssemblyName>
+    <RootNamespace>ActualLab.Benchmarking</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ActualLab.Fusion" />
+  </ItemGroup>
 </Project>

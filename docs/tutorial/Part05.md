@@ -26,7 +26,7 @@ Last two results are the most interesting in the context of this part:
   serves **20,500** requests per second. That's already a lot -
   mostly, because its data set fully fits in RAM on SQL Server.
 - An identical service relying on Fusion (it's literally the same code
-  plus Fusion's `[ComputeMethod]` and `Computed.Invalidate` calls)
+  plus Fusion's `[ComputeMethod]` and `Invalidation.Begin` calls)
   boosts this number to **128,000** requests per second.
 
 And that's the main reason to use Fusion on server-side only:

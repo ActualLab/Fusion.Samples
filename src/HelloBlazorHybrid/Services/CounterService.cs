@@ -13,7 +13,7 @@ public class CounterService : ICounterService
     public Task Increment(CancellationToken cancellationToken = default)
     {
         Interlocked.Increment(ref _count);
-        using (Computed.Invalidate())
+        using (Invalidation.Begin())
             Get(cancellationToken);
         return Task.CompletedTask;
     }

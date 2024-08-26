@@ -5,7 +5,6 @@ public record Project
     public string Id { get; init; } = "";
     public ImmutableList<string> DependsOn { get; init; } = ImmutableList<string>.Empty;
 
-    public Project() { }
     public Project(string id, params string[] dependsOn)
     {
         Id = id;

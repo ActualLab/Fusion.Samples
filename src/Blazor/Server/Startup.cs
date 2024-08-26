@@ -25,18 +25,12 @@ using ActualLab.Rpc.Server;
 
 namespace Samples.Blazor.Server;
 
-public class Startup
+public class Startup(IConfiguration cfg, IWebHostEnvironment environment)
 {
-    private IConfiguration Cfg { get; }
-    private IWebHostEnvironment Env { get; }
+    private IConfiguration Cfg { get; } = cfg;
+    private IWebHostEnvironment Env { get; } = environment;
     private ServerSettings ServerSettings { get; set; } = null!;
     private ILogger Log { get; set; } = NullLogger<Startup>.Instance;
-
-    public Startup(IConfiguration cfg, IWebHostEnvironment environment)
-    {
-        Cfg = cfg;
-        Env = environment;
-    }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -63,7 +57,7 @@ public class Startup
 
         // DbContext & related services
         var appTempDir = FilePath.GetApplicationTempDirectory("", true);
-        var dbPath = appTempDir & "App_v011.db";
+        var dbPath = appTempDir & "BlazorApp_v1.db";
         services.AddDbContextFactory<AppDbContext>(db => {
             db.UseSqlite($"Data Source={dbPath}");
             if (Env.IsDevelopment())
@@ -73,13 +67,13 @@ public class Startup
             db.AddEntityResolver<long, ChatMessage>();
             db.AddOperations(operations => {
                 operations.ConfigureOperationLogReader(_ => new() {
-                    // We use FileBasedDbOperationLogChangeTracking, so unconditional wake up period
+                    // We use FileBasedDbOperationLogChangeTracking, so unconditional wake-up period
                     // can be arbitrary long - all depends on the reliability of Notifier-Monitor chain.
-                    // See what .ToRandom does - most of timeouts in Fusion settings are RandomTimeSpan-s,
+                    // See what .ToRandom does - most timeouts in Fusion settings are RandomTimeSpan-s,
                     // but you can provide a normal one too - there is an implicit conversion from it.
-                    UnconditionalCheckPeriod = TimeSpan.FromSeconds(Env.IsDevelopment() ? 60 : 5).ToRandom(0.05),
+                    CheckPeriod = TimeSpan.FromSeconds(Env.IsDevelopment() ? 60 : 5).ToRandom(0.05),
                 });
-                operations.AddFileBasedOperationLogChangeTracking();
+                operations.AddFileSystemOperationLogWatcher();
             });
         });
 

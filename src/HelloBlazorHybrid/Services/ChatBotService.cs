@@ -3,7 +3,8 @@ using Samples.HelloBlazorHybrid.Abstractions;
 
 namespace Samples.HelloBlazorHybrid.Services;
 
-public class ChatBotService : IComputeService, IHostedService
+public class ChatBotService(IChatService chatService, ICommander commander)
+    : IComputeService, IHostedService
 {
     private static string Morpheus = "M0rpheus";
     private static string MorpheusMessage1 =
@@ -18,54 +19,44 @@ public class ChatBotService : IComputeService, IHostedService
     private static string TimeBot = "Time Bot";
     private static readonly HashSet<string> BotNames = new() {Morpheus, Groot, TimeBot};
 
-    private readonly IChatService _chatService;
-    private readonly ICommander _commander;
-
-    public ChatBotService(IChatService chatService, ICommander commander)
-    {
-        _chatService = chatService;
-        _commander = commander;
-    }
-
     public async Task StartAsync(CancellationToken cancellationToken)
-        => await _commander.Call(new Chat_Post(Morpheus, MorpheusMessage1), cancellationToken);
+        => await commander.Call(new Chat_Post(Morpheus, MorpheusMessage1), cancellationToken);
 
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StopAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
 
     [CommandHandler(Priority = 1, IsFilter = true)]
     protected virtual async Task OnChatPost(Chat_Post command, CancellationToken cancellationToken)
     {
         await CommandContext.GetCurrent().InvokeRemainingHandlers(cancellationToken);
-        if (Computed.IsInvalidating()) {
-            // We know for sure here the command has completed successfully
-            // Now we need to suppress ExecutionContext flow to ensure
-            // Reaction runs its commands outside of the current command context,
-            // outside Computed.Invalidate() block, etc.
-            using var suppressing = ExecutionContextExt.TrySuppressFlow();
-            _ = Task.Run(() => Reaction(command, default), default);
-        }
+
+        // We know for sure here the command has completed successfully
+        // Now we need to suppress ExecutionContext flow to ensure
+        // Reaction runs its commands outside the current command context.
+        using var suppressing = ExecutionContextExt.TrySuppressFlow();
+        _ = Task.Run(() => Reaction(command, default), default);
     }
 
     private async Task Reaction(Chat_Post command, CancellationToken cancellationToken)
     {
-        var messageCount = await _chatService.GetMessageCount();
+        var messageCount = await chatService.GetMessageCount();
         switch (messageCount) {
         case 1:
             break;
         case 2:
             await Task.Delay(1000);
-            await _commander.Call(new Chat_Post(Morpheus, MorpheusMessage2), default);
+            await commander.Call(new Chat_Post(Morpheus, MorpheusMessage2), default);
             break;
         default:
-            var messages = await _chatService.GetMessages(1, cancellationToken);
+            var messages = await chatService.GetMessages(1, cancellationToken);
             var (time, name, message) = messages.SingleOrDefault()!;
             name ??= "";
             if (name == "" || BotNames.Contains(name))
                 break;
             if (message.ToLowerInvariant().Contains("time"))
-                await _commander.Call(new Chat_Post(TimeBot, DateTime.Now.ToString("F")), default);
+                await commander.Call(new Chat_Post(TimeBot, DateTime.Now.ToString("F")), default);
             else
-                await _commander.Call(new Chat_Post(Groot, GrootMessage), default);
+                await commander.Call(new Chat_Post(Groot, GrootMessage), default);
             break;
         }
     }

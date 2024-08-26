@@ -342,7 +342,7 @@ You might notice just a few unusual things there:
    marked as `virtual`
 2. `Edit` contains a bit unusual piece of code:
    ```cs
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         _ = Get(productId, default);
         return Task.CompletedTask;
     }
@@ -356,7 +356,7 @@ The same is equally applicable to `InMemoryCartService`:
    marked as `virtual`
 2. `Edit` contains a bit unusual piece of code:
    ```cs
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         _ = Get(cartId, default);
         return Task.CompletedTask;
     }
@@ -521,7 +521,7 @@ public virtual Task Edit(EditCommand<Product> command, CancellationToken cancell
     var (productId, product) = command;
     if (string.IsNullOrEmpty(productId))
         throw new ArgumentOutOfRangeException(nameof(command));
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         // This is the invalidation block.
         // Every [ComputeMethod] result you "touch" here
         // instantly becomes a 🎃 (gets invalidated)!
@@ -541,7 +541,7 @@ And if you look into similar `Edit` for in `InMemoryCartService`,
 you'll find a very similar block there:
 
 ```cs
-if (Computed.IsInvalidating()) {
+if (Invalidation.IsActive) {
     _ = Get(cartId, default);
     return Task.CompletedTask;
 }
@@ -560,7 +560,7 @@ So now you have *almost* the full picture:
   any of invalidation blocks.
 
 What's missing is how it happens that when you call `Edit`,
-***both** `if (Computed.IsInvalidating()) { ... }` and the code
+***both** `if (Invalidation.IsActive) { ... }` and the code
 outside of this block runs, assuming this block contains `return`
 statement?
 
@@ -571,7 +571,7 @@ I'll give a brief answer here:
   number of servers in your cluster 🙀
 - The first call is the normal one - it makes all the changes
 - `N` more calls are made inside so-called invalidation scope - i.e. inside
-  `using (Computed.Invalidate()) { ... }` block, and they are reliably
+  `using (Invalidation.Begin()) { ... }` block, and they are reliably
   executed on every server in your cluster, including the one
   where the command was originally executed.
 - Moreover, when your command (the `Task<T>` running it) completes
@@ -625,7 +625,7 @@ Btw, "replaying the command in the invalidation mode" means:
   Typically you need this to properly invalidate something
   related to what was deleted during the "normal" pass.
 - Running the same command handler, but inside
-  `using (Computed.Invalidate()) { ... }` block.
+  `using (Invalidation.Begin()) { ... }` block.
 
 ☝ The pipeline described above is called **"Operations Framework"**
 (**OF** further) - in fact, it's just a set of handlers and services
@@ -666,7 +666,7 @@ services.AddFusion(fusion => {
 // This also a usual way to add a pooled IDbContextFactory -
 // a preferable way of accessing DbContexts nowadays
 var appTempDir = PathEx.GetApplicationTempDirectory("", true);
-var dbPath = appTempDir & "HelloCart_v01.db";
+var dbPath = appTempDir & "HelloCart_v1.db";
 services.AddDbContextFactory<AppDbContext>(db => {
     db.UseSqlite($"Data Source={dbPath}");
     db.EnableSensitiveDataLogging();
@@ -853,7 +853,7 @@ But why?
 
 So crafting highly efficient Compute Services based on EF Core is actually
 quite easy - if you think what's the extra code you have to write,
-you'll find it's mainly `if (Computed.IsInvalidating()) { ... }` blocks -
+you'll find it's mainly `if (Invalidation.IsActive) { ... }` blocks -
 the rest is something you'd likely have otherwise at some point as well!
 
 And if you're curious how much of this "extra" a real app is expected to

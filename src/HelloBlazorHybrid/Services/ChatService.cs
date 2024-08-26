@@ -11,15 +11,14 @@ public class ChatService : IChatService
     [CommandHandler]
     public virtual Task PostMessage(Chat_Post command, CancellationToken cancellationToken = default)
     {
-        if (Computed.IsInvalidating()) {
-            _ = GetMessageCount();
-            _ = GetAnyTail();
-            return Task.CompletedTask;
-        }
-
         var (name, message) = command;
         lock (_lock) {
             _messages = _messages.Add(new(DateTime.Now, name, message));
+        }
+
+        using (Invalidation.Begin()) {
+            _ = GetMessageCount();
+            _ = PseudoGetAnyTail();
         }
         return Task.CompletedTask;
     }
@@ -33,10 +32,10 @@ public class ChatService : IChatService
         int count, CancellationToken cancellationToken = default)
     {
         // Fake dependency used to invalidate all GetMessages(...) independently on count argument
-        await GetAnyTail();
+        await PseudoGetAnyTail();
         return _messages.TakeLast(count).ToArray();
     }
 
     [ComputeMethod]
-    public virtual Task<Unit> GetAnyTail() => TaskExt.UnitTask;
+    public virtual Task<Unit> PseudoGetAnyTail() => TaskExt.UnitTask;
 }

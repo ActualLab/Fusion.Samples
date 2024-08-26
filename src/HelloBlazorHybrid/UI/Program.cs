@@ -1,15 +1,13 @@
 ﻿using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Samples.HelloBlazorHybrid.Abstractions;
-using Samples.HelloBlazorHybrid.Services;
-using ActualLab.Fusion.Client;
 using ActualLab.OS;
 using ActualLab.DependencyInjection;
 using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 
 namespace Samples.HelloBlazorHybrid.UI;
 
@@ -48,7 +46,12 @@ public class Program
     public static void ConfigureSharedServices(IServiceCollection services)
     {
         // Blazorise
-        services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+        services.AddBlazorise(options => {
+                options.Immediate = true;
+                options.Debounce = true;
+            })
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
 
         // Other UI-related services
         var fusion = services.AddFusion();

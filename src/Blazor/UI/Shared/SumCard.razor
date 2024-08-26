@@ -1,5 +1,4 @@
 @using System.Threading
-@using System.Runtime.CompilerServices
 @inherits MixedStateComponent<double, SumCard.LocalModel>
 @inject ISumService SumService
 
@@ -51,7 +50,10 @@
     [Parameter] public TimeSpan UpdateDelay { get; set; } = TimeSpan.FromSeconds(1);
 
     protected override void OnParametersSet()
-        => State.UpdateDelayer = new UpdateDelayer(UIActionTracker, UpdateDelay);
+    {
+        if (!ReferenceEquals(State, null))
+            State.UpdateDelayer = new UpdateDelayer(UIActionTracker, UpdateDelay);
+    }
 
     protected override MutableState<LocalModel>.Options GetMutableStateOptions()
         => new () { InitialValue = new() };

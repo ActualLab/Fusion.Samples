@@ -6,17 +6,25 @@
     <RootNamespace>Samples.HelloCart</RootNamespace>
   </PropertyGroup>
 
+  <!-- Fusion packages -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework" />
+    <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework.Redis" />
     <PackageReference Include="ActualLab.Fusion.Server" />
   </ItemGroup>
 
-  <!-- Roslyn generators/analyzers -->
+  <!-- Other packages -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Pastel" />
+  </ItemGroup>
+
+  <!-- Source generators -->
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" />
-    <PackageReference Include="MemoryPack.Generator" Version="1.10.0" />
+    <PackageReference Include="MemoryPack.Generator" />
   </ItemGroup>
 
 </Project>

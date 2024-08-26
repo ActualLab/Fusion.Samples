@@ -38,9 +38,9 @@
     <Column ColumnSize="ColumnSize.Is6">
         <Addons>
             <Addon AddonType="AddonType.Start">
-                <AddonLabel>Update delay</AddonLabel>
+                <AddonLabel>Update delay, s</AddonLabel>
             </Addon>
-            <TextEdit @bind-Text="@UpdateDelayText"/>
+            <TextEdit @bind-Text="@UpdateDelayText" />
         </Addons>
     </Column>
 </Row>
@@ -62,6 +62,7 @@
 
 @code {
     private string UpdateDelayText { get; set; } = "1";
+
     private TimeSpan UpdateDelay => TimeSpan.FromSeconds(
         Math.Max(0, double.TryParse(UpdateDelayText, out var v) ? v : 1));
 }

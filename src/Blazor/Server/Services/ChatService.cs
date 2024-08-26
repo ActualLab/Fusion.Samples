@@ -1,33 +1,19 @@
-using System.Security.Authentication;
-using Microsoft.EntityFrameworkCore;
+using ActualLab.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Samples.Blazor.Abstractions;
 using ActualLab.Fusion.Authentication;
 using ActualLab.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Samples.Blazor.Server.Services;
 
-public class ChatService : DbServiceBase<AppDbContext>, IChatService
+public class ChatService(
+    IAuth auth,
+    IAuthBackend authBackend,
+    IForismaticClient forismaticClient,
+    IServiceProvider services)
+    : DbServiceBase<AppDbContext>(services), IChatService
 {
-    private readonly ILogger _log;
-    private readonly IAuth _auth;
-    private readonly IAuthBackend _authBackend;
-    private readonly IForismaticClient _forismaticClient;
-
-    public ChatService(
-        IAuth auth,
-        IAuthBackend authBackend,
-        IForismaticClient forismaticClient,
-        IServiceProvider services,
-        ILogger<ChatService>? log = null)
-        : base(services)
-    {
-        _log = log ?? NullLogger<ChatService>.Instance;
-        _auth = auth;
-        _authBackend = authBackend;
-        _forismaticClient = forismaticClient;
-    }
-
     // Commands
 
     public virtual async Task<ChatMessage> Post(
@@ -35,15 +21,15 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     {
         var (text, session) = command;
         var context = CommandContext.GetCurrent();
-        if (Computed.IsInvalidating()) {
+        if (Invalidation.IsActive) {
             _ = PseudoGetAnyChatTail();
             return default!;
         }
 
         text = await NormalizeText(text, cancellationToken);
-        var user = await _auth.GetUser(session, cancellationToken).Require();
+        var user = await auth.GetUser(session, cancellationToken).Require();
 
-        await using var dbContext = await CreateCommandDbContext(cancellationToken);
+        await using var dbContext = await DbHub.CreateCommandDbContext(cancellationToken);
         var message = new ChatMessage() {
             CreatedAt = DateTime.UtcNow,
             UserId = user.Id,
@@ -59,7 +45,7 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     [ComputeMethod(AutoInvalidationDelay = 60)]
     public virtual async Task<long> GetUserCount(CancellationToken cancellationToken = default)
     {
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
         return await dbContext.Users.AsQueryable().LongCountAsync(cancellationToken);
     }
 
@@ -67,7 +53,7 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     public virtual async Task<long> GetActiveUserCount(CancellationToken cancellationToken = default)
     {
         var minLastSeenAt = (Clocks.SystemClock.Now - TimeSpan.FromMinutes(5)).ToDateTime();
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
         return await dbContext.Sessions.AsQueryable()
             .Where(s => s.LastSeenAt >= minLastSeenAt)
             .Select(s => s.UserId)
@@ -78,7 +64,7 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     public virtual async Task<ChatMessageList> GetChatTail(int length, CancellationToken cancellationToken = default)
     {
         await PseudoGetAnyChatTail();
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
 
         // Fetching messages from DB
         var messages = await dbContext.ChatMessages.AsQueryable()
@@ -90,14 +76,14 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
         // Fetching users via GetUserAsync
         var userIds = messages.Select(m => m.UserId).Distinct().ToArray();
         var userTasks = userIds.Select(async id => {
-            var user = await _authBackend.GetUser(default, id, cancellationToken);
+            var user = await authBackend.GetUser(default, id, cancellationToken);
             return user.OrGuest("<Deleted user>").ToClientSideUser();
         });
         var users = (await Task.WhenAll(userTasks)).OfType<User>();
 
         // Composing the end result
         return new ChatMessageList() {
-            Messages = messages.ToImmutableArray(),
+            Messages = [..messages],
             Users = users.ToImmutableDictionary(u => u.Id.Value),
         };
     }
@@ -112,8 +98,8 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     {
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken);
-        if (Computed.IsInvalidating()) {
-            var isNewUser = context.Operation().Items.GetOrDefault(false);
+        if (Invalidation.IsActive) {
+            var isNewUser = context.Operation.Items.GetOrDefault(false);
             if (isNewUser) {
                 _ = GetUserCount(default);
                 _ = GetActiveUserCount(default);
@@ -126,7 +112,7 @@ public class ChatService : DbServiceBase<AppDbContext>, IChatService
     {
         if (!string.IsNullOrEmpty(text))
             return text;
-        var json = await _forismaticClient.GetQuote(cancellationToken: cancellationToken);
+        var json = await forismaticClient.GetQuote(cancellationToken: cancellationToken);
         var jObject = JObject.Parse(json);
         return jObject.Value<string>("quoteText")!;
     }

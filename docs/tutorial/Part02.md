@@ -29,7 +29,7 @@ public class CounterService : IComputeService
     {
         WriteLine($"{nameof(Increment)}({key})");
         _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-        using (Computed.Invalidate())
+        using (Invalidation.Begin())
             _ = Get(key);
     }
 }
@@ -222,8 +222,8 @@ Compare the above code with this one:
 var counters = CreateServices().GetRequiredService<CounterService>();
 var computed = await Computed.Capture(() => counters.Get("a"));
 WriteLine($"computed: {computed}");
-WriteLine("using (Computed.Invalidate()) counters.Get(\"a\"))");
-using (Computed.Invalidate()) // <- This line
+WriteLine("using (Invalidation.Begin()) counters.Get(\"a\"))");
+using (Invalidation.Begin()) // <- This line
     _ = counters.Get("a");
 WriteLine($"computed: {computed}");
 var newComputed = await Computed.Capture(() => counters.Get("a")); // <- This line
@@ -235,7 +235,7 @@ The output:
 ```text
 Get(a)
 computed: Computed`1(Intercepted:CounterService.Get(a) @R0oNKnVbo, State: Consistent)
-using Computed.Invalidate(() => counters.Get("a"))
+using Invalidation.Begin(() => counters.Get("a"))
 computed: Computed`1(Intercepted:CounterService.Get(a) @R0oNKnVbo, State: Invalidated)
 Get(a)
 newComputed: Computed`1(Intercepted:CounterService.Get(a) @R0oNKnVds, State: Consistent)
@@ -243,7 +243,7 @@ newComputed: Computed`1(Intercepted:CounterService.Get(a) @R0oNKnVds, State: Con
 
 The output is ~ identical. As you might guess,
 
-* `Computed.Invalidate(...)` uses `Computed.Capture` under the hood
+* `Invalidation.Begin(...)` uses `Computed.Capture` under the hood
   to capture the computed instance and invalidate it.
 * `IComputed.Update(...)` invokes the method that was used to
   produce it and similarly captures the newly produced computed.

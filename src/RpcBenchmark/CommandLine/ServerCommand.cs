@@ -92,7 +92,7 @@ public partial class ServerCommand : BenchmarkCommandBase
         app.Urls.Add(Url);
         try {
             await app.StartAsync(cancellationToken);
-            await TaskExt.NeverEndingTask.WaitAsync(cancellationToken);
+            await TaskExt.NewNeverEndingUnreferenced().WaitAsync(cancellationToken);
         }
         catch (OperationCanceledException) { }
         catch (Exception error) {

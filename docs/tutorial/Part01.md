@@ -58,7 +58,7 @@ public class CounterService : IComputeService
     {
         WriteLine($"{nameof(Increment)}({key})");
         _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-        using (Computed.Invalidate())
+        using (Invalidation.Begin())
             _ = Get(key);
     }
 }
@@ -105,7 +105,7 @@ So why "Get(a)" wasn't printed twice here? The answer is:
 * You may think *any compute method automatically caches its output*.
 * The cache key is `(MethodInfo, this, argument1, argument2, ...)`
 * The cached value is method output
-* The entry expires once you call `Computed.Invalidate(() => ...)`
+* The entry expires once you call `Invalidation.Begin(() => ...)`
   for the same method of the same service with the same set of arguments.
 
 Let's see how it works:
@@ -128,7 +128,7 @@ Get(a)
 ```
 
 Check out `CounterService.Increment` source code above - it calls
-`Computed.Invalidate`, which evicts the entry. This explains why
+`Invalidation.Begin`, which evicts the entry. This explains why
 in this example "Get(a)" is printed twice, even though previously
 it was printed just for the first call.
 

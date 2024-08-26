@@ -37,7 +37,7 @@ namespace Tutorial
             {
                 WriteLine($"{nameof(Increment)}({key})");
                 _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-                using (Computed.Invalidate())
+                using (Invalidation.Begin())
                     _ = Get(key);
             }
         }

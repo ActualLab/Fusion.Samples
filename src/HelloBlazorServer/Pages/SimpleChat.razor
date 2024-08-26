@@ -56,11 +56,8 @@
     private string Name { get; set; } = "Neo";
     private string Message { get; set; } = "Red, please.";
 
-    protected override async Task OnInitializedAsync()
-        => await State.Update();
-
     protected override ComputedState<(string, string, string)[]>.Options GetStateOptions()
-        => new () { InitialValue = Array.Empty<(string, string, string)>() };
+        => new () { InitialValue = [] };
 
     protected override async Task<(string Name, string Message, string Time)[]> ComputeState(CancellationToken cancellationToken)
     {
@@ -77,6 +74,7 @@
     {
         if (Message == "")
             return;
+
         await Commander.Call(new Chat_Post(Name, Message));
         Message = "";
     }

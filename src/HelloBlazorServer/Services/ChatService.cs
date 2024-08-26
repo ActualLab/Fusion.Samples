@@ -9,15 +9,14 @@ public class ChatService : IComputeService
     [CommandHandler]
     public virtual Task PostMessage(Chat_Post command, CancellationToken cancellationToken = default)
     {
-        if (Computed.IsInvalidating()) {
-            _ = GetMessageCount();
-            _ = PseudoGetAnyTail();
-            return Task.CompletedTask;
-        }
-
         var (name, message) = command;
         lock (_lock) {
             _messages = _messages.Add((DateTime.Now, name, message));
+        }
+
+        using (Invalidation.Begin()) {
+            _ = GetMessageCount();
+            _ = PseudoGetAnyTail();
         }
         return Task.CompletedTask;
     }

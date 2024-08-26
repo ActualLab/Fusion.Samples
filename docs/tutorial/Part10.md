@@ -138,7 +138,7 @@ public async Task<ChatMessage> PostMessage(
     // Actual code...
 
     // Invalidation
-    using (Computed.Invalidate())
+    using (Invalidation.Begin())
         _ = PseudoGetAnyChatTail();
     return message;
 }
@@ -172,7 +172,7 @@ to their immutability.
 public virtual async Task<ChatMessage> PostMessage(
     PostMessageCommand command, CancellationToken cancellationToken = default)
 {
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         _ = PseudoGetAnyChatTail();
         return default!;
     }
@@ -200,9 +200,9 @@ should look like:
 The invalidation block inside the handler should be transformed too:
 
 - Move it to the very beginning of the method
-- Replace `using (Computed.Invalidate()) { Code(); }` construction
+- Replace `using (Invalidation.Begin()) { Code(); }` construction
   with
-  `if (Computed.IsInvalidating()) { Code(); return default!; }`.
+  `if (Invalidation.IsActive) { Code(); return default!; }`.
 - If your service derives from `DbServiceBase` or `DbAsyncProcessBase`,
   you should use its protected `CreateCommandDbContext` method
   to get `DbContext` where you are going to make changes.
@@ -218,7 +218,7 @@ execution (once on every host), but the "main" block's code
 will run only on the host where the command was started.
 
 So to pass some data to your invalidation blocks, use
-`CommandContext.Operation().Items` collection -
+`CommandContext.Operation.Items` collection -
 nearly as follows:
 
 ```cs
@@ -227,9 +227,9 @@ public virtual async Task SignOut(
 {
     // ...
     var context = CommandContext.GetCurrent();
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         // Fetch operation item
-        var invSessionInfo = context.Operation().Items.Get<SessionInfo>();
+        var invSessionInfo = context.Operation.Items.Get<SessionInfo>();
         if (invSessionInfo != null) {
             // Use it
             _ = GetUser(invSessionInfo.UserId, default);
@@ -246,7 +246,7 @@ public virtual async Task SignOut(
         return;
     
     // Store operation item for invalidation logic
-    context.Operation().Items.Set(sessionInfo);
+    context.Operation.Items.Set(sessionInfo);
     // ... 
 }
 ```
@@ -566,9 +566,9 @@ public async Task OnCommand(
 As you might guess, it reacts to the *completion* of any command,
 and runs the original command **plus** every nested
 command logged during its execution in the "invalidation mode" -
-i.e. inside `Computed.Invalidate()` block.
+i.e. inside `Invalidation.Begin()` block.
 This is why your command handlers need a branch checking for
-`Computed.IsInvalidating() == true` running the invalidation logic
+`Invalidation.IsActive == true` running the invalidation logic
 there!
 
 You're [welcome to see what it actually does](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion/Operations/Internal/InvalidateOnCompletionCommandHandler.cs#L45) -
@@ -580,7 +580,7 @@ aspect - **operation items**.
 
 ## Operation items
 
-API endpoint: `commandContext.Operation().Items`
+API endpoint: `commandContext.Operation.Items`
 
 It's actually a pretty simple abstraction allowing you to store
 some data together with the operation - so once its completion
@@ -595,14 +595,14 @@ public override async Task SignOut(
 {
     var (session, force) = command;
     var context = CommandContext.GetCurrent();
-    if (Computed.IsInvalidating()) {
+    if (Invalidation.IsActive) {
         _ = GetAuthInfo(session, default);
         _ = GetSessionInfo(session, default);
         if (force) {
             _ = IsSignOutForced(session, default);
             _ = GetOptions(session, default);
         }
-        var invSessionInfo = context.Operation().Items.Get<SessionInfo>();
+        var invSessionInfo = context.Operation.Items.Get<SessionInfo>();
         if (invSessionInfo != null) {
             _ = GetUser(invSessionInfo.UserId, default);
             _ = GetUserSessions(invSessionInfo.UserId, default);
@@ -618,7 +618,7 @@ public override async Task SignOut(
     if (sessionInfo!.IsSignOutForced)
         return;
 
-    context.Operation().Items.Set(sessionInfo);
+    context.Operation.Items.Set(sessionInfo);
     sessionInfo = sessionInfo with {
         LastSeenAt = Clocks.SystemClock.Now,
         AuthenticatedIdentity = "",
@@ -632,10 +632,10 @@ public override async Task SignOut(
 First, look at this line inside the invalidation block:
 
 ```cs
-var invSessionInfo = context.Operation().Items.Get<SessionInfo>()
+var invSessionInfo = context.Operation.Items.Get<SessionInfo>()
 ```
 
-It tries to pull `SessionInfo` object from `Operation().Items`. But why?
+It tries to pull `SessionInfo` object from `Operation.Items`. But why?
 Well, because needs **pre-sign-out** `SessionInfo` that still contains
 `UserId`. And the code that goes after this call invalidates results of
 a few other methods related to this user.
@@ -643,11 +643,11 @@ a few other methods related to this user.
 The code that stores this info is located below:
 
 ```cs
-context.Operation().Items.Set(sessionInfo);
+context.Operation.Items.Set(sessionInfo);
 ```
 
 As you see, it stores `sessionInfo` object into
-`context.Operation().Items` right before creating its copy
+`context.Operation.Items` right before creating its copy
 with wiped out `UserId` - in other words, *it saves
 the info it wipes for the invalidation logic*.
 
@@ -676,7 +676,7 @@ of operation items - you may quickly find that its type is
 
 - The logging is happening in `NestedCommandLogger` type.
   You might notice that nested commands of nested commands
-  are properly logged too - moreover, their `Operation().Items`
+  are properly logged too - moreover, their `Operation.Items`
   are captured & stored independently as well! In other words,
   you're free to call other commands from your commands w/o a need
   to worry about their invalidation piece of work (it will happen)

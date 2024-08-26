@@ -1,21 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <RootNamespace>Templates.TodoApp.Abstractions</RootNamespace>
-    <AssemblyName>Templates.TodoApp.Abstractions</AssemblyName>
+    <RootNamespace>Samples.TodoApp.Abstractions</RootNamespace>
+    <AssemblyName>Samples.TodoApp.Abstractions</AssemblyName>
   </PropertyGroup>
 
+  <!-- Fusion packages -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="ActualLab.Fusion" />
     <PackageReference Include="ActualLab.Fusion.Ext.Contracts" />
   </ItemGroup>
 
-  <!-- Roslyn generators/analyzers -->
+  <!-- Other packages -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+  </ItemGroup>
+
+  <!-- Source generators -->
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" />
     <PackageReference Include="MemoryPack.Generator" />

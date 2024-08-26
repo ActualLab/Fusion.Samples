@@ -25,7 +25,7 @@ namespace Tutorial
             {
                 WriteLine($"{nameof(Increment)}({key})");
                 _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-                using (Computed.Invalidate())
+                using (Invalidation.Begin())
                     _ = Get(key);
             }
         }
@@ -70,8 +70,8 @@ namespace Tutorial
             var counters = CreateServices().GetRequiredService<CounterService>();
             var computed = await Computed.Capture(() => counters.Get("a"));
             WriteLine($"computed: {computed}");
-            WriteLine("using (Computed.Invalidate()) counters.Get(\"a\"))");
-            using (Computed.Invalidate()) // <- This line
+            WriteLine("using (Invalidation.Begin()) counters.Get(\"a\"))");
+            using (Invalidation.Begin()) // <- This line
                 _ = counters.Get("a");
             WriteLine($"computed: {computed}");
             var newComputed = await Computed.Capture(() => counters.Get("a")); // <- This line

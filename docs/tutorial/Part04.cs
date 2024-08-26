@@ -37,7 +37,7 @@ namespace Tutorial.Part04_Classes
         private readonly ConcurrentDictionary<string, int> _counters = new ConcurrentDictionary<string, int>();
         private readonly IMutableState<int> _offset;
 
-        public CounterService(IStateFactory stateFactory)
+        public CounterService(StateFactory stateFactory)
             => _offset = stateFactory.NewMutable<int>();
 
         [ComputeMethod] // Optional: this attribute is inherited from interface
@@ -52,7 +52,7 @@ namespace Tutorial.Part04_Classes
         {
             WriteLine($"{nameof(Increment)}({key})");
             _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-            using (Computed.Invalidate())
+            using (Invalidation.Begin())
                 _ = Get(key, default);
             return Task.CompletedTask;
         }

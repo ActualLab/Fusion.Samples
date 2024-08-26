@@ -47,7 +47,7 @@ public class ScreenshotService : IScreenshotService
             .Capture(() => GetScreenshot(width, cancellationToken))
             .ConfigureAwait(false);
         var screenshots = cScreenshot0
-            .Changes(FixedDelayer.ZeroUnsafe, CancellationToken.None)
+            .Changes(FixedDelayer.YieldUnsafe, CancellationToken.None)
             .Select(c => c.Value);
         return new RpcStream<Screenshot>(screenshots) { AckPeriod = 5, AckAdvance = 11 };
     }

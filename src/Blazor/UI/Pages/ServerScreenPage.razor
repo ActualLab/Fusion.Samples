@@ -46,13 +46,10 @@
     [Parameter]
     public string Width { get; set; } = "1280"; // Parameter changes trigger InvalidateState() by default
 
-    protected override async Task OnInitializedAsync()
-        => await State.Update(); // An example showing how to load the State before the first render
-
     protected override ComputedState<Screenshot>.Options GetStateOptions()
         => new () {
             InitialValue = new(),
-            UpdateDelayer = FixedDelayer.ZeroUnsafe,
+            UpdateDelayer = FixedDelayer.YieldUnsafe,
         };
 
     protected override Task<Screenshot> ComputeState(CancellationToken cancellationToken)

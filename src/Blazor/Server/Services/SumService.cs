@@ -2,12 +2,9 @@ using Samples.Blazor.Abstractions;
 
 namespace Samples.Blazor.Server.Services;
 
-public class SumService : ISumService
+public class SumService(StateFactory stateFactory) : ISumService
 {
-    private readonly IMutableState<double> _accumulator;
-
-    public SumService(IStateFactory stateFactory)
-        => _accumulator = stateFactory.NewMutable<double>();
+    private readonly IMutableState<double> _accumulator = stateFactory.NewMutable<double>();
 
     public Task Reset(CancellationToken cancellationToken)
     {

@@ -30,7 +30,7 @@ public class CartService : ICartService
 
 Add invalidation logic (after any code that changes the result of what's invalidated inside the `using` block below):
 ```cs
-using (Computed.Invalidate()) {
+using (Invalidation.Begin()) {
     // Whatever compute method calls you make inside this block
     // are invalidating calls. Instead of running the actual method 
     // code they invalidate the result of this call.
@@ -104,7 +104,7 @@ public class CartService : ICartService
     // passed directly.
     public virtual Task<Unit> UpdateCart(UpdateCartCommand command, CancellationToken cancellationToken) 
     {
-        if (Computed.IsInvalidating()) {
+        if (Invalidation.IsActive) {
             // Write the invalidation logic for this command here.
             //
             // A set of command handlers registered by Fusion will

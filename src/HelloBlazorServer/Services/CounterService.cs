@@ -20,7 +20,7 @@ public class CounterService : IComputeService
             ++_count;
             _changeTime = DateTime.Now;
         }
-        using (Computed.Invalidate())
+        using (Invalidation.Begin())
             Get();
         return Task.CompletedTask;
     }

@@ -13,7 +13,7 @@ public class IncrementalBuilder : IComputeService
         WriteLine($"> Building: {projectId}");
         // Get project & new version of its output
         var project = _projects[projectId];
-        var version = _versions.AddOrUpdate(projectId, id => 1, (id, version) => version + 1);
+        var version = _versions.AddOrUpdate(projectId, _ => 1, (_, version) => version + 1);
         // Build dependencies
         await Task.WhenAll(project.DependsOn.Select(
             // IMPORTANT: Noticed recursive GetOrBuild call below?
@@ -45,7 +45,7 @@ public class IncrementalBuilder : IComputeService
     public void InvalidateGetOrBuildResult(string projectId)
     {
         // WriteLine($"Invalidating build results for: {projectId}");
-        using var invalidating = Computed.Invalidate();
+        using var invalidating = Invalidation.Begin();
         // Invalidation call to [ComputeMethod] always completes synchronously, so...
         _ = GetOrBuild(projectId, default);
     }

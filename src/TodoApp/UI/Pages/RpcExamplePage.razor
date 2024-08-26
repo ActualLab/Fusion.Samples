@@ -1,0 +1,49 @@
+@page "/rpc-example"
+@using System.Globalization
+@using ActualLab.Rpc.Infrastructure
+@using ActualLab.Rpc
+@inject IRpcExampleService RpcExampleService
+@inject ILogger<RpcExamplePage> Log
+
+@{
+    Log.LogInformation("Rendering");
+}
+
+<h1>RPC Example</h1>
+
+<TextConnectionStatus />
+<Div Margin="Margin.Is1.OnY">
+    Current culture: <b>@(CultureInfo.CurrentUICulture.Name)</b> @@ @DateTime.Now.ToString("D")
+</Div>
+<Div Margin="Margin.Is1.OnY">
+    Greet: <b>@_greeting</b>
+</Div>
+<Div Margin="Margin.Is1.OnY">
+    GetComplex: <b>@_complex</b>
+</Div>
+<Div Margin="Margin.Is1.OnY">
+    GetStream().Take(@StreamLimit): <b>@_list.ToDelimitedString()</b>
+</Div>
+<Div Margin="Margin.Is1.OnY">
+    SumStream: <b>@_sum</b>
+</Div>
+
+@code {
+    private const int StreamLimit = 10;
+    private string _greeting = "";
+    private (RpcObjectId, string) _complex;
+    private List<int> _list = new();
+    private int _sum;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var greetingTask = RpcExampleService.Greet("Fusion explorer");
+        var complexTask = RpcExampleService.GetComplex();
+        var streamTask = RpcExampleService.GetStream();
+        _greeting = await greetingTask;
+        _complex = await complexTask;
+        var stream = await streamTask;
+        _list = await stream.Take(StreamLimit).ToListAsync();
+        _sum = await RpcExampleService.SumStream(RpcStream.New(_list));
+    }
+}

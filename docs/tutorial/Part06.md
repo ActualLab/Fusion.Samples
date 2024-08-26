@@ -119,7 +119,7 @@ public abstract class ComputedStateComponent<TState> : StatefulComponentBase<ICo
 ```
 
 It doesn't try to resolve the state via DI container, but
-constructs it using `IStateFactory` - and moreover:
+constructs it using `StateFactory` - and moreover:
 
 - It constructs a state that's computed using its own `ComputeState` method.
   As you remember from [Part 3](./Part03.md), state computation logic is

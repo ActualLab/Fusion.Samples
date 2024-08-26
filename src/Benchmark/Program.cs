@@ -57,7 +57,7 @@ async Task RunServer()
     app.MapTestService<IFusionTestService>("/api/fusionTestService");
     try {
         await app.StartAsync(cancellationToken);
-        await TaskExt.NeverEndingTask.WaitAsync(cancellationToken);
+        await TaskExt.NewNeverEndingUnreferenced().WaitAsync(cancellationToken);
     }
     catch (OperationCanceledException) { }
     catch (Exception error) {

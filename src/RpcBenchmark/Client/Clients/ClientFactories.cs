@@ -77,9 +77,6 @@ public sealed class ClientFactories
         // Rpc
         services.AddRpc().AddWebSocketClient(c => RpcWebSocketClient.Options.Default with {
             HostUrlResolver = (_, _) => BaseUrl,
-            WebSocketChannelOptions = WebSocketChannel<RpcMessage>.Options.Default with {
-                WriteFrameSize = 4350,
-            },
             WebSocketOwnerFactory = (_, peer) => {
                 var ws = new ClientWebSocket();
                 ws.Options.HttpVersion = HttpVersion.Version11;
@@ -88,6 +85,10 @@ public sealed class ClientFactories
                 return new WebSocketOwner(peer.Ref.Key, ws, c);
             },
         });
+        services.AddSingleton<RpcWebSocketChannelOptionsProvider>(c =>
+            (peer, properties) => WebSocketChannel<RpcMessage>.Options.Default with {
+                WriteFrameSize = 4350,
+            });
 
         // SignalR
         services.AddSingleton(c => {

@@ -82,7 +82,7 @@ The interface diagram for `IState<T>` and its "friends"
 
 There are two ways of doing this:
 
-1. Using `IStateFactory`. Any `IServiceProvider` configured to use
+1. Using `StateFactory`. Any `IServiceProvider` configured to use
    Fusion (with `.AddFusionCore()`) should resolve it.
 2. Subclassing `MutableState<T>`, `ComputedState<T>`, etc.
    and either creating its instance manually, or registering
@@ -113,7 +113,7 @@ public class CounterService : IComputeService
     {
         WriteLine($"{nameof(Increment)}({key})");
         _counters.AddOrUpdate(key, k => 1, (k, v) => v + 1);
-        using (Computed.Invalidate())
+        using (Invalidation.Begin())
             _ = Get(key);
     }
 }
@@ -149,7 +149,7 @@ Old computed: StateBoundComputed`1(MutableState`1(#63646052) @2AULKFZxjG, State:
 
 Note that:
 
-* `services.GetStateFactory()` is a shortcut for `services.GetRequiredService<IStateFactory>()`
+* `services.StateFactory()` is a shortcut for `services.GetRequiredService<StateFactory>()`
 * Old `computed` is in `Invalidated` state at the last line.
 
 Let's look at error handling example:

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.1.8</ActualLabFusionVersion>
+    <ActualLabFusionVersion>9.1.16</ActualLabFusionVersion>
     <AspNetCoreVersion>8.0.8</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.6.1</BlazoriseVersion>
     <EntityFrameworkCoreVersion>$(AspNetCoreVersion)</EntityFrameworkCoreVersion>
-    <EntityFrameworkCoreNpgsqlVersion>8.0.8</EntityFrameworkCoreNpgsqlVersion>
+    <EntityFrameworkCoreNpgsqlVersion>8.0.4</EntityFrameworkCoreNpgsqlVersion>
     <MemoryPackVersion>1.10.0</MemoryPackVersion>
     <!-- NOTE: v1.20.X is broken, please don't upgrade to it! -->
     <MessagePackVersion>2.4.59</MessagePackVersion>
     <OpenTelemetryVersion>1.8.1</OpenTelemetryVersion>
   </PropertyGroup>
+
   <!-- Fusion packages -->
   <ItemGroup>
     <PackageVersion Include="ActualLab.Fusion" Version="$(ActualLabFusionVersion)" />
@@ -29,11 +31,13 @@
     <!-- Build-time only -->
     <PackageVersion Include="ActualLab.Generators" Version="$(ActualLabFusionVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
+
   <!-- Other packages -->
   <ItemGroup>
     <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="8.1.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
-    <PackageVersion Include="Blazorise.Bootstrap" Version="$(BlazoriseVersion)" />
+    <PackageVersion Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.DataGrid" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Sidebar" Version="$(BlazoriseVersion)" />
@@ -44,22 +48,39 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(BlazorVersion)" PrivateAssets="all" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(BlazorVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
+    <PackageVersion Include="Pastel" Version="5.1.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.5" />
     <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
     <PackageVersion Include="System.Drawing.Common" Version="7.0.0" />
     <PackageVersion Include="UAParser" Version="3.1.47" />
   </ItemGroup>
-  <!-- Tutorial-specific -->
+
+  <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="8.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.6.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="8.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- OpenTelemetry - used only in TodoApp sample -->
+    <PackageVersion Include="OpenTelemetry.Api" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="$(OpenTelemetryVersion)" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.3" />
+  </ItemGroup>
+
   <!-- RpcBenchmark-specific packages -->
   <ItemGroup>
     <PackageVersion Include="Grpc.AspNetCore" Version="2.65.0" />
@@ -69,6 +90,13 @@
     <PackageVersion Include="Ookii.CommandLine" Version="4.1.0" />
     <PackageVersion Include="StreamJsonRpc" Version="2.19.27" />
   </ItemGroup>
+
+  <!-- Tutorial-specific -->
+  <ItemGroup>
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
+  </ItemGroup>
+
   <!-- Build-time only -->
   <ItemGroup>
     <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />

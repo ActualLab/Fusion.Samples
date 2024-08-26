@@ -1,10 +1,7 @@
 using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Samples.Blazor.Abstractions;
 using Samples.Blazor.UI.Services;
-using ActualLab.Fusion.Client;
 using ActualLab.OS;
 using ActualLab.DependencyInjection;
 using ActualLab.Fusion.Authentication;
@@ -12,7 +9,8 @@ using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
-using ActualLab.Rpc;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 
 namespace Samples.Blazor.UI;
 
@@ -61,7 +59,12 @@ public class Program
     public static void ConfigureSharedServices(IServiceCollection services)
     {
         // Blazorise
-        services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+        services.AddBlazorise(options => {
+                options.Immediate = true;
+                options.Debounce = true;
+            })
+            .AddBootstrap5Providers()
+            .AddFontAwesomeIcons();
 
         // Fusion services
         var fusion = services.AddFusion();

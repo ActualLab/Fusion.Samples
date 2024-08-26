@@ -1,17 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>Samples.MultiServerRpc</AssemblyName>
     <RootNamespace>Samples.MultiServerRpc</RootNamespace>
   </PropertyGroup>
 
+  <!-- Fusion packages -->
   <ItemGroup>
     <PackageReference Include="ActualLab.Fusion.Server" />
   </ItemGroup>
 
-  <!-- Roslyn generators/analyzers -->
+  <!-- Source generators -->
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" />
     <PackageReference Include="MemoryPack.Generator" />
   </ItemGroup>
+
 </Project>

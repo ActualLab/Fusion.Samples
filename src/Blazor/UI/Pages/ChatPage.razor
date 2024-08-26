@@ -121,8 +121,7 @@
         // Mutable state content is updated implicitly via bind-* here,
         // and since such a change doesn't trigger State recompute + StateHasChanged(),
         // we enable this feat. to make it happen on event.
-        MustCallStateHasChangedAfterEvent = true;
-        base.OnInitialized();
+        MustRenderAfterEvent = true;
     }
 
     protected override MutableState<LocalsModel>.Options GetMutableStateOptions()
@@ -176,8 +175,11 @@
 
     private void ResetName(string name)
     {
-        MutableState.Value.Name = name;
-        MutableState.Value.IsNameModified = false;
-        MutableState.Invalidate();
+        using var flowSuppressor = ExecutionContextExt.TrySuppressFlow();
+        _ = Task.Run(() => {
+            // MutableState
+            MutableState.Value.Name = name;
+            MutableState.Value.IsNameModified = false;
+        });
     }
 }

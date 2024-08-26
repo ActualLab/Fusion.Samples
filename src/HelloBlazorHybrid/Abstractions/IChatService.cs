@@ -13,7 +13,7 @@ public interface IChatService : IComputeService
     [ComputeMethod]
     Task<ChatMessage[]> GetMessages(int count, CancellationToken cancellationToken = default);
     [ComputeMethod]
-    Task<Unit> GetAnyTail();
+    Task<Unit> PseudoGetAnyTail();
 }
 
 [DataContract, MemoryPackable(GenerateType.VersionTolerant)]

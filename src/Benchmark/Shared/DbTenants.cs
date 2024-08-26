@@ -1,18 +1,19 @@
-using Microsoft.EntityFrameworkCore;
 using ActualLab.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Samples.Benchmark;
 
-public class DbTestService : DbServiceBase<AppDbContext>, ITestService
+public class DbTestService(IServiceProvider services)
+    : DbServiceBase<AppDbContext>(services), ITestService
 {
-    public DbTestService(IServiceProvider services) : base(services) { }
-
     public virtual async Task AddOrUpdate(TestItem item, long? version, CancellationToken cancellationToken = default)
     {
         if (item.Id == 0)
             throw new ArgumentOutOfRangeException(nameof(item));
 
-        await using var dbContext = CreateDbContext().ReadWrite();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
+        dbContext.ReadWrite();
+
         if (version.HasValue) {
             var entry = dbContext.Tenants.Update(item);
             entry.Property(nameof(TestItem.Version)).OriginalValue = version.GetValueOrDefault();
@@ -28,7 +29,9 @@ public class DbTestService : DbServiceBase<AppDbContext>, ITestService
         if (itemId == 0)
             throw new ArgumentOutOfRangeException(nameof(itemId));
 
-        await using var dbContext = CreateDbContext().ReadWrite();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
+        dbContext.ReadWrite();
+
         var entry = dbContext.Tenants.Remove(new TestItem() { Id = itemId });
         entry.Property(nameof(TestItem.Version)).OriginalValue = version;
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -38,7 +41,7 @@ public class DbTestService : DbServiceBase<AppDbContext>, ITestService
 
     public virtual async Task<TestItem[]> GetAll(CancellationToken cancellationToken = default)
     {
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
         var tenants = await dbContext.Tenants.AsQueryable()
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
         return tenants;
@@ -47,7 +50,7 @@ public class DbTestService : DbServiceBase<AppDbContext>, ITestService
     public virtual async Task<TestItem?> TryGet(long itemId, CancellationToken cancellationToken = default)
     {
         // var c = Computed.GetExisting(() => GetAll(default));
-        await using var dbContext = CreateDbContext();
+        await using var dbContext = await DbHub.CreateDbContext(cancellationToken);
         var tenant = await dbContext.Tenants.AsQueryable()
             .SingleOrDefaultAsync(t => t.Id == itemId, cancellationToken).ConfigureAwait(false);
         return tenant;

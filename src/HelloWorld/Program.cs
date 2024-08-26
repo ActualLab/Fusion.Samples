@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Samples.HelloWorld;
-using ActualLab.Fusion;
+﻿using Samples.HelloWorld;
 using static System.Console;
 
 var services = new ServiceCollection()
@@ -30,7 +27,7 @@ foreach (var project in projects) {
 Project InputProject(string prompt)
 {
     while (true) {
-        WriteLine($"{prompt} Type the number 1 ... {projects.Length}:");
+        WriteLine($"{prompt} Type 1...{projects.Length}:");
         var input = ReadLine();
         if (int.TryParse(input, out var index) && index >= 1 && index <= projects.Length)
             return projects[index - 1];
@@ -38,7 +35,7 @@ Project InputProject(string prompt)
     }
 }
 
-var watchedProject = InputProject("Which project do you want to continuously rebuild?");
+var watchedProject = InputProject("Which project do you want to continuously rebuild? Pick 6 if you don't know.");
 _ = Task.Run(async () => {
     WriteLine($"Watching: {watchedProject}");
     var computed = await Computed.Capture(() => builder.GetOrBuild(watchedProject.Id, default));

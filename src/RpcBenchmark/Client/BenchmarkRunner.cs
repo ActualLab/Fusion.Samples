@@ -45,6 +45,7 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
         }
         else {
             await RunOne("StreamS", w => w.StreamS, cancellationToken);
+            await RunOne("StreamM", w => w.StreamM, cancellationToken);
             await RunOne("StreamL", w => w.StreamL, cancellationToken);
         }
 

@@ -3,9 +3,11 @@ namespace Samples.RpcBenchmark.Client;
 public class BenchmarkWorker(ITestService client)
 {
     public const int StreamLength = 30*60; // 30s * 60fps
-    public const int DataSizeS = 0;
-    public const int DataSizeL = 100;
+    public const int DataSizeS = 1;
+    public const int DataSizeM = 100;
+    public const int DataSizeL = 10_000;
     public const int DelayEveryS = 0;
+    public const int DelayEveryM = 0;
     public const int DelayEveryL = 0;
 
     public readonly ITestService Client = client;
@@ -41,6 +43,19 @@ public class BenchmarkWorker(ITestService client)
         var request = new GetItemsRequest() {
             DataSize = DataSizeS,
             DelayEvery = DelayEveryS,
+            Count = StreamLength,
+        };
+        var items = await Client.GetItems(request, cancellationToken).ConfigureAwait(false);
+        var count = await items.CountAsync(cancellationToken).ConfigureAwait(false);
+        if (count != StreamLength)
+            throw new InvalidOperationException("Wrong result.");
+    }
+
+    public virtual async Task StreamM(CancellationToken cancellationToken)
+    {
+        var request = new GetItemsRequest() {
+            DataSize = DataSizeM,
+            DelayEvery = DelayEveryM,
             Count = StreamLength,
         };
         var items = await Client.GetItems(request, cancellationToken).ConfigureAwait(false);

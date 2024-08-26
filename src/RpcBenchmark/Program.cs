@@ -1,3 +1,6 @@
+using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.WebSockets;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 
@@ -11,6 +14,13 @@ public static class Program
 
     public static async Task<int> Main(string[] args)
     {
+        RpcDefaults.Mode = RpcMode.Server;
+        RpcDefaultDelegates.WebSocketChannelOptionsProvider
+            = (peer, properties) => WebSocketChannel<RpcMessage>.Options.Default with {
+                FrameDelayerFactory = null,
+            };
+        RpcDefaultDelegates.CallTracerFactory = _ => null;
+
         TreatControlCAsInput = false;
         CancelKeyPress += (_, ea) => {
             StopTokenSource.Cancel();

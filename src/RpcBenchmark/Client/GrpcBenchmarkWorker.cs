@@ -52,6 +52,23 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
             throw new InvalidOperationException("Wrong result.");
     }
 
+    public override async Task StreamM(CancellationToken cancellationToken)
+    {
+        var request = new GrpcGetItemsRequest() {
+            DataSize = DataSizeM,
+            DelayEvery = DelayEveryM,
+            Count = StreamLength,
+        };
+        var callOptions = new CallOptions(cancellationToken: cancellationToken);
+        var stream = GrpcClient.GetItems(request, callOptions);
+        var count = await stream.ResponseStream
+            .ReadAllAsync(cancellationToken)
+            .CountAsync(cancellationToken)
+            .ConfigureAwait(false);
+        if (count != StreamLength)
+            throw new InvalidOperationException("Wrong result.");
+    }
+
     public override async Task StreamL(CancellationToken cancellationToken)
     {
         var request = new GrpcGetItemsRequest() {
@@ -68,5 +85,4 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
         if (count != StreamLength)
             throw new InvalidOperationException("Wrong result.");
     }
-
 }

@@ -2,16 +2,17 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>7.0.41</ActualLabFusionVersion>
-    <AspNetCoreVersion>8.0.2</AspNetCoreVersion>
+    <ActualLabFusionVersion>9.1.8</ActualLabFusionVersion>
+    <AspNetCoreVersion>8.0.8</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.4.2</BlazoriseVersion>
-    <EntityFrameworkCoreVersion>8.0.2</EntityFrameworkCoreVersion>
-    <MemoryPackVersion>1.10.0</MemoryPackVersion> <!-- NOTE: v1.20.X is broken, please don't upgrade to it! -->
+    <BlazoriseVersion>1.6.1</BlazoriseVersion>
+    <EntityFrameworkCoreVersion>$(AspNetCoreVersion)</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreNpgsqlVersion>8.0.8</EntityFrameworkCoreNpgsqlVersion>
+    <MemoryPackVersion>1.10.0</MemoryPackVersion>
+    <!-- NOTE: v1.20.X is broken, please don't upgrade to it! -->
     <MessagePackVersion>2.4.59</MessagePackVersion>
-    <OpenTelemetryVersion>1.9.0</OpenTelemetryVersion>
+    <OpenTelemetryVersion>1.8.1</OpenTelemetryVersion>
   </PropertyGroup>
-
   <!-- Fusion packages -->
   <ItemGroup>
     <PackageVersion Include="ActualLab.Fusion" Version="$(ActualLabFusionVersion)" />
@@ -26,13 +27,11 @@
     <PackageVersion Include="ActualLab.RestEase" Version="$(ActualLabFusionVersion)" />
     <PackageVersion Include="ActualLab.Rpc.Server" Version="$(ActualLabFusionVersion)" />
     <!-- Build-time only -->
-    <PackageVersion Include="ActualLab.Generators" Version="$(ActualLabFusionVersion)"
-                    PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageVersion Include="ActualLab.Generators" Version="$(ActualLabFusionVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
-
   <!-- Other packages -->
   <ItemGroup>
-    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="8.0.0" />
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="8.1.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Bootstrap" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.DataGrid" Version="$(BlazoriseVersion)" />
@@ -50,34 +49,29 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreVersion)" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.2" />
-    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.5" />
+    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
     <PackageVersion Include="System.Drawing.Common" Version="7.0.0" />
     <PackageVersion Include="UAParser" Version="3.1.47" />
   </ItemGroup>
-
   <!-- Tutorial-specific -->
   <ItemGroup>
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
   </ItemGroup>
-
   <!-- RpcBenchmark-specific packages -->
   <ItemGroup>
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.61.0" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.61.0" />
-    <PackageVersion Include="MagicOnion" Version="6.0.0" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.65.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.65.0" />
+    <PackageVersion Include="MagicOnion" Version="6.1.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Ookii.CommandLine" Version="4.1.0" />
-    <PackageVersion Include="StreamJsonRpc" Version="2.17.11" />
+    <PackageVersion Include="StreamJsonRpc" Version="2.19.27" />
   </ItemGroup>
-
   <!-- Build-time only -->
   <ItemGroup>
-    <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)"
-                    PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-    <PackageVersion Include="RestEase.SourceGenerator" Version="1.6.4"
-                    PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageVersion Include="RestEase.SourceGenerator" Version="1.6.4" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
 </Project>

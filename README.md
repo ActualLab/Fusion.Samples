@@ -40,18 +40,20 @@ Build & run locally with [.NET 8.0 SDK](https://dotnet.microsoft.com/download):
 dotnet build
 ```
 
-| Sample | Command |
-|-|-|
-| [HelloCart] | `dotnet run -p src/HelloCart/HelloCart.csproj` |
-| [HelloWorld] | `dotnet run -p src/HelloWorld/HelloWorld.csproj` |
-| [HelloBlazorServer] |  `dotnet run -p src/HelloBlazorServer/HelloBlazorServer.csproj` + open http://localhost:5005/ |
-| [HelloBlazorHybrid] |  `dotnet run -p src/HelloBlazorHybrid/Server/Server.csproj` + open http://localhost:5005/ |
-| [Blazor Samples] |  `dotnet run -p src/Blazor/Server/Server.csproj` + open http://localhost:5005/ |
-| [MiniRpc] | `dotnet run -p src/MiniRpc/MiniRpc.csproj` |
-| [MultiServerRpc] | `dotnet run -p src/MultiServerRpc/MultiServerRpc.csproj ` |
-| [Benchmark] | `dotnet run -c:Release -p src/Benchmark/Benchmark.csproj` |
-| [RpcBenchmark] | `dotnet run -c:Release -p src/RpcBenchmark/RpcBenchmark.csproj` |
-| [Tutorial] | [Install Try .NET](https://github.com/dotnet/try/blob/master/DotNetTryLocal.md) + `dotnet try --port 50005 docs/tutorial` |
+| Sample              | Command                                                                                                                   |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------|
+| [HelloCart]         | `dotnet run -p src/HelloCart/HelloCart.csproj`                                                                            |
+| [HelloWorld]        | `dotnet run -p src/HelloWorld/HelloWorld.csproj`                                                                          |
+| [HelloBlazorServer] | `dotnet run -p src/HelloBlazorServer/HelloBlazorServer.csproj` + open http://localhost:5005/                              |
+| [HelloBlazorHybrid] | `dotnet run -p src/HelloBlazorHybrid/Server/Server.csproj` + open http://localhost:5005/                                  |
+| [Blazor Samples]    | `dotnet run -p src/Blazor/Server/Server.csproj` + open http://localhost:5005/                                             |
+| [TodoApp Sample]    | `dotnet run -p src/TodoApp/Host/Host.csproj` + open http://localhost:5005/                                                |
+| [MiniRpc]           | `dotnet run -p src/MiniRpc/MiniRpc.csproj`                                                                                |
+| [MultiServerRpc]    | `dotnet run -p src/MultiServerRpc/MultiServerRpc.csproj`                                                                  |
+| [MeshRpc]           | `dotnet run -p src/MeshRpc/MeshRpc.csproj`                                                                                |
+| [Benchmark]         | `dotnet run -c:Release -p src/Benchmark/Benchmark.csproj`                                                                 |
+| [RpcBenchmark]      | `dotnet run -c:Release -p src/RpcBenchmark/RpcBenchmark.csproj`                                                           |
+| [Tutorial]          | [Install Try .NET](https://github.com/dotnet/try/blob/master/DotNetTryLocal.md) + `dotnet try --port 50005 docs/tutorial` |
 
 Build & run with [Docker](https://docs.docker.com/get-docker/) + 
 [Docker Compose](https://docs.docker.com/compose/install/):
@@ -61,18 +63,20 @@ Build & run with [Docker](https://docs.docker.com/get-docker/) +
 docker-compose build
 ```
 
-| Sample | Command |
-|-|-|
-| [HelloCart] | `docker-compose run sample_hello_cart dotnet Samples.HelloCart.dll` |
-| [HelloWorld] | `docker-compose run sample_hello_world dotnet Samples.HelloWorld.dll` |
-| [HelloBlazorServer] | `docker-compose run --service-ports sample_hello_blazor_server` + open http://localhost:5005/ |
-| [HelloBlazorHybrid] | `docker-compose run --service-ports sample_hello_blazor_hybrid` + open http://localhost:5005/ |
-| [Blazor Samples] | `docker-compose run --service-ports sample_blazor` + open http://localhost:5005/ |
-| [MiniRpc] | `docker-compose run sample_mini_rpc dotnet Samples.MiniRpc.dll` |
-| [MultiServerRpc] | `docker-compose run sample_multi_server_rpc dotnet Samples.MultiServerRpc.dll` |
-| [Benchmark] | `docker-compose run sample_benchmark dotnet Samples.Benchmark.dll` |
-| [RpcBenchmark] | `docker-compose run sample_rpc_benchmark dotnet Samples.RpcBenchmark.dll` |
-| [Tutorial] | `docker-compose run --service-ports tutorial` + open https://localhost:50005/README.md |
+| Sample              | Command                                                                                               |
+|---------------------|-------------------------------------------------------------------------------------------------------|
+| [HelloCart]         | `docker-compose run --build sample_hello_cart`                                                        |
+| [HelloWorld]        | `docker-compose run --build sample_hello_world`                                                       |
+| [HelloBlazorServer] | `docker-compose run --build --service-ports sample_hello_blazor_server` + open http://localhost:5005/ |
+| [HelloBlazorHybrid] | `docker-compose run --build --service-ports sample_hello_blazor_hybrid` + open http://localhost:5005/ |
+| [Blazor Samples]    | `docker-compose run --build --service-ports sample_blazor` + open http://localhost:5005/              |
+| [TodoApp Sample]    | `docker-compose run --build --service-ports sample_todoapp` + open http://localhost:5005/             |
+| [MiniRpc]           | `docker-compose run --build sample_mini_rpc`                                                          |
+| [MultiServerRpc]    | `docker-compose run --build sample_multi_server_rpc`                                                  |
+| [MeshRpc]           | `docker-compose run --build sample_mesh_rpc`                                                          |
+| [Benchmark]         | `docker-compose run --build sample_benchmark`                                                         |
+| [RpcBenchmark]      | `docker-compose run --build sample_rpc_benchmark`                                                     |
+| [Tutorial]          | `docker-compose run --build --service-ports tutorial` + open https://localhost:50005/README.md        |
 
 A detailed description of nearly every sample can be found here: https://servicetitan.github.io/ActualLab.Fusion.Samples/
 
@@ -98,8 +102,10 @@ please help us to make it better by completing [Fusion Feedback Form]
 [HelloBlazorServer]: src/HelloBlazorServer
 [HelloBlazorHybrid]: src/HelloBlazorHybrid
 [Blazor Samples]: src/Blazor
+[TodoApp Sample]: src/TodoApp
 [MiniRpc]: src/MiniRpc
 [MultiServerRpc]: src/MultiServerRpc
+[MeshRpc]: src/MeshRpc
 [Benchmark]: src/Benchmark
 [RpcBenchmark]: src/RpcBenchmark
 [Tutorial]: docs/tutorial/README.md

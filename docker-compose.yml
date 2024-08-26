@@ -1,4 +1,3 @@
-version: '3.4'
 services:
   db:
     image: "postgres"
@@ -56,7 +55,18 @@ services:
       context: .
       target: sample_blazor
     ports:
-     - "5005:5005"
+      - "5005:5005"
+    environment:
+      ASPNETCORE_URLS: "http://0.0.0.0:5005"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      Logging__Console__FormatterName: ""
+
+  sample_todoapp:
+    build:
+      context: .
+      target: sample_todoapp
+    ports:
+      - "5005:5005"
     environment:
       ASPNETCORE_URLS: "http://0.0.0.0:5005"
       ASPNETCORE_ENVIRONMENT: "Development"
@@ -82,6 +92,11 @@ services:
     build:
       context: .
       target: sample_multi_server_rpc
+
+  sample_mesh_rpc:
+    build:
+      context: .
+      target: sample_mesh_rpc
 
   sample_benchmark:
     build:

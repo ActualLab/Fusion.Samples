@@ -36,7 +36,7 @@ public class GrpcTestService : GrpcService.GrpcServiceBase
 
             var item = new GrpcItem() {
                 Index = i,
-                Data = ByteString.CopyFrom(new byte[dataSize]),
+                Data = UnsafeByteOperations.UnsafeWrap(StreamGenerator.GetData(dataSize)),
             };
             await responseStream.WriteAsync(item, cancellationToken).ConfigureAwait(false);
         }

@@ -1,0 +1,21 @@
+CPU: AMD Ryzen 9 7950X3D
+RAM: 96GB
+OS:  Windows 11
+
+> Run-Benchmark.cmd
+
+Client concurrency: 200 workers per client or test service
+Writer count:       1
+Initializing...
+  Remaining item count: 679
+  Done.
+
+Local services:
+  Fusion Service                             320 readers: 107.88M 107.11M 107.29M 106.36M -> 107.88M calls/s
+  Regular Service                            640 readers: 104.83K 114.54K 119.05K 118.58K -> 119.05K calls/s
+
+Remote services:
+  Fusion Client -> Fusion Service            320 readers:  97.02M  95.06M  95.02M  97.16M ->  97.16M calls/s
+  ActualLab.Rpc Client -> Fusion Service    3200 readers:   1.40M   1.46M   1.44M   1.36M ->   1.46M calls/s
+  HTTP Client -> Fusion Service             1600 readers: 283.71K 308.39K 308.60K 308.82K -> 308.82K calls/s
+  HTTP Client -> Regular Service            1600 readers:  86.60K  86.44K  85.42K  87.11K ->  87.11K calls/s

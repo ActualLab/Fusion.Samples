@@ -2,8 +2,8 @@ CPU: AMD Ryzen 9 7950X3D
 RAM: 96GB
 OS:  Windows 11
 
-
 > Run-RpcBenchmark.cmd test -n 3 -b calls -l rpc,signalr,grpc -bs messagepack
+
 System-wide settings:
   Thread pool settings:   32+ worker, 320+ I/O threads
   ByteSerializer.Default: MessagePack
@@ -32,8 +32,8 @@ gRPC:
   GetUser  : 879.15K 890.01K 900.71K -> 900.71K calls/s
   SayHello : 842.98K 852.33K 848.50K -> 852.33K calls/s
 
-
 > Run-RpcBenchmark.cmd test -n 3 -b streams -l rpc,grpc,signalr -bs messagepack
+
 System-wide settings:
   Thread pool settings:   32+ worker, 320+ I/O threads
   ByteSerializer.Default: MessagePack

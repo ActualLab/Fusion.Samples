@@ -11,7 +11,7 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
     {
         var readerCount = ReaderCount * readerCountMultiplier;
         var workerCount = (int)(WriterCount + readerCount);
-        Title = $"{title,-32} {readerCount,5} readers";
+        Title = $"{title,-40} {readerCount,5} readers";
         TryCount = Settings.TryCount;
         ResultFormatter = x => $"{x.FormatCount(),7}";
         Workers = new BenchmarkWorker[workerCount];

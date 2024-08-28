@@ -8,11 +8,12 @@ public static class ServiceCollectionExt
     public static IServiceCollection AddAppDbContext(this IServiceCollection services)
     {
         services.AddPooledDbContextFactory<AppDbContext>((_, dbContext) => {
-            dbContext.UseNpgsql(Settings.DbConnectionString, _ => { });
+            dbContext.UseNpgsql(DbConnectionString, _ => { });
         }, 512);
         services.AddDbContextServices<AppDbContext>();
         services.AddSingleton<DbInitializer>();
         services.AddSingleton<DbTestService>();
+        services.AddFusion(); // DbHub now caches StateFactory, so we have to add Fusion
         return services;
     }
 }

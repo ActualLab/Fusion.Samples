@@ -1,9 +1,7 @@
 namespace Samples.Benchmark.Server;
 
-public class FusionTestService : DbTestService, IFusionTestService
+public class FusionTestService(IServiceProvider services) : DbTestService(services), IFusionTestService
 {
-    public FusionTestService(IServiceProvider services) : base(services) { }
-
     public override async Task AddOrUpdate(TestItem item, long? version, CancellationToken cancellationToken = default)
     {
         await base.AddOrUpdate(item, version, cancellationToken).ConfigureAwait(false);

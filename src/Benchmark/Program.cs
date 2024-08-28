@@ -4,7 +4,10 @@ using Samples.Benchmark.Client;
 using Samples.Benchmark.Server;
 using ActualLab.Fusion.Server;
 using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.Server;
+using ActualLab.Rpc.WebSockets;
 
 #pragma warning disable ASP0000
 
@@ -12,6 +15,11 @@ using ActualLab.Rpc.Server;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
 ByteSerializer.Default = MessagePackByteSerializer.Default; // Remove to switch back to MemoryPack
+RpcDefaultDelegates.WebSocketChannelOptionsProvider =
+    (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+        Serializer = new FastRpcMessageByteSerializer(ByteSerializer.Default),
+        FrameDelayerFactory = null,
+    };
 
 var stopCts = new CancellationTokenSource();
 var cancellationToken = StopToken = stopCts.Token;
@@ -42,7 +50,7 @@ async Task RunServer()
 
     // Benchmark services
     fusion.AddService<IFusionTestService, FusionTestService>();
-    fusion.Rpc.AddServer<IRpcTestService, IFusionTestService>();
+    fusion.Rpc.Service<IRpcTestService>().HasServer<IFusionTestService>();
 
     // Build app & initialize DB
     var app = builder.Build();

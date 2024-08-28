@@ -1,4 +1,7 @@
-using MessagePack;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.Serialization;
+using ActualLab.Rpc.WebSockets;
 
 namespace ActualLab.Benchmarking;
 
@@ -27,6 +30,17 @@ public static class SystemSettings
                 _ => throw new ArgumentOutOfRangeException(nameof(serializerKind))
             };
             ByteSerializer.Default = serializer;
+            RpcDefaults.Mode = RpcMode.Server;
+            RpcDefaultDelegates.CallTracerFactory = _ => null;
+            // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
+            RpcDefaultDelegates.WebSocketChannelOptionsProvider =
+                (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+                    FrameDelayerFactory = null,
+                    Serializer = new FastRpcMessageByteSerializer(serializer),
+                    MinReadBufferSize = 16_384,
+                    MinWriteBufferSize = 16_384,
+                    WriteFrameSize = 8_900, // 6 x 1500(MTU) minus some reserve
+                };
 
             WriteLine("System-wide settings:");
             WriteLine($"  Thread pool settings:   {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");

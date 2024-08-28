@@ -13,7 +13,7 @@ public interface IGreeter : IRpcService
 }
 
 [DataContract, MemoryPackable(GenerateType.VersionTolerant)]
-public partial record Message(
+public sealed partial record Message(
     [property: DataMember(Order = 0), MemoryPackOrder(0)] string Text
     );
 

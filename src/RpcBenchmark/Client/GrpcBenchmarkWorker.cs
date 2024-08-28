@@ -35,7 +35,7 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
     }
 
 
-    public override async Task StreamS(CancellationToken cancellationToken)
+    public override async Task Stream1(CancellationToken cancellationToken)
     {
         var request = new GrpcGetItemsRequest() {
             DataSize = DataSizeS,
@@ -52,7 +52,7 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
             throw new InvalidOperationException("Wrong result.");
     }
 
-    public override async Task StreamM(CancellationToken cancellationToken)
+    public override async Task Stream100(CancellationToken cancellationToken)
     {
         var request = new GrpcGetItemsRequest() {
             DataSize = DataSizeM,
@@ -69,7 +69,7 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
             throw new InvalidOperationException("Wrong result.");
     }
 
-    public override async Task StreamL(CancellationToken cancellationToken)
+    public override async Task Stream10K(CancellationToken cancellationToken)
     {
         var request = new GrpcGetItemsRequest() {
             DataSize = DataSizeL,

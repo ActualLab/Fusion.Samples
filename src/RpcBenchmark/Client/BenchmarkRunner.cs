@@ -44,9 +44,9 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
             await RunOne("SayHello", w => w.SayHello, cancellationToken);
         }
         else {
-            await RunOne("StreamS", w => w.StreamS, cancellationToken);
-            await RunOne("StreamM", w => w.StreamM, cancellationToken);
-            await RunOne("StreamL", w => w.StreamL, cancellationToken);
+            await RunOne("Stream1", w => w.Stream1, cancellationToken);
+            await RunOne("Stream100", w => w.Stream100, cancellationToken);
+            await RunOne("Stream10K", w => w.Stream10K, cancellationToken);
         }
 
         // Dispose clients

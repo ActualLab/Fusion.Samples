@@ -38,7 +38,7 @@ public class BenchmarkWorker(ITestService client)
             throw new InvalidOperationException("Wrong result.");
     }
 
-    public virtual async Task StreamS(CancellationToken cancellationToken)
+    public virtual async Task Stream1(CancellationToken cancellationToken)
     {
         var request = new GetItemsRequest() {
             DataSize = DataSizeS,
@@ -51,7 +51,7 @@ public class BenchmarkWorker(ITestService client)
             throw new InvalidOperationException("Wrong result.");
     }
 
-    public virtual async Task StreamM(CancellationToken cancellationToken)
+    public virtual async Task Stream100(CancellationToken cancellationToken)
     {
         var request = new GetItemsRequest() {
             DataSize = DataSizeM,
@@ -64,7 +64,7 @@ public class BenchmarkWorker(ITestService client)
             throw new InvalidOperationException("Wrong result.");
     }
 
-    public virtual async Task StreamL(CancellationToken cancellationToken)
+    public virtual async Task Stream10K(CancellationToken cancellationToken)
     {
         var request = new GetItemsRequest() {
             DataSize = DataSizeL,

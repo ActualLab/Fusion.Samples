@@ -85,10 +85,6 @@ public sealed class ClientFactories
                 return new WebSocketOwner(peer.Ref.Key, ws, c);
             },
         });
-        services.AddSingleton<RpcWebSocketChannelOptionsProvider>(c =>
-            (peer, properties) => WebSocketChannel<RpcMessage>.Options.Default with {
-                WriteFrameSize = 4350,
-            });
 
         // SignalR
         services.AddSingleton(c => {

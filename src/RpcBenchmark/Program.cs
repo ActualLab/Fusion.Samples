@@ -15,15 +15,6 @@ public static class Program
 
     public static async Task<int> Main(string[] args)
     {
-        RpcDefaults.Mode = RpcMode.Server;
-        RpcDefaultDelegates.CallTracerFactory = _ => null;
-        // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
-        RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-            (peer, properties) => WebSocketChannel<RpcMessage>.Options.Default with {
-                FrameDelayerFactory = null,
-                MinReadBufferSize = 65_536,
-                RetainedBufferSize = 2 * 65_536,
-            };
         SizeHintProviders.Register<Item>(static x => 16 + x.Data?.Length ?? 0);
 
         TreatControlCAsInput = false;

@@ -9,6 +9,10 @@ using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.Serialization;
+using ActualLab.Rpc.WebSockets;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 
@@ -58,6 +62,17 @@ public class Program
 
     public static void ConfigureSharedServices(IServiceCollection services)
     {
+        // Configure RPC
+        RpcDefaultDelegates.WebSocketChannelOptionsProvider =
+            (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+                // The fastest serializer
+                Serializer = new FastRpcMessageByteSerializer(MemoryPackByteSerializer.Default),
+                // Default frame delayer increases invalidate-to-update delays, and since this sample
+                // contains nearly real-time part (streaming & RPC streaming), we remove any delays
+                // to show peak performance here.
+                FrameDelayerFactory = null,
+            };
+
         // Blazorise
         services.AddBlazorise(options => {
                 options.Immediate = true;

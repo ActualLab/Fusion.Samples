@@ -1,9 +1,18 @@
 using Samples.Blazor.Abstractions;
 using ActualLab.Fusion.Authentication;
-using ActualLab.Fusion.Client;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
+using ActualLab.Rpc;
+using ActualLab.Rpc.Infrastructure;
+using ActualLab.Rpc.Serialization;
+using ActualLab.Rpc.WebSockets;
 using static System.Console;
+
+RpcDefaultDelegates.WebSocketChannelOptionsProvider =
+    (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+        // We should use the same serializer as on the server side
+        Serializer = new FastRpcMessageByteSerializer(MemoryPackByteSerializer.Default),
+    };
 
 var services = CreateServiceProvider();
 var stateFactory = services.StateFactory();

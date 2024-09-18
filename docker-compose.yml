@@ -111,7 +111,31 @@ services:
     build:
       context: .
       target: sample_rpc_benchmark
+
+  sample_rpc_benchmark_server:
+    build:
+      context: .
+      target: sample_rpc_benchmark
+    command: server https://0.0.0.0:22444/
+    expose:
+      - "22444"
     deploy:
       resources:
         limits:
           cpus: '6'
+
+  # The settings here are matching the settings from:
+  # - https://github.com/LesnyRumcajs/grpc_bench
+  # - https://github.com/LesnyRumcajs/grpc_bench/discussions/441 (the most recent results I could find)
+  # 'SayHello' is the test that matches the grpc_bench payload.
+  sample_rpc_benchmark_client:
+    build:
+      context: .
+      target: sample_rpc_benchmark
+    depends_on:
+      - sample_rpc_benchmark_server
+    command: client -w 1000 -cc 20 -n 2 https://sample_rpc_benchmark_server:22444
+    deploy:
+      resources:
+        limits:
+          cpus: '24'

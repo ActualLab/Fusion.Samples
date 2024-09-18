@@ -111,3 +111,7 @@ services:
     build:
       context: .
       target: sample_rpc_benchmark
+    deploy:
+      resources:
+        limits:
+          cpus: '6'

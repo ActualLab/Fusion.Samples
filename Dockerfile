@@ -20,6 +20,7 @@ RUN apt update \
     && apt install -y --no-install-recommends python3 python3-pip libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 RUN dotnet workload install wasm-tools aspire
+RUN dotnet dev-certs https
 WORKDIR /samples
 COPY ["src/", "src/"]
 COPY ["docs/", "docs/"]

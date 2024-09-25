@@ -3,7 +3,7 @@
 
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.4.6</ActualLabFusionVersion>
+    <ActualLabFusionVersion>9.4.12</ActualLabFusionVersion>
     <AspNetCoreVersion>8.0.8</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.6.1</BlazoriseVersion>

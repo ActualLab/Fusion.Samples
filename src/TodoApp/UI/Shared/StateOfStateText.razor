@@ -1,27 +1,19 @@
-@using ActualLab.Async;
 @implements IDisposable
 @*
-    StateOfStateBadge:
+    ComponentStateText:
     - Displays the current state of provided 'State' (Invalidated/Updating/Updated).
     - Updates on state change without re-rendering the parent component.
 *@
 
-<Div Margin="Margin.Is1.OnY">
-    <span>Component state: </span>
-    @if (IsLoading) {
-        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-        <b>Loading...</b>
-    } else if (IsUpdating) {
-        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-        <b>Updating...</b>
-    } else if (IsInvalidated) {
-        <div class="spinner-grow spinner-grow-sm text-secondary" role="status"></div>
-        <b class="text-secondary">Invalidated...</b>
-    } else {
-        <span class="oi oi-check" aria-hidden="true"></span>
-        <b>In sync.</b>
-    }
-</Div>
+@if (IsLoading) {
+    <span>loading</span>
+} else if (IsUpdating) {
+    <span>updating</span>
+} else if (IsInvalidated) {
+    <span>invalidated</span>
+} else {
+    <span>in sync</span>
+}
 
 @code {
     private readonly Action<IState, StateEventKind> _stateOfStateChangedHandler;
@@ -48,7 +40,7 @@
     public bool IsUpdating => _snapshot is { } s && s.WhenUpdating().IsCompleted;
     public bool IsInvalidated => _snapshot is { } s && s.Computed.IsInvalidated();
 
-    public StateOfStateBadge()
+    public StateOfStateText()
         => _stateOfStateChangedHandler = (_, _) => InvokeAsync(OnStateOfStateChanged);
 
     public virtual void Dispose()

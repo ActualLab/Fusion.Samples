@@ -12,6 +12,7 @@ using ActualLab.Fusion.EntityFramework.Npgsql;
 using ActualLab.Fusion.EntityFramework.Operations;
 using ActualLab.Fusion.Server;
 using ActualLab.Interception;
+using ActualLab.Internal;
 using ActualLab.IO;
 using ActualLab.OS;
 using ActualLab.Rpc;
@@ -51,11 +52,12 @@ var cfg = builder.Configuration;
 var hostSettings = cfg.GetSettings<HostSettings>();
 if (hostSettings.IsAspireManaged)
     builder.AddServiceDefaults();
+TenantExt.UseTenants = hostSettings.UseTenants;
 var hostKind = hostSettings.HostKind;
 Console.WriteLine($"Host kind: {hostKind}");
 
 cfg.Sources.Insert(0, new MemoryConfigurationSource() {
-    InitialData = new Dictionary<string, string>() {
+    InitialData = new Dictionary<string, string>(StringComparer.Ordinal) {
         { WebHostDefaults.ServerUrlsKey, $"http://localhost:{hostSettings.Port ?? 5005}" }, // Override default server URLs
     }!
 });
@@ -91,7 +93,6 @@ if (hostKind != HostKind.BackendServer) { // This has to be done in a more robus
 // Run the app
 await app.RunAsync();
 return;
-
 
 // Helpers
 
@@ -186,11 +187,11 @@ void ConfigureServices()
         HostKind.SingleServer => fusion.AddComputeService<ITodoBackend, TodoBackend>(),
         HostKind.BackendServer => fusion.AddServer<ITodoBackend, TodoBackend>(),
         HostKind.ApiServer => fusion.AddClient<ITodoBackend>(),
-        _ => throw new ArgumentOutOfRangeException()
+        _ => throw Errors.InternalError("Invalid host kind."),
     };
 
     // RPC-exposed compute service(s)
-    fusion.AddService<ITodoService, TodoService>();
+    fusion.AddService<ITodoApi, TodoApi>();
     // RPC-exposed non-compute services
     fusion.Rpc.AddService<IRpcExampleService, RpcExampleService>();
 

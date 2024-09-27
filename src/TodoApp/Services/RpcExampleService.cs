@@ -13,7 +13,10 @@ public class RpcExampleService : IRpcExampleService
         => Task.FromResult((new RpcObjectId(Guid.NewGuid(), 1), "Second item"));
 
     public Task<RpcStream<int>> GetStream(CancellationToken cancellationToken = default)
-        => Task.FromResult(new RpcStream<int>(Enumerable.Range(0, int.MaxValue).ToAsyncEnumerable()));
+    {
+        var stream = Enumerable.Range(0, int.MaxValue).ToAsyncEnumerable();
+        return Task.FromResult(new RpcStream<int>(stream));
+    }
 
     public Task<int> SumStream(RpcStream<int> stream, CancellationToken cancellationToken = default)
         => stream.SumAsync(cancellationToken).AsTask();

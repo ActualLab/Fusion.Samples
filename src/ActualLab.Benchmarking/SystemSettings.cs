@@ -29,6 +29,8 @@ public static class SystemSettings
             RpcDefaultDelegates.CallTracerFactory = _ => null;
 
             // ActualLab.Rpc serialization formats
+            // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
+            // RpcByteMessageSerializer.Defaults.AllowProjection = true;
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
                 () => new RpcByteArgumentSerializer(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializer(peer) { AllowProjection = true });
@@ -42,7 +44,6 @@ public static class SystemSettings
             }
             RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats.ToArray());
 
-            // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
             RpcDefaultDelegates.WebSocketChannelOptionsProvider =
                 (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
                     FrameDelayerFactory = null, // Super important: by default there is a frame delayer
@@ -58,5 +59,4 @@ public static class SystemSettings
             _isApplied = true;
         }
     }
-
 }

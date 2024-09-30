@@ -23,9 +23,8 @@ public abstract class BenchmarkCommandBase : AsyncCommandBase
     public int MinIOThreads { get; set; } = HardwareInfo.ProcessorCount * 10;
 
     [CommandLineArgument]
-    [Description("ByteSerializer to use in ActualLab.Rpc tests.")]
-    [ValueDescription("MessagePack,MemoryPack")]
-    [ValidateRange(0, null)]
-    [Alias("bs")]
-    public ByteSerializerKind ByteSerializer { get; set; } = ByteSerializerKind.MessagePack;
+    [Description("RpcSerializationFormat to use in ActualLab.Rpc tests.")]
+    [ValueDescription("MemPack1,MemPack2,MsgPack1,MsgPack2,...")]
+    [Alias("f")]
+    public string SerializationFormat { get; set; } = "MemPack2";
 }

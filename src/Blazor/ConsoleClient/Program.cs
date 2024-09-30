@@ -8,12 +8,6 @@ using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.WebSockets;
 using static System.Console;
 
-RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-    (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-        // We should use the same serializer as on the server side
-        Serializer = new FastRpcMessageByteSerializer(MemoryPackByteSerializer.Default),
-    };
-
 var services = CreateServiceProvider();
 var stateFactory = services.StateFactory();
 var chat = services.GetRequiredService<IChatService>();

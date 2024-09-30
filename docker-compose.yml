@@ -117,23 +117,11 @@ services:
   # - https://github.com/LesnyRumcajs/grpc_bench/discussions/441 (the most recent results I could find)
   # 'SayHello' is the test that matches the grpc_bench payload.
 
-  sample_rpc_benchmark_server1: # Uses MessagePack w/ ActualLab.Rpc
+  sample_rpc_benchmark_server:
     build:
       context: .
       target: sample_rpc_benchmark
-    command: server -bs messagepack https://0.0.0.0:443/
-    expose:
-      - "443"
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-
-  sample_rpc_benchmark_server2: # Uses MemoryPack w/ ActualLab.Rpc
-    build:
-      context: .
-      target: sample_rpc_benchmark
-    command: server -bs memorypack https://0.0.0.0:443/
+    command: server https://0.0.0.0:443/
     expose:
       - "443"
     deploy:
@@ -146,9 +134,8 @@ services:
       context: .
       target: sample_rpc_benchmark
     depends_on:
-      - sample_rpc_benchmark_server1
-      - sample_rpc_benchmark_server2
-    command: client -b calls -w 1000 -cc 20 -n 4 -bs messagepack https://sample_rpc_benchmark_server1
+      - sample_rpc_benchmark_server
+    command: client -b calls -w 1000 -cc 20 -n 4 -f msgpack2 https://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:
@@ -159,9 +146,8 @@ services:
       context: .
       target: sample_rpc_benchmark
     depends_on:
-      - sample_rpc_benchmark_server1
-      - sample_rpc_benchmark_server2
-    command: client -b streams -w 80 -cc 4 -n 4 -l rpc,grpc,signalr,jsonrpc -bs messagepack https://sample_rpc_benchmark_server1
+      - sample_rpc_benchmark_server
+    command: client -b streams -w 80 -cc 4 -n 4 -l rpc,grpc,signalr,jsonrpc -f msgpack2 https://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:

@@ -5,7 +5,6 @@ using Samples.Benchmark.Server;
 using ActualLab.Fusion.Server;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
-using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.Server;
 using ActualLab.Rpc.WebSockets;
 
@@ -16,9 +15,9 @@ using ActualLab.Rpc.WebSockets;
 ThreadPool.SetMaxThreads(16_384, 16_384);
 ByteSerializer.Default = MessagePackByteSerializer.Default; // Remove to switch back to MemoryPack
 RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-    (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-        Serializer = new FastRpcMessageByteSerializer(ByteSerializer.Default),
-        FrameDelayerFactory = null,
+    (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+        FrameDelayerFactory = null, // Super important: by default there is a frame delayer
+        Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
     };
 
 var stopCts = new CancellationTokenSource();

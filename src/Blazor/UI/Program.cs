@@ -64,13 +64,9 @@ public class Program
     {
         // Configure RPC
         RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-            (_, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-                // The fastest serializer
-                Serializer = new FastRpcMessageByteSerializer(MemoryPackByteSerializer.Default),
-                // Default frame delayer increases invalidate-to-update delays, and since this sample
-                // contains nearly real-time part (streaming & RPC streaming), we remove any delays
-                // to show peak performance here.
-                FrameDelayerFactory = null,
+            (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+                FrameDelayerFactory = null, // We don't want to have a frame delayer on this test
+                Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
             };
 
         // Blazorise

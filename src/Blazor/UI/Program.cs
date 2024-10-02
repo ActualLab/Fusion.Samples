@@ -62,13 +62,6 @@ public class Program
 
     public static void ConfigureSharedServices(IServiceCollection services)
     {
-        // Configure RPC
-        RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-            (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-                FrameDelayerFactory = null, // We don't want to have a frame delayer on this test
-                Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
-            };
-
         // Blazorise
         services.AddBlazorise(options => {
                 options.Immediate = true;

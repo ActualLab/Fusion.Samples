@@ -14,11 +14,6 @@ using ActualLab.Rpc.WebSockets;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
 ByteSerializer.Default = MessagePackByteSerializer.Default; // Remove to switch back to MemoryPack
-RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-    (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-        FrameDelayerFactory = null, // Super important: by default there is a frame delayer
-        Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
-    };
 
 var stopCts = new CancellationTokenSource();
 var cancellationToken = StopToken = stopCts.Token;

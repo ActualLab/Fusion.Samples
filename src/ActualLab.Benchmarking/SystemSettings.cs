@@ -46,7 +46,6 @@ public static class SystemSettings
 
             RpcDefaultDelegates.WebSocketChannelOptionsProvider =
                 (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-                    FrameDelayerFactory = null, // Super important: by default there is a frame delayer
                     Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
                     MinReadBufferSize = 16_384,
                     MinWriteBufferSize = 16_384,

@@ -29,7 +29,7 @@
         <Div Margin="Margin.Is2.OnX">
             <span>Row <b>@row.Index</b>:</span>
             <span>@(row.Items.ToDelimitedString())</span>
-            <span>, sum = <b>@row.Sum</b></span>
+            <span>, sum = <b>@(row.Sum?.ToString() ?? "...")</b></span>
             @if (row.IsCompleted) {
                 <Span TextColor="TextColor.Secondary"> - completed</Span>
             }
@@ -38,8 +38,8 @@
 }
 
 @code {
-    private const int RowLimit = 11;
-    private const int ItemLimit = 11;
+    private const int RowLimit = 16;
+    private const int ItemLimit = 16;
 
     private readonly CancellationTokenSource? _stopTokenSource;
     private readonly CancellationToken _stopToken;
@@ -83,20 +83,29 @@
     private async Task ReadRow(Row<int> row, CancellationToken cancellationToken)
     {
         var model = _table.Rows[row.Index];
+        using var updateSumCts = cancellationToken.CreateLinkedTokenSource();
         await foreach (var item in row.Items.WithCancellation(cancellationToken)) {
             model.Items.Add(item);
             StateHasChanged();
-            _ = UpdateSum(model, cancellationToken);
             if (model.Items.Count >= ItemLimit)
                 break;
+            _ = UpdateSum(model, updateSumCts.Token); // Notice we don't await it here!
         }
+        await updateSumCts.CancelAsync();
+        await UpdateSum(model, cancellationToken); // The final UpdateSum is called for all items
         model.IsCompleted = true;
         StateHasChanged();
     }
 
     private async Task UpdateSum(RowModel<int> row, CancellationToken cancellationToken)
     {
-        row.Sum = await RpcExampleService.Sum(RpcStream.New(row.Items), cancellationToken);
+        row.Sum = null;
+        var items = row.Items.ToArray(); // We need a copy here to enable concurrent enumeration
+        var stream = RpcStream.New(items);
+        var sum = await RpcExampleService.Sum(stream, cancellationToken);
+
+        cancellationToken.ThrowIfCancellationRequested(); // No updates if CT was cancelled
+        row.Sum = sum == items.Sum() ? sum : -sum; // Quick error check
         StateHasChanged();
     }
 

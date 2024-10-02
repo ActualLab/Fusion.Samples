@@ -29,7 +29,7 @@ public class ChatService(
         text = await NormalizeText(text, cancellationToken);
         var user = await auth.GetUser(session, cancellationToken).Require();
 
-        await using var dbContext = await DbHub.CreateCommandDbContext(cancellationToken);
+        await using var dbContext = await DbHub.CreateOperationDbContext(cancellationToken);
         var message = new ChatMessage() {
             CreatedAt = DateTime.UtcNow,
             UserId = user.Id,

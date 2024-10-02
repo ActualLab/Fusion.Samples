@@ -177,7 +177,7 @@ public virtual async Task<ChatMessage> PostMessage(
         return default!;
     }
 
-    await using var dbContext = await CreateCommandDbContext(cancellationToken);
+    await using var dbContext = await CreateOperationDbContext(cancellationToken);
     // The same action handler code as it was in example above.
 }
 ```
@@ -204,7 +204,7 @@ The invalidation block inside the handler should be transformed too:
   with
   `if (Invalidation.IsActive) { Code(); return default!; }`.
 - If your service derives from `DbServiceBase` or `DbAsyncProcessBase`,
-  you should use its protected `CreateCommandDbContext` method
+  you should use its protected `CreateOperationDbContext` method
   to get `DbContext` where you are going to make changes.
   You still have to call `SaveAsync` on this `DbContext` in the end.
 
@@ -238,7 +238,7 @@ public virtual async Task SignOut(
         return;
     }
 
-    await using var dbContext = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+    await using var dbContext = await CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
 
     var dbSessionInfo = await Sessions.FindOrCreate(dbContext, session, cancellationToken).ConfigureAwait(false);
     var sessionInfo = dbSessionInfo.ToModel();
@@ -352,7 +352,7 @@ talking about EF:
   `CommandContext.GetCurrent().Items` collection.
 - Once your service needs to access `AppDbContext` from the
   command handler, it typically calls its protected
-  `CreateCommandDbContext` method, which
+  `CreateOperationDbContext` method, which
   ["pulls" the `DbOperationScope<AppDbContext>`](https://github.com/ActualLab/Fusion/blob/master/src/ActualLab.Fusion.EntityFramework/DbServiceBase.cs#L38)
   and asks it to provide actual `AppDbContext`.
 - Finally, `DbOperationScope.CreateDbContext` does all the magic:
@@ -545,7 +545,7 @@ This happens if and only if:
   you're going to use this operation scope.
 
 > Note: if your service derives from `DbServiceBase` or `DbAsyncProcessBase`,
-> they provide `CreateCommandDbContext` method, which is actually
+> they provide `CreateOperationDbContext` method, which is actually
 > a shortcut for above actions. If you like the idea of such shortcuts,
 > derive your DB-related services from one of these types or their
 > descendants like `DbWakeSleepProcessBase`.
@@ -610,7 +610,7 @@ public override async Task SignOut(
         return;
     }
 
-    var dbContext = await CreateCommandDbContext(cancellationToken).ConfigureAwait(false);
+    var dbContext = await CreateOperationDbContext(cancellationToken).ConfigureAwait(false);
     await using var _1 = dbContext.ConfigureAwait(false);
 
     var dbSessionInfo = await Sessions.GetOrCreate(dbContext, session.Id, cancellationToken).ConfigureAwait(false);

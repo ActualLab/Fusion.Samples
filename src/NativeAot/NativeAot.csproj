@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Samples.NativeAot</AssemblyName>
+    <RootNamespace>Samples.NativeAot</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsPublishable>true</IsPublishable>
+    <PublishAot>true</PublishAot>
+    <TrimMode>full</TrimMode>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <OptimizationPreference>Size</OptimizationPreference>
+<!--    <TrimmerSingleWarn>false</TrimmerSingleWarn>-->
+    <IlcGenerateStackTraceData>true</IlcGenerateStackTraceData>
+    <IlcDisableReflection>false</IlcDisableReflection>
+    <NativeDebugSymbols>false</NativeDebugSymbols>
+    <StripSymbols>true</StripSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
+  </ItemGroup>
+
+  <!-- Fusion packages -->
+  <ItemGroup>
+    <PackageReference Include="ActualLab.Fusion.Server" />
+  </ItemGroup>
+
+  <!-- Source generators -->
+  <ItemGroup>
+    <PackageReference Include="ActualLab.Generators" />
+    <PackageReference Include="MemoryPack.Generator" />
+  </ItemGroup>
+
+</Project>

@@ -80,6 +80,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireHost", "src\TodoApp\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "src\TodoApp\ServiceDefaults\ServiceDefaults.csproj", "{FAFB997A-4A71-4E37-AC65-26FDA4DD5565}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeAot", "src\NativeAot\NativeAot.csproj", "{16F342FF-A151-442E-8849-B6D81DFFAE05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,7 @@ Global
 		{EFEE1933-36CC-4FE4-B670-111DD0A88BA5} = {ED0683EF-EAFD-4703-A832-DEB7227A80B8}
 		{E11C307A-7C57-4E5B-A830-7432896686C9} = {ED0683EF-EAFD-4703-A832-DEB7227A80B8}
 		{FAFB997A-4A71-4E37-AC65-26FDA4DD5565} = {ED0683EF-EAFD-4703-A832-DEB7227A80B8}
+		{16F342FF-A151-442E-8849-B6D81DFFAE05} = {B5A8469D-C4BB-4808-8E44-FF4DFCA57BDE}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BA3D19EB-DDFD-4DB6-B60F-A110E22E9C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -226,5 +229,9 @@ Global
 		{FAFB997A-4A71-4E37-AC65-26FDA4DD5565}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAFB997A-4A71-4E37-AC65-26FDA4DD5565}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAFB997A-4A71-4E37-AC65-26FDA4DD5565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16F342FF-A151-442E-8849-B6D81DFFAE05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F342FF-A151-442E-8849-B6D81DFFAE05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F342FF-A151-442E-8849-B6D81DFFAE05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F342FF-A151-442E-8849-B6D81DFFAE05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

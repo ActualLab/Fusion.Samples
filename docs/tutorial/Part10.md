@@ -753,7 +753,7 @@ P.S. I certainly realize that even though OF's usage is fairly
 simple on the outside, there is a complex API with many moving
 parts inside. And probably, some bugs.
 So if you get stuck, please don't hesistate reaching me out
-on [Discord](https://discord.gg/EKEwv6d). My nickname is "AY"
-(Alex Yakunin), and I'll be happy to help.
+on [Fusion Place](https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo). 
+My nickname there is "Alex Y.", I'll be happy to help.
 
 #### [Part 11: Authentication in Fusion &raquo;](./Part11.md) | [Tutorial Home](./README.md)

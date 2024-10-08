@@ -1,8 +1,8 @@
 Welcome to the collection of [Fusion] samples!
 
-> All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
+> All project updates are published on its [Fusion Place]; it's also the best place for Q/A.\
 > [![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
-> [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)  
+> [![Fusion Place](https://img.shields.io/badge/Fusion%20%40%20Actual%20Chat-BE145B)](https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo)  
 
 Don't know what Fusion is? [You should!](https://github.com/ActualLab/Fusion) 
 Fusion is your #1 partner in crime if you're 
@@ -83,10 +83,7 @@ A detailed description of nearly every sample can be found here: https://service
 ## Useful Links
 
 * Check out [Fusion repository on GitHub]
-* Join our [Discord Server] to ask questions and track project updates. 
-  *If you're curious, "why Discord," the server was created long before the 
-  first line of [Actual Chat]'s code was written. 
-  However, a Fusion-powered alternative will be available quite soon :)*
+* Join [Fusion Place] to ask questions and track project updates.
 * Go to [Documentation Home].
 
 **P.S.** If you've already spent some time learning about Fusion, 
@@ -122,5 +119,5 @@ please help us to make it better by completing [Fusion Feedback Form]
 [Compute Service Clients]: https://github.com/ActualLab/Fusion.Samples/blob/master/docs/tutorial/Part04.md
 [Fusion In Simple Terms]: https://medium.com/@alexyakunin/stl-fusion-in-simple-terms-65b1975967ab?source=friends_link&sk=04e73e75a52768cf7c3330744a9b1e38
 
-[Discord Server]: https://discord.gg/EKEwv6d
+[Fusion Place]: https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6

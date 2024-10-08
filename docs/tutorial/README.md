@@ -1,9 +1,9 @@
 # Fusion Tutorial
 
-> All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
+> All project updates are published on [Fusion Place]; it's also the best place for Q/A.\
 > [![Build](https://github.com/ActualLab/Fusion/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion/actions?query=workflow%3A%22Build%22)
 > [![NuGetVersion](https://img.shields.io/nuget/v/ActualLab.Core)](https://www.nuget.org/packages?q=tags%3A%22actual_lab_fusion%22+Owner%3A%22Actual.chat%22)
-> [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)
+> [![Fusion Place](https://img.shields.io/badge/Fusion%20%40%20Actual%20Chat-BE145B)](https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo)
 
 Welcome to [Fusion] Tutorial! It used to be interactive, but thanks to Microsoft's inability to maintain `dotnet try` tool, this nice feature currently doesn't work.
 
@@ -30,7 +30,7 @@ Finally, check out:
 - <img src="https://img.shields.io/badge/-New!-brightgreen" valign="middle"> [Fusion Cheat Sheet](./Fusion-Cheat-Sheet.md) - consider adding it to Favorites :)
 - [Overview](https://github.com/ActualLab/Fusion/blob/master/docs/Overview.md) - a high-level description of Fusion abstractions.
 
-Join our [Discord Server] to ask questions and track project updates.
+Join [Fusion Place] to ask questions and track project updates.
 
 ## Running Tutorial
 
@@ -54,7 +54,7 @@ Alternatively, you can run it with `dotnet try` CLI tool:
 
 
 [Fusion]: https://github.com/ActualLab/Fusion
-[Discord Server]: https://discord.gg/EKEwv6d
+[Fusion Place]: https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6
 [Try .NET]: https://github.com/dotnet/try/blob/master/DotNetTryLocal.md
 [Docker]: https://www.docker.com/

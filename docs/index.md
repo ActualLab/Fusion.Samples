@@ -1,8 +1,8 @@
 Welcome to a collection of [Fusion] samples!
 
-> All project updates are published on its [Discord Server]; it's also the best place for Q/A.\
+> All project updates are published on [Fusion Place]; it's also the best place for Q/A.\
 > [![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
-> [![Discord Server](https://img.shields.io/discord/729970863419424788.svg)](https://discord.gg/EKEwv6d)  
+> [![Fusion Place](https://img.shields.io/badge/Fusion%20%40%20Actual%20Chat-BE145B)](https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo)  
 
 ## What's Inside?
 
@@ -191,7 +191,7 @@ dotnet build
 
 * Check out [Fusion repository on GitHub]
 * Play with [Actual Chat] - a chat app with a mission to improve the quality of your online communication with the modern AI. It allows you to join or initiate a conversation much faster by delivering your voice and its transcription in real-time and follow other people's voice conversations even if you're late to join them. Check it out - it's a fun experience. And feel free to ask your Fusion-related questions here: https://actual.chat/chat/zu3UA03jvX
-* Join our [Discord Server] to ask questions and track project updates. We'll migrate it to [Actual Chat] as soon as it gets "Places" feature (~ Servers in Discord) 😉
+* Join [Fusion Place] to ask questions and track project updates.
 * Go to [Documentation Home].
 
 **P.S.** If you've already spent some time learning about Fusion, 
@@ -221,5 +221,5 @@ please help us to make it better by completing [Fusion Feedback Form]
 [Replica Services]: https://github.com/ActualLab/Fusion.Samples/blob/master/tutorial/Part04.md
 [Fusion In Simple Terms]: https://medium.com/@alexyakunin/stl-fusion-in-simple-terms-65b1975967ab?source=friends_link&sk=04e73e75a52768cf7c3330744a9b1e38
 
-[Discord Server]: https://discord.gg/EKEwv6d
+[Fusion Place]: https://actual.chat/chat/s-1KCdcYy9z2-uJVPKZsbEo
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6

@@ -43,9 +43,9 @@
 }
 
 @code {
-    private static int _lastPingIndex;
     private const int RowLimit = 16;
     private const int ItemLimit = 16;
+    private static int _lastPingIndex;
 
     private readonly CancellationTokenSource? _stopTokenSource;
     private readonly CancellationToken _stopToken;

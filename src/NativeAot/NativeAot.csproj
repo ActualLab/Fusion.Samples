@@ -30,8 +30,8 @@
 
   <!-- Source generators -->
   <ItemGroup>
-    <PackageReference Include="ActualLab.Generators" />
-    <PackageReference Include="MemoryPack.Generator" />
+    <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
+    <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

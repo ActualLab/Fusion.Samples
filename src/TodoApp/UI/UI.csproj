@@ -58,7 +58,7 @@
 
   <!-- Source generators -->
   <ItemGroup>
-    <PackageReference Include="ActualLab.Generators" />
+    <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

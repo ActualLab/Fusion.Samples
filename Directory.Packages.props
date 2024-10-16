@@ -3,7 +3,7 @@
 
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.5.39</ActualLabFusionVersion>
+    <ActualLabFusionVersion>9.5.44</ActualLabFusionVersion>
     <AspNetCoreVersion>8.0.8</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.6.1</BlazoriseVersion>
@@ -99,7 +99,8 @@
 
   <!-- Build-time only -->
   <ItemGroup>
-    <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-    <PackageVersion Include="RestEase.SourceGenerator" Version="1.6.4" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" />
+    <PackageVersion Include="RestEase.SourceGenerator" Version="1.6.4" PrivateAssets="all" />
+    <PackageVersion Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
   </ItemGroup>
 </Project>

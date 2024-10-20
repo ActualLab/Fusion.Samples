@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
@@ -52,6 +54,7 @@ public static class SystemSettings
                 };
 
             WriteLine("System-wide settings:");
+            WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
             WriteLine($"  Thread pool settings: {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
             _isApplied = true;

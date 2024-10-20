@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Builder;
 using Samples.Benchmark;
 using Samples.Benchmark.Client;
 using Samples.Benchmark.Server;
 using ActualLab.Fusion.Server;
+using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Server;
@@ -73,6 +75,7 @@ async Task RunClient()
     var dbServices = ClientServices.DbServices;
     await ServerChecker.WhenReady(BaseUrl, cancellationToken);
     await dbServices.GetRequiredService<DbInitializer>().Initialize(true, cancellationToken);
+    WriteLine($".NET version:       {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
     WriteLine($"Item count:         {ItemCount}");
     WriteLine($"Client concurrency: {TestServiceConcurrency} workers per client or test service");
     WriteLine($"Writer count:       {WriterCount}");

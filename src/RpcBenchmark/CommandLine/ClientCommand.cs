@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Ookii.CommandLine.Validation;

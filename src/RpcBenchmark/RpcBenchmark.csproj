@@ -11,11 +11,14 @@
 
   <!-- Performance-related settings -->
   <PropertyGroup>
-    <ServerGarbageCollection>true</ServerGarbageCollection>
     <TieredCompilation>true</TieredCompilation>
     <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
-    <TieredCompilationQuickJitForLoops>false</TieredCompilationQuickJitForLoops>
+    <TieredCompilationQuickJitForLoops>true</TieredCompilationQuickJitForLoops>
     <TieredPGO>true</TieredPGO>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <RetainVMGarbageCollection>true</RetainVMGarbageCollection>
+    <GarbageCollectionAdaptationMode>0</GarbageCollectionAdaptationMode>
+    <CETCompat>false</CETCompat>
   </PropertyGroup>
 
   <ItemGroup>

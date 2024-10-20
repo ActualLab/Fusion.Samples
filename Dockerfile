@@ -15,7 +15,7 @@ ENTRYPOINT ["sh", "start.sh"]
 
 # Samples
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 RUN apt update \
     && apt install -y --no-install-recommends python3 python3-pip libatomic1 \
     && rm -rf /var/lib/apt/lists/*

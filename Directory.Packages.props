@@ -3,12 +3,13 @@
 
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.5.45</ActualLabFusionVersion>
-    <AspNetCoreVersion>8.0.8</AspNetCoreVersion>
+    <ActualLabFusionVersion>9.5.47</ActualLabFusionVersion>
+    <AspNetCoreVersion>[9.0.0-rc.2.24474.3,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.6.1</BlazoriseVersion>
-    <EntityFrameworkCoreVersion>$(AspNetCoreVersion)</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreVersion>[8.0.2,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>8.0.4</EntityFrameworkCoreNpgsqlVersion>
+    <MicrosoftExtensionsVersion>[9.0.0-rc.2.24473.5,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.3</MemoryPackVersion>
     <!-- NOTE: v1.20.X is broken, please don't upgrade to it! -->
     <MessagePackVersion>2.4.59</MessagePackVersion>
@@ -52,7 +53,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
     <PackageVersion Include="Pastel" Version="5.1.0" />

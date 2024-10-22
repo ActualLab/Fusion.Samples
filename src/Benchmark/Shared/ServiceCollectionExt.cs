@@ -7,8 +7,10 @@ public static class ServiceCollectionExt
 {
     public static IServiceCollection AddAppDbContext(this IServiceCollection services)
     {
+        var dbHost = Environment.GetEnvironmentVariable("DbHost").NullIfEmpty() ?? "localhost";
+        var dbConnectionString = string.Format(DbConnectionString, dbHost);
         services.AddPooledDbContextFactory<AppDbContext>((_, dbContext) => {
-            dbContext.UseNpgsql(DbConnectionString, _ => { });
+            dbContext.UseNpgsql(dbConnectionString, _ => { });
         }, 512);
         services.AddDbContextServices<AppDbContext>();
         services.AddSingleton<DbInitializer>();

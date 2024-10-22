@@ -1,5 +1,4 @@
 using System.Net.Sockets;
-using static System.Console;
 
 namespace Samples.Benchmark.Client;
 

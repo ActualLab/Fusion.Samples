@@ -77,6 +77,7 @@ ENTRYPOINT ["dotnet", "bin/Release/net9.0/Samples.MeshRpc.dll"]
 # Create Benchmark sample image
 FROM build AS sample_benchmark
 WORKDIR /samples/src/Benchmark
+ENV DbHost=host.docker.internal
 ENTRYPOINT ["dotnet", "bin/Release/net9.0/Samples.Benchmark.dll"]
 
 # Create RpcBenchmark sample image

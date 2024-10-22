@@ -33,34 +33,36 @@ await (args switch {
 
 async Task RunServer()
 {
-    var builder = WebApplication.CreateBuilder();
-    builder.Logging.ClearProviders()
-        .AddDebug()
-        .SetMinimumLevel(LogLevel.Warning);
-
-    // Core services
-    var services = builder.Services;
-    services.AddAppDbContext();
-    var fusion = services.AddFusion(RpcServiceMode.Server);
-    fusion.AddWebServer();
-
-    // Benchmark services
-    fusion.AddService<IFusionTestService, FusionTestService>();
-    fusion.Rpc.Service<IRpcTestService>().HasServer<IFusionTestService>();
-
-    // Build app & initialize DB
-    var app = builder.Build();
-    var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
-    await dbInitializer.Initialize(true);
-
-    // Start Kestrel
-    app.Urls.Add(BaseUrl);
-    app.UseWebSockets();
-    app.MapRpcWebSocketServer();
-    app.MapTestService<DbTestService>("/api/dbTestService");
-    app.MapTestService<IFusionTestService>("/api/fusionTestService");
     try {
+        var builder = WebApplication.CreateBuilder();
+        builder.Logging.ClearProviders()
+            .AddDebug()
+            .SetMinimumLevel(LogLevel.Warning);
+
+        // Core services
+        var services = builder.Services;
+        services.AddAppDbContext();
+        var fusion = services.AddFusion(RpcServiceMode.Server);
+        fusion.AddWebServer();
+
+        // Benchmark services
+        fusion.AddService<IFusionTestService, FusionTestService>();
+        fusion.Rpc.Service<IRpcTestService>().HasServer<IFusionTestService>();
+
+        // Build app & initialize DB
+        var app = builder.Build();
+        var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
+        await dbInitializer.Initialize(true);
+
+        // Start Kestrel
+        app.Urls.Add(BaseUrl);
+        app.UseWebSockets();
+        app.MapRpcWebSocketServer();
+        app.MapTestService<DbTestService>("/api/dbTestService");
+        app.MapTestService<IFusionTestService>("/api/fusionTestService");
+
         await app.StartAsync(cancellationToken);
+        WriteLine($"Server started @ {BaseUrl}");
         await TaskExt.NewNeverEndingUnreferenced().WaitAsync(cancellationToken);
     }
     catch (OperationCanceledException) { }

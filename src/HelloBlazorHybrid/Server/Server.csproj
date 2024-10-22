@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UI\UI.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.GitHub" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
@@ -15,9 +20,10 @@
     <PackageReference Include="ActualLab.Fusion.Server" />
   </ItemGroup>
 
+  <!-- Roslyn generators/analyzers -->
   <ItemGroup>
-    <ProjectReference Include="..\UI\UI.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
+    <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
+    <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

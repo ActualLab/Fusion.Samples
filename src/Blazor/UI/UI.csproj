@@ -41,6 +41,11 @@
     <PackageReference Include="UAParser" />
   </ItemGroup>
 
+  <!-- Roslyn generators/analyzers -->
+  <ItemGroup>
+    <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup>
     <Content Update="wwwroot\css\*.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

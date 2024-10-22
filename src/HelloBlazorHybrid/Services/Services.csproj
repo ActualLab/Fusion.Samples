@@ -14,4 +14,10 @@
     <PackageReference Include="ActualLab.Fusion.EntityFramework" />
   </ItemGroup>
 
+  <!-- Roslyn generators/analyzers -->
+  <ItemGroup>
+    <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
+    <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>

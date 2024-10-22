@@ -6,16 +6,16 @@ using Samples.Benchmark.Server;
 using ActualLab.Fusion.Server;
 using ActualLab.OS;
 using ActualLab.Rpc;
-using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Server;
-using ActualLab.Rpc.WebSockets;
 
 #pragma warning disable ASP0000
 
 // var minThreadCount = WorkerCount * 2;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
-ByteSerializer.Default = MessagePackByteSerializer.Default; // Remove to switch back to MemoryPack
+RpcSerializationFormatResolver.Default = RpcSerializationFormatResolver.Default with {
+    DefaultClientFormatKey = "mempack2c-np",
+};
 
 var stopCts = new CancellationTokenSource();
 var cancellationToken = StopToken = stopCts.Token;

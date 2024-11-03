@@ -1,0 +1,8 @@
+services:
+  tutorial:
+    build:
+      context: .
+    volumes:
+      - ./tutorial:/home/jovyan/tutorial
+    ports:
+     - "50005:8888"

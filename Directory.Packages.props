@@ -3,16 +3,14 @@
 
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.5.59</ActualLabFusionVersion>
-    <AspNetCoreVersion>[9.0.0-rc.2.24474.3,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>9.6.2</ActualLabFusionVersion>
+    <AspNetCoreVersion>[9.0.0,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.6.1</BlazoriseVersion>
+    <BlazoriseVersion>1.7.0</BlazoriseVersion>
     <EntityFrameworkCoreVersion>[8.0.2,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>8.0.4</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[9.0.0-rc.2.24473.5,)</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>[9.0.0,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.3</MemoryPackVersion>
-    <!-- NOTE: v1.20.X is broken, please don't upgrade to it! -->
-    <MessagePackVersion>2.4.59</MessagePackVersion>
     <OpenTelemetryVersion>1.8.1</OpenTelemetryVersion>
   </PropertyGroup>
 

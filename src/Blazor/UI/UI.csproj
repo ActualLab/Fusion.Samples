@@ -1,25 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
   <PropertyGroup>
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <RootNamespace>Samples.Blazor.UI</RootNamespace>
     <AssemblyName>Samples.Blazor.UI</AssemblyName>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
-  <!-- Publish & runtime properties -->
   <PropertyGroup>
-    <RunAOTCompilation>false</RunAOTCompilation>
-    <PublishTrimmed>false</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-    <IsTrimmable>true</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Required for WASM+Server projects -->
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <IsTrimmable>true</IsTrimmable>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+    <!--
+    <WasmEnableWebcil>true</WasmEnableWebcil>
+    <WasmEnableSIMD>true</WasmEnableSIMD>
+    -->
   </PropertyGroup>
 
   <!-- Extra trimming roots -->
   <ItemGroup>
-    <TrimmerRootAssembly Include="System.Security.Cryptography.X509Certificates" />
-    <TrimmerRootAssembly Include="System.Text.Json" />
-    <TrimmerRootAssembly Include="System.Collections.Immutable" />
+    <TrimmerRootAssembly Include="Samples.Blazor.UI" />
+    <!-- Blazorise isn't trimmable, so... -->
+    <TrimmerRootAssembly Include="Blazorise" />
+    <TrimmerRootAssembly Include="Blazorise.Bootstrap5" />
+    <TrimmerRootAssembly Include="Blazorise.DataGrid" />
+    <TrimmerRootAssembly Include="Blazorise.Icons.FontAwesome" />
+    <TrimmerRootAssembly Include="Blazorise.Sidebar" />
   </ItemGroup>
 
   <ItemGroup>

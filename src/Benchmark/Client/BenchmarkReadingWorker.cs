@@ -8,7 +8,7 @@ public sealed class BenchmarkReadingWorker : BenchmarkWorker
     private async Task Read(CancellationToken cancellationToken)
     {
         var itemId = (long)(1 + Random.Next(0, ItemCount));
-        var item = await Client.TryGet(itemId, StopToken).ConfigureAwait(false);
+        var item = await Client.TryGet(itemId, cancellationToken).ConfigureAwait(false);
         if (item?.Id != itemId)
             throw new InvalidOperationException();
     }

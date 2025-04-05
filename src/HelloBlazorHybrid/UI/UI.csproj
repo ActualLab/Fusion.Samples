@@ -1,15 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <RootNamespace>Samples.HelloBlazorHybrid.UI</RootNamespace>
     <AssemblyName>Samples.HelloBlazorHybrid.UI</AssemblyName>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Required for WASM+Server projects -->
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <IsTrimmable>true</IsTrimmable>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+    <!--
+    <WasmEnableWebcil>true</WasmEnableWebcil>
+    <WasmEnableSIMD>true</WasmEnableSIMD>
+    -->
+  </PropertyGroup>
+
+  <!-- Extra trimming roots -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Samples.HelloBlazorHybrid.UI" />
+    <!-- Blazorise isn't trimmable, so... -->
+    <TrimmerRootAssembly Include="Blazorise" />
+    <TrimmerRootAssembly Include="Blazorise.Bootstrap5" />
+    <TrimmerRootAssembly Include="Blazorise.DataGrid" />
+    <TrimmerRootAssembly Include="Blazorise.Icons.FontAwesome" />
+    <TrimmerRootAssembly Include="Blazorise.Sidebar" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

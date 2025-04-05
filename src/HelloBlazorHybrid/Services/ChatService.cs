@@ -6,6 +6,7 @@ public class ChatService : IChatService
 {
     private volatile ImmutableList<ChatMessage> _messages = ImmutableList<ChatMessage>.Empty;
 
+    // ReSharper disable once ChangeFieldTypeToSystemThreadingLock
     private readonly object _lock = new();
 
     [CommandHandler]

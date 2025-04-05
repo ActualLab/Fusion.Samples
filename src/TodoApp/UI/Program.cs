@@ -1,16 +1,8 @@
-using ActualLab.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Samples.TodoApp.UI;
 
-namespace Samples.TodoApp.UI;
-
-public class Program
-{
-    public static Task Main(string[] args)
-    {
-        var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        StartupHelper.ConfigureServices(builder.Services, builder);
-        var host = builder.Build();
-        StaticLog.Factory = host.Services.LoggerFactory();
-        return host.RunAsync();
-    }
-}
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+ClientStartup.ConfigureServices(builder.Services, builder);
+var host = builder.Build();
+StaticLog.Factory = host.Services.LoggerFactory();
+await host.RunAsync();

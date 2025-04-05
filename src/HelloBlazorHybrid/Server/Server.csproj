@@ -3,7 +3,12 @@
   <PropertyGroup>
     <AssemblyName>Samples.HelloBlazorHybrid.Server</AssemblyName>
     <RootNamespace>Samples.HelloBlazorHybrid.Server</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Runtime properties -->
+  <PropertyGroup>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,13 +29,6 @@
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
     <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Pages\_Host.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

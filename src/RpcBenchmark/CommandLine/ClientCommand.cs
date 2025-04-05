@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Ookii.CommandLine.Validation;
@@ -71,11 +70,10 @@ public partial class ClientCommand : BenchmarkCommandBase
     [Description("The server URL to connect to.")]
     public string Url { get; set; } = DefaultUrl;
 
-    public override async Task<int> RunAsync()
+    public override async Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
         Url = Url.NormalizeBaseUrl();
         SystemSettings.Apply(MinWorkerThreads, MinIOThreads, SerializationFormat);
-        var cancellationToken = StopToken;
 
         await TcpProbe.WhenReady(Url, cancellationToken);
         WriteLine("Client settings:");

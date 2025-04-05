@@ -1,0 +1,26 @@
+﻿@inject ISessionResolver SessionResolver
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ActualLab.Samples.HelloBlazorServer</title>
+    <base href="/" />
+    <link rel="icon" type="image/png" href="@Assets["favicon.png"]"/>
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["Samples.HelloBlazorServer.styles.css"]" />
+    <ImportMap />
+    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
+</head>
+<body>
+    <App @rendermode="RenderMode.InteractiveServer" SessionId="@SessionResolver.Session.Id"/>
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

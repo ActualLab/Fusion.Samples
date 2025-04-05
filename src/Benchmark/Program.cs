@@ -17,11 +17,11 @@ RpcSerializationFormatResolver.Default = RpcSerializationFormatResolver.Default 
     DefaultClientFormatKey = "mempack2c-np",
 };
 
-var stopCts = new CancellationTokenSource();
-var cancellationToken = StopToken = stopCts.Token;
+var stopTokenSource = new CancellationTokenSource();
+var stopToken = stopTokenSource.Token;
 TreatControlCAsInput = false;
 CancelKeyPress += (_, ea) => {
-    stopCts.Cancel();
+    stopTokenSource.Cancel();
     ea.Cancel = true;
 };
 
@@ -61,9 +61,9 @@ async Task RunServer()
         app.MapTestService<DbTestService>("/api/dbTestService");
         app.MapTestService<IFusionTestService>("/api/fusionTestService");
 
-        await app.StartAsync(cancellationToken);
+        await app.StartAsync(stopToken);
         WriteLine($"Server started @ {BaseUrl}");
-        await TaskExt.NewNeverEndingUnreferenced().WaitAsync(cancellationToken);
+        await TaskExt.NewNeverEndingUnreferenced().WaitAsync(stopToken);
     }
     catch (OperationCanceledException) { }
     catch (Exception error) {
@@ -75,14 +75,14 @@ async Task RunClient()
 {
     // Initialize
     var dbServices = ClientServices.DbServices;
-    await ServerChecker.WhenReady(BaseUrl, cancellationToken);
-    await dbServices.GetRequiredService<DbInitializer>().Initialize(true, cancellationToken);
+    await ServerChecker.WhenReady(BaseUrl, stopToken);
+    await dbServices.GetRequiredService<DbInitializer>().Initialize(true, stopToken);
     WriteLine($".NET version:       {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
     WriteLine($"Item count:         {ItemCount}");
     WriteLine($"Client concurrency: {TestServiceConcurrency} workers per client or test service");
     WriteLine($"Writer count:       {WriterCount}");
     var benchmarkRunner = new BenchmarkRunner("Initialize", ClientServices.LocalDbServiceFactory);
-    await benchmarkRunner.Initialize(cancellationToken);
+    await benchmarkRunner.Initialize(stopToken);
 
     // Run
     WriteLine();
@@ -99,5 +99,5 @@ async Task RunClient()
 
     ReadKey();
     // ReSharper disable once AccessToDisposedClosure
-    stopCts.Cancel();
+    stopTokenSource.Cancel();
 }

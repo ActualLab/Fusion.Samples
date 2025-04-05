@@ -50,6 +50,7 @@
     <Using Condition="$(UseFusion)" Include="ActualLab.CommandR.Commands" />
     <Using Condition="$(UseFusion)" Include="ActualLab.Fusion" />
     <Using Condition="$(UseFusion)" Include="ActualLab.Fusion.Operations" />
+    <Using Include="ActualLab.DependencyInjection" />
     <Using Include="ActualLab.Reflection" />
     <Using Include="ActualLab.Serialization" />
     <Using Include="ActualLab.Text" />

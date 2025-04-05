@@ -9,9 +9,9 @@ public sealed class BenchmarkWritingWorker : BenchmarkWorker
     {
         try {
             var itemId = (long)(1 + Random.Next(0, ItemCount));
-            var item = await Client.TryGet(itemId, StopToken).ConfigureAwait(false);
+            var item = await Client.TryGet(itemId, cancellationToken).ConfigureAwait(false);
             item = item! with { Name = $"Item-{item.Id}-{item.Version + 1}" };
-            await Client.AddOrUpdate(item, item.Version, StopToken).ConfigureAwait(false);
+            await Client.AddOrUpdate(item, item.Version, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException) {
             throw;

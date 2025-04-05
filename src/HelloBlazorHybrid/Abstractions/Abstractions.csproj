@@ -4,7 +4,6 @@
     <OutputType>Library</OutputType>
     <AssemblyName>Samples.HelloBlazorHybrid.Abstractions</AssemblyName>
     <RootNamespace>Samples.HelloBlazorHybrid.Abstractions</RootNamespace>
-    <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>

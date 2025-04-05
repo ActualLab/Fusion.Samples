@@ -1,7 +1,5 @@
 @using ActualLab.OS
 @implements IDisposable
-@inject BlazorCircuitContext BlazorCircuitContext
-@inject ISessionResolver SessionResolver
 
 <CascadingAuthState>
     <ThemeProvider Theme="@Theme">
@@ -21,16 +19,27 @@
 @code {
     private Theme Theme { get; } = new() { IsGradient = true, IsRounded = false };
 
-    [Parameter]
-    public string SessionId { get; set; } = "";
+    [Inject] private IServiceProvider Services { get; set; } = null!;
+    [Inject] private ISessionResolver SessionResolver { get; set; } = null!;
+    [Inject] private BlazorCircuitContext BlazorCircuitContext { get; set; } = null!;
+
+    [Parameter] public string SessionId { get; set; } = "";
+    [Parameter] public string RenderModeKey { get; set; } = "";
 
     protected override void OnInitialized()
     {
-        SessionResolver.Session = OSInfo.IsWebAssembly
-            ? Session.Default
-            : new Session(SessionId);
-        if (!BlazorCircuitContext.IsPrerendering)
-            BlazorCircuitContext.RootComponent = this;
+        if (OSInfo.IsWebAssembly) {
+            // RPC auto-substitutes Session.Default to cookie-based one on the server side for every call
+            SessionResolver.Session = Session.Default;
+            // That's how WASM app starts hosted services
+            var rootServices = Services.Commander().Services;
+            _ = rootServices.HostedServices().Start();
+        }
+        else {
+            SessionResolver.Session = new Session(SessionId);
+        }
+        if (BlazorCircuitContext.IsInteractive)
+            BlazorCircuitContext.Initialize(this.GetDispatcher(), RenderModeDef.GetOrDefault(RenderModeKey));
     }
 
     public void Dispose()

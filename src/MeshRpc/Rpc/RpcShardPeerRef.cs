@@ -10,13 +10,13 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
     private volatile CancellationTokenSource? _rerouteTokenSource;
 
     public ShardRef ShardRef { get; }
-    public Symbol HostId { get; }
+    public string HostId { get; }
     public override CancellationToken RerouteToken => _rerouteTokenSource?.Token ?? CancellationToken.None;
 
-    public static Symbol GetKey(ShardRef shardRef)
+    public static string GetKey(ShardRef shardRef)
     {
         var meshState = MeshState.State.Value;
-        return $"{shardRef} v{meshState.Version} -> {meshState.GetShardHost(shardRef)?.Id.Value ?? "null"}";
+        return $"{shardRef} v{meshState.Version} -> {meshState.GetShardHost(shardRef)?.Id ?? "null"}";
     }
 
     public static RpcShardPeerRef Get(ShardRef shardRef)
@@ -40,7 +40,7 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
         : base(GetKey(shardRef))
     {
         ShardRef = shardRef;
-        HostId = Key.Value.Split(" -> ")[1];
+        HostId = Key.Split(" -> ")[1];
     }
 
     public void TryStart(LazySlim<ShardRef, RpcShardPeerRef> lazy)
@@ -54,14 +54,15 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
 
         _ = Task.Run(async () => {
             Console.WriteLine($"{Key}: created.".Pastel(ConsoleColor.Green));
+            var computed = MeshState.State.Computed;
             if (HostId == "null")
-                await MeshState.State.When(x => x.Hosts.Length > 0).ConfigureAwait(false);
+                await computed.When(x => x.Hosts.Length > 0, CancellationToken.None).ConfigureAwait(false);
             else
-                await MeshState.State.When(x => !x.HostById.ContainsKey(HostId)).ConfigureAwait(false);
+                await computed.When(x => !x.HostById.ContainsKey(HostId), CancellationToken.None).ConfigureAwait(false);
             Cache.TryRemove(ShardRef, lazy);
             await _rerouteTokenSource.CancelAsync();
             Console.WriteLine($"{Key}: rerouted.".Pastel(ConsoleColor.Yellow));
-        });
+        }, CancellationToken.None);
     }
 
     public override RpcPeerConnectionKind GetConnectionKind(RpcHub hub)

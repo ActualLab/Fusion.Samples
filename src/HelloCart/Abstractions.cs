@@ -8,39 +8,40 @@ using Pastel;
 
 namespace Samples.HelloCart;
 
-[DataContract, MemoryPackable, MessagePackObject]
+[DataContract, MemoryPackable, MessagePackObject(true)]
 [method: JsonConstructor, MemoryPackConstructor, SerializationConstructor]
 public partial record Product(
-    [property: DataMember, Key(0)] string Id,
-    [property: DataMember, Key(1)] decimal Price
+    [property: DataMember] string Id,
+    [property: DataMember] decimal Price
 ) : IHasId<string>;
 
-[DataContract, MemoryPackable, MessagePackObject]
+[DataContract, MemoryPackable, MessagePackObject(true)]
 [method: JsonConstructor, MemoryPackConstructor, SerializationConstructor]
 public partial record Cart(
-    [property: DataMember, Key(0)] string Id
+    [property: DataMember] string Id
 ) : IHasId<string>
 {
-    [DataMember] public ImmutableDictionary<string, decimal> Items { get; init; } = ImmutableDictionary<string, decimal>.Empty;
+    [DataMember]
+    public ImmutableDictionary<string, decimal> Items { get; init; } = ImmutableDictionary<string, decimal>.Empty;
 }
 
-[DataContract, MemoryPackable, MessagePackObject]
+[DataContract, MemoryPackable, MessagePackObject(true)]
 [method: JsonConstructor, MemoryPackConstructor, SerializationConstructor]
 public partial record EditCommand<TItem>(
-    [property: DataMember, Key(0)] string Id,
-    [property: DataMember, Key(1)] TItem? Item
+    [property: DataMember] string Id,
+    [property: DataMember] TItem? Item
 ) : ICommand<Unit>
     where TItem : class, IHasId<string>
 {
     public EditCommand(TItem value) : this(value.Id, value) { }
 }
 
-[DataContract, MemoryPackable, MessagePackObject]
+[DataContract, MemoryPackable, MessagePackObject(true)]
 [method: JsonConstructor, MemoryPackConstructor, SerializationConstructor]
 public partial record LogMessageCommand(
-    [property: DataMember, Key(0)] Symbol Uuid,
-    [property: DataMember, Key(1)] string Message,
-    [property: DataMember, Key(2)] Moment DelayUntil = default
+    [property: DataMember] string Uuid,
+    [property: DataMember] string Message,
+    [property: DataMember] Moment DelayUntil = default
 ) : ILocalCommand<Unit>, IHasUuid, IHasDelayUntil
 {
     private static long _nextIndex;
@@ -62,7 +63,7 @@ public partial record LogMessageCommand(
         var hasDelayUntil = DelayUntil != default;
         var color = hasDelayUntil ? ConsoleColor.Green : ConsoleColor.Blue;
         Console.WriteLine($"[{Uuid}] {Message}".Pastel(color));
-        if (AppSettings.EnableRandomLogMessageCommandFailures && char.IsDigit(Uuid.Value[^1])) {
+        if (AppSettings.EnableRandomLogMessageCommandFailures && char.IsDigit(Uuid[^1])) {
             await Task.Delay(300, CancellationToken.None).ConfigureAwait(false);
             throw new TransactionException("Can't run this command!");
         }

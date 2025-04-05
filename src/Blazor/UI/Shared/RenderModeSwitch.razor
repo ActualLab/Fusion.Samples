@@ -1,0 +1,20 @@
+@inject JSRuntimeInfo JSRuntimeInfo
+@inject RenderModeHelper RenderModeHelper
+
+@if (JSRuntimeInfo.IsPrerendering) {
+    <span>Loading...</span>
+} else {
+    <RadioGroup Class="@CssClass" TValue="string"
+                Name="RenderMode"
+                CheckedValue="@(RenderModeHelper.CurrentMode?.Key ?? RenderModeDef.Default.Key)"
+                CheckedValueChanged="@(key => RenderModeHelper.ChangeMode(RenderModeDef.GetOrDefault(key)))">
+        @foreach(var mode in RenderModeDef.All) {
+            <Radio TValue="string" Value="@mode.Key">@mode.Title</Radio>
+        }
+    </RadioGroup>
+}
+
+@code {
+    [Parameter]
+    public string CssClass { get; set; } = "";
+}

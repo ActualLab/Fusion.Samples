@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>9.6.2</ActualLabFusionVersion>
-    <AspNetCoreVersion>[9.0.0,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>10.0.45</ActualLabFusionVersion>
+    <AspNetCoreVersion>[9.0.3,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.7.0</BlazoriseVersion>
-    <EntityFrameworkCoreVersion>[8.0.2,)</EntityFrameworkCoreVersion>
-    <EntityFrameworkCoreNpgsqlVersion>8.0.4</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[9.0.0,)</MicrosoftExtensionsVersion>
-    <MemoryPackVersion>1.21.3</MemoryPackVersion>
-    <OpenTelemetryVersion>1.8.1</OpenTelemetryVersion>
+    <BlazoriseVersion>1.7.5</BlazoriseVersion>
+    <EntityFrameworkCoreVersion>[9.0.3,)</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreNpgsqlVersion>[9.0.3,)</EntityFrameworkCoreNpgsqlVersion>
+    <MicrosoftExtensionsVersion>[9.0.3,)</MicrosoftExtensionsVersion>
+    <MemoryPackVersion>1.21.4</MemoryPackVersion>
+    <OpenTelemetryVersion>[1.11.1,)</OpenTelemetryVersion>
   </PropertyGroup>
-
   <!-- Fusion packages -->
   <ItemGroup>
     <PackageVersion Include="ActualLab.Fusion" Version="$(ActualLabFusionVersion)" />
@@ -30,17 +28,16 @@
     <!-- Build-time only -->
     <PackageVersion Include="ActualLab.Generators" Version="$(ActualLabFusionVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
-
   <!-- Other packages -->
   <ItemGroup>
-    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="8.1.0" />
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="9.2.0" />
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.DataGrid" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Sidebar" Version="$(BlazoriseVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(BlazorVersion)" />
@@ -54,20 +51,18 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
-    <PackageVersion Include="Pastel" Version="5.1.0" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.5" />
-    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
+    <PackageVersion Include="Pastel" Version="6.0.1" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.5" />
     <PackageVersion Include="System.Drawing.Common" Version="7.0.0" />
     <PackageVersion Include="UAParser" Version="3.1.47" />
   </ItemGroup>
-
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.6.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="8.0.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.1.0" />
   </ItemGroup>
-
   <ItemGroup>
     <!-- OpenTelemetry - used only in TodoApp sample -->
     <PackageVersion Include="OpenTelemetry.Api" Version="$(OpenTelemetryVersion)" />
@@ -77,25 +72,22 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="$(OpenTelemetryVersion)" />
-    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.3" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3" />
   </ItemGroup>
-
   <!-- RpcBenchmark-specific packages -->
   <ItemGroup>
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.65.0" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.65.0" />
-    <PackageVersion Include="MagicOnion" Version="6.1.4" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.70.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.70.0" />
+    <PackageVersion Include="MagicOnion" Version="7.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Ookii.CommandLine" Version="4.1.0" />
-    <PackageVersion Include="StreamJsonRpc" Version="2.19.27" />
+    <PackageVersion Include="Ookii.CommandLine" Version="5.0.0" />
+    <PackageVersion Include="StreamJsonRpc" Version="2.21.69" />
   </ItemGroup>
-
   <!-- Tutorial-specific -->
   <ItemGroup>
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
   </ItemGroup>
-
   <!-- Build-time only -->
   <ItemGroup>
     <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" />

@@ -2,17 +2,13 @@ using Samples.Blazor.Abstractions;
 using ActualLab.Fusion.Authentication;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
-using ActualLab.Rpc;
-using ActualLab.Rpc.Infrastructure;
-using ActualLab.Rpc.Serialization;
-using ActualLab.Rpc.WebSockets;
 using static System.Console;
 
 var services = CreateServiceProvider();
 var stateFactory = services.StateFactory();
 var chat = services.GetRequiredService<IChatService>();
 var seenMessageIds = new ConcurrentDictionary<long, Unit>();
-using var timeState = stateFactory.NewComputed<ChatMessageList>(async (s, cancellationToken) => {
+using var state = stateFactory.NewComputed<ChatMessageList>(async (s, cancellationToken) => {
     var chatPage = await chat.GetChatTail(10, cancellationToken);
     foreach (var message in chatPage.Messages) {
         if (!seenMessageIds.TryAdd(message.Id, default))
@@ -35,7 +31,6 @@ static IServiceProvider CreateServiceProvider()
     });
 
     var baseUri = new Uri("http://localhost:5005");
-    var apiBaseUri = new Uri($"{baseUri}api/");
 
     // Fusion
     var fusion = services.AddFusion();

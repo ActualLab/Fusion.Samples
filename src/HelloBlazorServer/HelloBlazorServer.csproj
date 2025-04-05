@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  
   <PropertyGroup>
     <AssemblyName>Samples.HelloBlazorServer</AssemblyName>
     <RootNamespace>Samples.HelloBlazorServer</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Runtime properties -->
+  <PropertyGroup>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,4 +20,5 @@
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
   </ItemGroup>
+  
 </Project>

@@ -33,6 +33,6 @@ public static class Program
             StripCommandNameSuffix = "Command",
         };
         var commandManager = new CommandManager(options);
-        return await commandManager.RunCommandAsync(args) ?? 1;
+        return await commandManager.RunCommandAsync(args, StopToken) ?? 1;
     }
 }

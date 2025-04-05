@@ -17,6 +17,4 @@ public static class Settings
     public static readonly double Duration = 5; // In seconds
     public static readonly double WarmupDuration = 1; // In seconds
     public static readonly int TryCount = 4;
-
-    public static CancellationToken StopToken;
 }

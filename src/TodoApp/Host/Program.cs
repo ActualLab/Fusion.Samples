@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ActualLab.DependencyInjection;
 using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Blazor.Authentication;
 using Microsoft.Extensions.Configuration.Memory;
@@ -30,6 +29,8 @@ using Microsoft.Extensions.Hosting;
 using Samples.TodoApp;
 using Samples.TodoApp.Abstractions;
 using Samples.TodoApp.Host;
+using Samples.TodoApp.Host.Components;
+using Samples.TodoApp.Host.Components.Pages;
 using Samples.TodoApp.Services;
 using Samples.TodoApp.Services.Db;
 using Samples.TodoApp.UI;
@@ -76,6 +77,7 @@ builder.WebHost.UseDefaultServiceProvider((ctx, options) => {
 // Build & configure app
 var app = builder.Build();
 StaticLog.Factory = app.Services.LoggerFactory();
+var log = StaticLog.For<Program>();
 ConfigureApp();
 
 // Ensure the DB is created
@@ -139,7 +141,7 @@ void ConfigureServices()
                     var tenantIndexes = hostSettings.TenantIndex is { } tenantIndex
                         ? Enumerable.Range(tenantIndex, 1) // Serve just a single tenant
                         : Enumerable.Range(0, hostSettings.TenantCount); // All tenants are served
-                    sharding.AddShardRegistry(tenantIndexes.Select(i => new DbShard($"tenant{i}")));
+                    sharding.AddShardRegistry(tenantIndexes.Select(i => $"tenant{i}"));
                     sharding.AddTransientShardDbContextFactory(ConfigureShardDbContext);
                 });
             }
@@ -148,7 +150,7 @@ void ConfigureServices()
                 db.Services.AddTransientDbContextFactory<AppDbContext>((c, db) => {
                     // We use fakeShard here solely to be able to
                     // re-use the configuration logic from ConfigureShardDbContext.
-                    ConfigureShardDbContext(c, default, db);
+                    ConfigureShardDbContext(c, DbShard.Single, db);
                 });
             }
         });
@@ -209,7 +211,7 @@ void ConfigureServices()
     }
 
     // Shared services
-    StartupHelper.ConfigureSharedServices(services, hostKind, hostSettings.BackendUrl);
+    ClientStartup.ConfigureSharedServices(services, hostKind, hostSettings.BackendUrl);
 
     // ASP.NET Core authentication providers
     services.AddAuthentication(options => {
@@ -250,16 +252,15 @@ void ConfigureServices()
         o.DisconnectedCircuitMaxRetained = 1;
         o.DisconnectedCircuitRetentionPeriod = TimeSpan.FromSeconds(30);
     });
-    services.AddRazorPages();
-#if NET8_0_OR_GREATER
-    services.AddRazorComponents();
-#endif
+    builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents()
+        .AddInteractiveWebAssemblyComponents();
     fusion.AddBlazor().AddAuthentication().AddPresenceReporter(); // Must follow services.AddServerSideBlazor()!
     services.AddBlazorCircuitActivitySuppressor();
 }
 
 // ReSharper disable once VariableHidesOuterVariable
-void ConfigureShardDbContext(IServiceProvider services, DbShard shard, DbContextOptionsBuilder db)
+void ConfigureShardDbContext(IServiceProvider services, string shard, DbContextOptionsBuilder db)
 {
     if (!string.IsNullOrEmpty(hostSettings.UseSqlServer))
         db.UseSqlServer(hostSettings.UseSqlServer.Interpolate(shard));
@@ -280,26 +281,14 @@ void ConfigureShardDbContext(IServiceProvider services, DbShard shard, DbContext
 
 void ConfigureApp()
 {
-    // This server serves static content from Blazor Client,
-    // and since we don't copy it to local wwwroot,
-    // we need to find Client's wwwroot in bin/(Debug/Release) folder
-    // and set it as this server's content root.
-    var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
-    var binCfgPart = Regex.Match(baseDir, @"[\\/]bin[\\/]\w+[\\/]").Value;
-    var wwwRootPath = Path.Combine(baseDir, "wwwroot");
-    if (!Directory.Exists(Path.Combine(wwwRootPath, "_framework")))
-        // This is a regular build, not a build produced w/ "publish",
-        // so we remap wwwroot to the client's wwwroot folder
-        wwwRootPath = Path.GetFullPath(Path.Combine(baseDir, $"../../../../UI/{binCfgPart}/net9.0/wwwroot"));
-    env.WebRootPath = wwwRootPath;
-    env.WebRootFileProvider = new PhysicalFileProvider(env.WebRootPath);
+    // Configure the HTTP request pipeline
     StaticWebAssetsLoader.UseStaticWebAssets(env, cfg);
-    if (env.IsDevelopment()) {
-        app.UseDeveloperExceptionPage();
+    if (app.Environment.IsDevelopment()) {
         app.UseWebAssemblyDebugging();
     }
     else {
-        app.UseExceptionHandler("/Error");
+        app.UseExceptionHandler("/Error", createScopeForErrors: true);
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
     app.UseHttpsRedirection();
@@ -307,30 +296,19 @@ void ConfigureApp()
         KeepAliveInterval = TimeSpan.FromSeconds(30),
     });
     app.UseFusionSession();
-
-    // Change Blazor Server culture
-    app.Use(async (_, next) => {
-        var culture = CultureInfo.CreateSpecificCulture("fr-FR");
-        CultureInfo.CurrentCulture = culture;
-        CultureInfo.CurrentUICulture = culture;
-        await next().ConfigureAwait(false);
-    });
-
-    // Blazor + static files
-    app.UseBlazorFrameworkFiles();
-    app.UseStaticFiles();
-
-    // API controllers
     app.UseRouting();
     app.UseAuthentication();
-#pragma warning disable ASP0014
-    app.UseEndpoints(endpoints => {
-        endpoints.MapBlazorHub();
-        endpoints.MapRpcWebSocketServer();
-        endpoints.MapFusionAuth();
-        endpoints.MapFusionBlazorMode();
-        // endpoints.MapControllers();
-        endpoints.MapFallbackToPage("/_Host");
-    });
-#pragma warning restore ASP0014
+    app.UseAntiforgery();
+
+    // Razor components
+    app.MapStaticAssets();
+    app.MapRazorComponents<_HostPage>()
+        .AddInteractiveServerRenderMode()
+        .AddInteractiveWebAssemblyRenderMode()
+        .AddAdditionalAssemblies(typeof(App).Assembly);
+
+    // Fusion endpoints
+    app.MapRpcWebSocketServer();
+    app.MapFusionAuthEndpoints();
+    app.MapFusionRenderModeEndpoints();
 }

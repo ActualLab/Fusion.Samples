@@ -4,6 +4,7 @@ public class ChatService : IComputeService
 {
     private volatile ImmutableList<(DateTime Time, string Name, string Message)> _messages =
         ImmutableList<(DateTime, string, string)>.Empty;
+    // ReSharper disable once ChangeFieldTypeToSystemThreadingLock
     private readonly object _lock = new();
 
     [CommandHandler]

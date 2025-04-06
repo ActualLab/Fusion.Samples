@@ -98,7 +98,8 @@ public class ChatService(
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken);
         if (Invalidation.IsActive) {
-            var isNewUser = context.Operation.Items.GetOrDefault(false);
+            // Built-in AuthBackend_SignIn command handler sets this flag:
+            var isNewUser = context.Operation.Items.KeylessGet(false);
             if (isNewUser) {
                 _ = GetUserCount(default);
                 _ = GetActiveUserCount(default);

@@ -33,7 +33,7 @@ public static class SystemSettings
             // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
             // RpcByteMessageSerializer.Defaults.AllowProjection = true;
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
-                () => new RpcByteArgumentSerializer(MemoryPackByteSerializer.Default),
+                () => new RpcByteArgumentSerializerV3(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializer(peer) { AllowProjection = true });
             var allFormats = RpcSerializationFormat.All.Add(custom);
             var key = (Symbol)serializationFormat.ToLowerInvariant();

@@ -91,7 +91,7 @@ FROM build AS publish
 WORKDIR /samples
 RUN dotnet publish -c:Release --no-build --no-restore src/Blazor/Server/Server.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 WORKDIR /samples
 COPY --from=publish /samples .

@@ -32,7 +32,5 @@
     }
 
     private async Task Increment()
-    {
-        await CounterService.Increment();
-    }
+        => await CounterService.Increment();
 }

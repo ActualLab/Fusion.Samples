@@ -63,7 +63,7 @@ void ConfigureServices()
     var fusion = services.AddFusion();
 
     // Fusion services
-    fusion.AddFusionTime(); // IFusionTime is one of built-in compute services you can use
+    fusion.AddFusionTime(); // IFusionTime is one of the built-in compute services you can use
     fusion.AddService<CounterService>();
     fusion.AddService<WeatherForecastService>();
     fusion.AddService<ChatService>();

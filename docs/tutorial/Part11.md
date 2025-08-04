@@ -380,8 +380,7 @@ So all we need is to make `ISessionResolver` to resolve `Session.Default` on the
 @code {
     private Theme Theme { get; } = new() { IsGradient = true, IsRounded = false };
 
-    [Parameter]
-    public string SessionId { get; set; } = Session.Default.Id;
+    [Parameter] public string SessionId { get; set; } = Session.Default.Id;
 
     protected override void OnInitialized()
     {

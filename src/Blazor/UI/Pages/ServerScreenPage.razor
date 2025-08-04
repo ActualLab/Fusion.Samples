@@ -43,8 +43,7 @@
     private readonly FpsCounter _fps = new();
     private int ParsedWidth => Math.Max(8, Math.Min(1920, int.TryParse(Width, out var v) ? v : 0));
 
-    [Parameter]
-    public string Width { get; set; } = "1280"; // Parameter changes trigger InvalidateState() by default
+    [Parameter] public string Width { get; set; } = "1280"; // Parameter changes trigger InvalidateState() by default
 
     protected override ComputedState<Screenshot>.Options GetStateOptions()
         => new () {

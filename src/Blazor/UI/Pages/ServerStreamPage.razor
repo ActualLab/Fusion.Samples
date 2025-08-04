@@ -1,7 +1,6 @@
 @page "/serverStream"
 @using System.Threading
 @using System.Globalization
-@using ActualLab.Channels
 @implements IDisposable
 @inject IScreenshotService Screenshots
 
@@ -40,21 +39,19 @@
     private readonly FpsCounter _fps = new();
     private CancellationTokenSource? _stopCts;
     private Screenshot _screenshot = new();
-    private string _editableWidth = "";
 
     private string EditableWidth {
-        get => _editableWidth;
+        get;
         set {
-            _editableWidth = value;
+            field = value;
             RestartStreaming();
         }
-    }
+    } = "";
 
     private int ParsedWidth
         => Math.Max(8, Math.Min(1920, int.TryParse(EditableWidth, out var v) ? v : 0));
 
-    [Parameter]
-    public string Width { get; set; } = "1280"; // Parameter changes trigger InvalidateState() by default
+    [Parameter] public string Width { get; set; } = "1280"; // Parameter changes trigger InvalidateState() by default
 
     public void Dispose()
         => _stopCts.CancelAndDisposeSilently();

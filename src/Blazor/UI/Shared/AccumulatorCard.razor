@@ -1,7 +1,6 @@
 @using System.Threading
 @inherits MixedStateComponent<double, AccumulatorCard.LocalModel>
 @inject ISumService SumService
-@inject UICommander UICommander
 
 @{
     var accumulator = State.LastNonErrorValue;

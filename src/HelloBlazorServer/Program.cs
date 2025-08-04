@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
-using Samples.HelloBlazorServer;
 using Samples.HelloBlazorServer.Components.Pages;
 using Samples.HelloBlazorServer.Services;
 

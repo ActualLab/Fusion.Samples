@@ -1,11 +1,8 @@
 @page "/chat"
 @using System.Threading
 @inherits MixedStateComponent<ChatPage.Model, ChatPage.LocalsModel>
-@inject Session Session
 @inject IAuth Auth
 @inject IChatService Chats
-@inject UICommander UICommander
-@inject NavigationManager Nav
 
 @{
     var locals = MutableState.Value;

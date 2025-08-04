@@ -1,7 +1,5 @@
 @inherits ComputedStateComponent<TodoItem?>
-@inject Session Session
 @inject ITodoApi TodoApi
-@inject UICommander UICommander
 @inject ILogger<TodoItemView> Log
 
 @{
@@ -10,7 +8,7 @@
     Log.LogInformation(
         "Rendering item #{Id} (Computed.Version = {Version}, IsConsistent = {IsConsistent}): {Item}",
         Id, c.Version, c.IsConsistent(), m);
-    if (m == null)
+    if (m is null)
         return;
 }
 
@@ -30,8 +28,7 @@
 </Addons>
 
 @code {
-    [Parameter]
-    public string Id { get; set; } = null!;
+    [Parameter] public string Id { get; set; } = null!;
 
     protected override Task<TodoItem?> ComputeState(CancellationToken cancellationToken)
         => TodoApi.Get(Session, Ulid.Parse(Id), cancellationToken);
@@ -39,7 +36,7 @@
     private Task InvertDone()
     {
         var item = State.Value;
-        if (item == null)
+        if (item is null)
             return Task.CompletedTask;
 
         item = item with { IsDone = !item.IsDone };
@@ -50,7 +47,7 @@
     {
         title = title.Trim();
         var item = State.Value;
-        if (item == null || item.Title == title)
+        if (item is null || item.Title == title)
             return Task.CompletedTask;
 
         item = item with { Title = title };
@@ -60,7 +57,7 @@
     private Task Remove()
     {
         var item = State.Value;
-        if (item == null)
+        if (item is null)
             return Task.CompletedTask;
 
         return UICommander.Run(new Todos_Remove(Session, item.Id));

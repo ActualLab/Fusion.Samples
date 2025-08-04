@@ -2,6 +2,7 @@ using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.Server;
 using ActualLab.Fusion.Server.Middlewares;
+using ActualLab.Fusion.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
@@ -82,7 +83,9 @@ void ConfigureServices()
     });
     builder.Services.AddRazorComponents().AddInteractiveServerComponents();
     fusion.AddBlazor();
-    services.AddBlazorCircuitActivitySuppressor();
+    services.AddScoped<IUpdateDelayer>(_ => FixedDelayer.MinDelay); // Default delay for ComputedStateComponents updates
+
+    // We don't want to add all Fusion auth services, but this one is required to make _HostPage.razor work
     services.AddSingleton(_ => SessionMiddleware.Options.Default);
     services.AddScoped(c => new SessionMiddleware(c.GetRequiredService<SessionMiddleware.Options>(), c));
 }

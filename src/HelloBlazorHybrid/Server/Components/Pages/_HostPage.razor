@@ -32,15 +32,13 @@
     private RenderModeDef? _renderMode; // Static by default
     private string _sessionId = "";
 
-    [Inject]
-    private ISessionResolver SessionResolver { get; init; } = null!;
+    [Inject] private ISessionResolver SessionResolver { get; init; } = null!;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = null!;
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = null!;
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
-        // We want to postpone the very first render till the moment async code below completes.
+        // We want to postpone the very first render till the moment the async code below completes.
         // That's why we override SetParametersAsync instead of OnInitializedAsync.
         if (!_isInitialized) {
             _isInitialized = true;

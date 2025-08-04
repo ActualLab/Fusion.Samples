@@ -26,7 +26,7 @@ public static class ClientStartup
     {
         var logging = builder.Logging;
         logging.SetMinimumLevel(LogLevel.Warning);
-        logging.AddFilter(typeof(App).Namespace, LogLevel.Information);
+        logging.AddFilter(typeof(App).Namespace, LogLevel.Debug);
         logging.AddFilter(typeof(Computed).Namespace, LogLevel.Information);
         logging.AddFilter(typeof(InMemoryRemoteComputedCache).Namespace, LogLevel.Information);
         logging.AddFilter(typeof(RpcHub).Namespace, LogLevel.Debug);
@@ -40,9 +40,23 @@ public static class ClientStartup
 #endif
         // Default RPC client serialization format
         RpcSerializationFormatResolver.Default = RpcSerializationFormatResolver.Default with {
-            // DefaultClientFormatKey = "msgpack3",
-            // DefaultClientFormatKey = "mempack3",
+            // DefaultClientFormatKey = "mempack3c",
+            // DefaultClientFormatKey = "msgpack3c",
             // DefaultClientFormatKey = "json3",
+        };
+
+        // The block of code below is totally optional.
+        // It makes Fusion to delay initial compute method RCP calls if they're resolved as "hit" into the local cache.
+        // I.e., we can postpone a majority (or all) of RPC calls on startup to let the app start a bit faster.
+        // Note that it makes sense only if there are hundreds or thousands of such calls.
+        // We use a single instance of the initial delay task - we want it to be
+        // an absolute delay from the app start rather than a relative delay for each call.
+        var hitToCallDelayTask = Task
+            .Delay(TimeSpan.FromSeconds(1)) // Initial delay of 1 second
+            .ContinueWith(_ => RemoteComputedCache.HitToCallDelayer = null, TaskScheduler.Default); // Reset the delayer once the initial delay is over
+        RemoteComputedCache.HitToCallDelayer = (input, peer) => {
+            peer.InternalServices.Log.LogDebug("'{PeerRef}': Delaying {Input}", peer.Ref, input);
+            return hitToCallDelayTask;
         };
 
         // Fusion services
@@ -84,7 +98,7 @@ public static class ClientStartup
 
             // Highly recommended option for client & API servers:
             RpcDefaultDelegates.FrameDelayerProvider = RpcFrameDelayerProviders.Auto();
-            // Lets ComputedState to be dependent on e.g. current culture - use only if you need this:
+            // Lets ComputedState to be dependent on, e.g., current culture - use only if you need this:
             // ComputedState.DefaultOptions.FlowExecutionContext = true;
             fusion.Rpc.AddWebSocketClient(remoteRpcHostUrl);
             if (hostKind is HostKind.ApiServer or HostKind.SingleServer) {
@@ -98,6 +112,10 @@ public static class ClientStartup
             fusion.AddComputeService<Todos>(ServiceLifetime.Scoped);
             services.AddScoped(c => new RpcPeerStateMonitor(c, OSInfo.IsAnyClient ? RpcPeerRef.Default : null));
             services.AddScoped<IUpdateDelayer>(c => new UpdateDelayer(c.UIActionTracker(), 0.25)); // 0.25s
+
+            // Uncomment to make computed state components to re-render only on re-computation of their state.
+            // Click on DefaultOptions to see when they re-render by default.
+            // ComputedStateComponent.DefaultOptions = ComputedStateComponentOptions.RecomputeStateOnParameterChange;
 
             // Blazorise
             services.AddBlazorise(options => {

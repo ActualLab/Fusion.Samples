@@ -1,15 +1,15 @@
 @page "/authentication"
 @using UAParser
 @inherits ComputedStateComponent<(User? User, List<AuthenticationPage.SessionInfoModel>? Sessions)>
-@inject Session Session
 @inject IAuth Auth
 @inject ClientAuthHelper ClientAuthHelper
 @inject IFusionTime FusionTime
-@inject NavigationManager Nav
 
 @{
-    var state = State.LastNonErrorValue;
-    var error = State.Error;
+    if (State.IsInitial(out var state, out var error)) {
+        <Note Title="Loading..."/>
+        return;
+    }
     var user = state.User.OrGuest();
     var sessions = state.Sessions ?? new();
     var usedAuthSchemas = user.Identities.Select(kv => kv.Key.Schema).ToHashSet();
@@ -156,8 +156,9 @@
 
     protected override async Task<(User?, List<SessionInfoModel>?)> ComputeState(CancellationToken cancellationToken)
     {
+        // await Task.Delay(1000); // Uncomment to simulate loading delay
         var user = await Auth.GetUser(Session, cancellationToken);
-        var sessionInfos = await Auth.GetUserSessions(Session, cancellationToken).ConfigureAwait(false);
+        var sessionInfos = await Auth.GetUserSessions(Session, cancellationToken);
         var result = new List<SessionInfoModel>();
 
         foreach (var sessionInfo in sessionInfos) {

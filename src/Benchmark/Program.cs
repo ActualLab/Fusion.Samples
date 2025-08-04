@@ -47,7 +47,7 @@ async Task RunServer()
 
         // Benchmark services
         fusion.AddService<IFusionTestService, FusionTestService>();
-        fusion.Rpc.Service<IRpcTestService>().HasServer<IFusionTestService>();
+        fusion.Rpc.Service<IRpcTestService>().IsClientAndServer<IFusionTestService>();
 
         // Build app & initialize DB
         var app = builder.Build();

@@ -4,8 +4,6 @@
 @inherits ComputedStateComponent<(string Name, string Message, string Time)[]>
 @inject ChatService Chats
 @inject IFusionTime Time
-@inject NavigationManager Nav
-@inject ICommander Commander
 
 @{
     var state = State.LastNonErrorValue;
@@ -75,7 +73,7 @@
         if (Message == "")
             return;
 
-        await Commander.Call(new Chat_Post(Name, Message));
+        await UICommander.Call(new Chat_Post(Name, Message));
         Message = "";
     }
 }

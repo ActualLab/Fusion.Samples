@@ -1,11 +1,12 @@
 @inherits ComputedStateComponent<User?>
-@inject Session Session
 @inject IAuth Auth
-@inject RenderModeHelper RenderModeHelper
 @inject ClientAuthHelper ClientAuthHelper
 
 @{
-    var user = State.LastNonErrorValue.OrGuest();
+    if (State.IsInitial(out var user))
+        return;
+
+    user = user.OrGuest();
     var usedAuthSchemas = user.Identities.Select(kv => kv.Key.Schema).ToHashSet();
     var unusedAuthSchemas = AuthSchemas.Where(p => !usedAuthSchemas.Contains(p.Name)).ToArray();
 }
@@ -26,10 +27,8 @@
 @code {
     private (string Name, string DisplayName)[] AuthSchemas { get; set; } = [];
 
-    [Parameter]
-    public string CssClass { get; set; } = "";
-    [Parameter]
-    public string Why { get; set; } = "";
+    [Parameter] public string CssClass { get; set; } = "";
+    [Parameter] public string Why { get; set; } = "";
 
     protected override Task<User?> ComputeState(CancellationToken cancellationToken)
         => Auth.GetUser(Session, cancellationToken);

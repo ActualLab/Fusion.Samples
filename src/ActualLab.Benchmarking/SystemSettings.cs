@@ -30,8 +30,6 @@ public static class SystemSettings
             RpcDefaultDelegates.CallTracerFactory = _ => null;
 
             // ActualLab.Rpc serialization formats
-            // RpcByteArgumentSerializer.CopySizeThreshold = 1024;
-            // RpcByteMessageSerializer.Defaults.AllowProjection = true;
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
                 () => new RpcByteArgumentSerializerV3(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializer(peer) { AllowProjection = true });
@@ -45,12 +43,31 @@ public static class SystemSettings
             }
             RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats.ToArray());
 
+            // RPC argument and message serializer tweaks
+            RpcArgumentSerializer.CopyThreshold = 1024;
+            RpcByteMessageSerializer.Defaults.AllowProjection = true; // Improves large object deserialization performance
+
+            // WebSocketChannel<RpcMessage> settings.
+            // They're here mostly for convenience - the values here are the same as the default ones.
             RpcDefaultDelegates.WebSocketChannelOptionsProvider =
                 (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
                     Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
-                    MinReadBufferSize = 16_384,
-                    MinWriteBufferSize = 16_384,
-                    WriteFrameSize = 8_900, // 6 x 1500(MTU) minus some reserve
+                    WriteFrameSize = 12_000, // 8 x 1500(MTU) minus some reserve
+                    MinReadBufferSize = 24_000,
+                    MinWriteBufferSize = 24_000,
+                    RetainedBufferSize = 120_000,
+                    ReadChannelOptions = new BoundedChannelOptions(240) {
+                        FullMode = BoundedChannelFullMode.Wait,
+                        SingleReader = true,
+                        SingleWriter = true,
+                        AllowSynchronousContinuations = true,
+                    },
+                    WriteChannelOptions = new BoundedChannelOptions(240) {
+                        FullMode = BoundedChannelFullMode.Wait,
+                        SingleReader = true,
+                        SingleWriter = false,
+                        AllowSynchronousContinuations = true,
+                    },
                 };
 
             WriteLine("System-wide settings:");

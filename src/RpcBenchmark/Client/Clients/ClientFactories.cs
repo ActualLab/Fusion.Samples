@@ -82,7 +82,7 @@ public sealed class ClientFactories
                 ws.Options.HttpVersion = HttpVersion.Version11;
                 ws.Options.HttpVersionPolicy = HttpVersionPolicy.RequestVersionExact;
                 ws.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
-                return new WebSocketOwner(peer.Ref.Key, ws, c);
+                return new WebSocketOwner(peer.Ref.Address, ws, c);
             },
         });
 

@@ -38,7 +38,7 @@ public class Greeter(IClientNotifier clientNotifier) : IGreeter
                 try {
                     while (true) {
                         await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-                        await clientNotifier.Notify(peer.Ref.Key, DateTime.Now, cancellationToken).ConfigureAwait(false);
+                        await clientNotifier.Notify(peer.Ref.Address, DateTime.Now, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 finally {

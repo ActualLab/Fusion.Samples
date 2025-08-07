@@ -33,7 +33,7 @@ async Task RunServer()
         return (methodDef, args) => {
             rpcHub ??= c.RpcHub(); // We can't resolve it earlier, coz otherwise it will trigger recursion
             if (methodDef.Service.Type == typeof(IClientNotifier))
-                return new RpcPeerRef(args.Get<Symbol>(0), true);
+                return RpcPeerRef.FromAddress(args.Get<string>(0));
             return RpcPeerRef.Default;
         };
     });

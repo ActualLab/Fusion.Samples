@@ -3,7 +3,7 @@ using Pastel;
 
 namespace Samples.MeshRpc;
 
-public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
+public sealed class RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
 {
     private static readonly ConcurrentDictionary<ShardRef, LazySlim<ShardRef, RpcShardPeerRef>> Cache = new();
 
@@ -12,12 +12,6 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
     public ShardRef ShardRef { get; }
     public string HostId { get; }
     public override CancellationToken RerouteToken => _rerouteTokenSource?.Token ?? CancellationToken.None;
-
-    public static string GetKey(ShardRef shardRef)
-    {
-        var meshState = MeshState.State.Value;
-        return $"{shardRef} v{meshState.Version} -> {meshState.GetShardHost(shardRef)?.Id ?? "null"}";
-    }
 
     public static RpcShardPeerRef Get(ShardRef shardRef)
     {
@@ -36,11 +30,15 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
         }
     }
 
+    // Constructor is private to ensure all instances are created through the Get method
     private RpcShardPeerRef(ShardRef shardRef)
-        : base(GetKey(shardRef))
     {
+        var meshState = MeshState.State.Value;
         ShardRef = shardRef;
-        HostId = Key.Split(" -> ")[1];
+        HostId = meshState.GetShardHost(shardRef)?.Id ?? "null";
+        HostInfo = $"{shardRef}-v{meshState.Version}->{HostId}";
+        UseReferentialEquality = true;
+        Initialize();
     }
 
     public void TryStart(LazySlim<ShardRef, RpcShardPeerRef> lazy)
@@ -53,7 +51,7 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
             return;
 
         _ = Task.Run(async () => {
-            Console.WriteLine($"{Key}: created.".Pastel(ConsoleColor.Green));
+            Console.WriteLine($"{Address}: created.".Pastel(ConsoleColor.Green));
             var computed = MeshState.State.Computed;
             if (HostId == "null")
                 await computed.When(x => x.Hosts.Length > 0, CancellationToken.None).ConfigureAwait(false);
@@ -61,15 +59,7 @@ public sealed record RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
                 await computed.When(x => !x.HostById.ContainsKey(HostId), CancellationToken.None).ConfigureAwait(false);
             Cache.TryRemove(ShardRef, lazy);
             await _rerouteTokenSource.CancelAsync();
-            Console.WriteLine($"{Key}: rerouted.".Pastel(ConsoleColor.Yellow));
+            Console.WriteLine($"{Address}: rerouted.".Pastel(ConsoleColor.Yellow));
         }, CancellationToken.None);
-    }
-
-    public override RpcPeerConnectionKind GetConnectionKind(RpcHub hub)
-    {
-        var ownHost = hub.Services.GetRequiredService<Host>();
-        return HostId == ownHost.Id
-            ? RpcPeerConnectionKind.Local
-            : RpcPeerConnectionKind.Remote;
     }
 }

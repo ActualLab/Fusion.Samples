@@ -1,10 +1,10 @@
 ﻿using Samples.MultiServerRpc;
 using ActualLab.Fusion.Server;
 using ActualLab.IO;
+using ActualLab.Mathematics;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Clients;
 using ActualLab.Rpc.Server;
-using CommunityToolkit.HighPerformance;
 using Microsoft.AspNetCore.Builder;
 using static System.Console;
 
@@ -12,7 +12,7 @@ using static System.Console;
 
 const int serverCount = 2;
 var serverUrls = Enumerable.Range(0, serverCount).Select(i => $"http://localhost:{22222 + i}/").ToArray();
-var clientPeerRefs = Enumerable.Range(0, serverCount).Select(i => new RpcPeerRef(serverUrls[i])).ToArray();
+var clientPeerRefs = Enumerable.Range(0, serverCount).Select(i => RpcPeerRef.NewClient(serverUrls[i])).ToArray();
 
 await (args switch {
     ["server"] => RunServers(),
@@ -50,7 +50,7 @@ async Task RunClient()
     var services = new ServiceCollection()
         .AddFusion(fusion => {
             fusion.Rpc.AddWebSocketClient(_ => new RpcWebSocketClient.Options() {
-                HostUrlResolver = (_, peer) => peer.Ref.Key // peer.Ref.Id is the host URL in this sample
+                HostUrlResolver = (_, peer) => peer.Ref.HostInfo // peer.Ref.Id is the host URL in this sample
             });
             fusion.AddClient<IChat>();
         })
@@ -69,7 +69,7 @@ async Task RunClient()
                         hash = args.Get<Chat_Post>(0).ChatId.GetXxHash3();
                     else
                         throw new NotSupportedException("Can't route this call.");
-                    return clientPeerRefs[hash % serverCount];
+                    return clientPeerRefs[hash.PositiveModulo(serverCount)];
                 }
                 return RpcPeerRef.Default;
             };

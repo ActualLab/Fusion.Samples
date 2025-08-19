@@ -2,13 +2,13 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>10.3.21</ActualLabFusionVersion>
-    <AspNetCoreVersion>[9.0.7,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>10.3.45</ActualLabFusionVersion>
+    <AspNetCoreVersion>[9.0.8,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.8.0</BlazoriseVersion>
-    <EntityFrameworkCoreVersion>[9.0.7,)</EntityFrameworkCoreVersion>
+    <BlazoriseVersion>1.8.1</BlazoriseVersion>
+    <EntityFrameworkCoreVersion>[9.0.8,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>[9.0.4,)</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[9.0.7,)</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>[9.0.8,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.12.0,)</OpenTelemetryVersion>
   </PropertyGroup>
@@ -49,7 +49,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
     <PackageVersion Include="Pastel" Version="6.0.1" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.11" />
@@ -59,7 +59,7 @@
   </ItemGroup>
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.1" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.7.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.4.0" />
   </ItemGroup>

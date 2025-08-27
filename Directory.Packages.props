@@ -2,7 +2,7 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>10.4.4</ActualLabFusionVersion>
+    <ActualLabFusionVersion>10.4.5</ActualLabFusionVersion>
     <AspNetCoreVersion>[9.0.8,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.8.1</BlazoriseVersion>

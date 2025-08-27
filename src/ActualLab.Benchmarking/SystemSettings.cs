@@ -45,8 +45,7 @@ public static class SystemSettings
 
             // RPC argument and message serializer tweaks
             RpcArgumentSerializer.CopyThreshold = 1024;
-            RpcByteMessageSerializerV3.Defaults.AllowProjection = true; // Improves large object deserialization performance
-            RpcByteMessageSerializerV4.Defaults.AllowProjection = true; // Improves large object deserialization performance
+            RpcByteMessageSerializer.Defaults.AllowProjection = true; // Improves large object deserialization performance
 
             // WebSocketChannel<RpcMessage> settings.
             // They're here mostly for convenience - the values here are the same as the default ones.

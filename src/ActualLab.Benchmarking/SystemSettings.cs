@@ -32,7 +32,7 @@ public static class SystemSettings
             // ActualLab.Rpc serialization formats
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
                 () => new RpcByteArgumentSerializerV3(MemoryPackByteSerializer.Default),
-                peer => new RpcByteMessageSerializer(peer) { AllowProjection = true });
+                peer => new RpcByteMessageSerializerV4(peer) { AllowProjection = true });
             var allFormats = RpcSerializationFormat.All.Add(custom);
             var key = (Symbol)serializationFormat.ToLowerInvariant();
             var selectedFormat = allFormats.FirstOrDefault(x => x.Key == key);
@@ -45,7 +45,8 @@ public static class SystemSettings
 
             // RPC argument and message serializer tweaks
             RpcArgumentSerializer.CopyThreshold = 1024;
-            RpcByteMessageSerializer.Defaults.AllowProjection = true; // Improves large object deserialization performance
+            RpcByteMessageSerializerV3.Defaults.AllowProjection = true; // Improves large object deserialization performance
+            RpcByteMessageSerializerV4.Defaults.AllowProjection = true; // Improves large object deserialization performance
 
             // WebSocketChannel<RpcMessage> settings.
             // They're here mostly for convenience - the values here are the same as the default ones.

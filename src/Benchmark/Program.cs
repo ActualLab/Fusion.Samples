@@ -14,7 +14,7 @@ using ActualLab.Rpc.Server;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
 RpcSerializationFormatResolver.Default = RpcSerializationFormatResolver.Default with {
-    DefaultClientFormatKey = "mempack3c",
+    DefaultClientFormatKey = "mempack4c",
 };
 
 var stopTokenSource = new CancellationTokenSource();

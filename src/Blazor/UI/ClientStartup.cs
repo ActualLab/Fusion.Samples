@@ -33,8 +33,8 @@ public static class ClientStartup
 
         // Default RPC client serialization format
         RpcSerializationFormatResolver.Default = RpcSerializationFormatResolver.Default with {
-            DefaultClientFormatKey = "mempack3",
-            // DefaultClientFormatKey = "msgpack3",
+            DefaultClientFormatKey = "msgpack4",
+            // DefaultClientFormatKey = "mempack4",
             // DefaultClientFormatKey = "json3",
         };
 

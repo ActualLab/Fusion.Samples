@@ -2,13 +2,13 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>10.4.15</ActualLabFusionVersion>
-    <AspNetCoreVersion>[9.0.8,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>10.5.14</ActualLabFusionVersion>
+    <AspNetCoreVersion>[10.0.0-rc.1.25451.107,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.8.1</BlazoriseVersion>
     <EntityFrameworkCoreVersion>[9.0.8,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>[9.0.4,)</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[9.0.8,)</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>[10.0.0-rc.1.25451.107,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.12.0,)</OpenTelemetryVersion>
   </PropertyGroup>
@@ -37,7 +37,6 @@
     <PackageVersion Include="Blazorise.DataGrid" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Sidebar" Version="$(BlazoriseVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(BlazorVersion)" />

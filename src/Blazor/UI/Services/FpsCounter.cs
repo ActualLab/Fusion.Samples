@@ -2,9 +2,9 @@ using System.Runtime.CompilerServices;
 
 namespace Samples.Blazor.UI.Services;
 
-public sealed class FpsCounter(int frameCount = 15)
+public sealed class FpsCounter(int ringBufferSize = 20)
 {
-    private RingBuffer<CpuTimestamp> _timestamps = new(frameCount);
+    private RingBuffer<CpuTimestamp> _timestamps = new(ringBufferSize);
 
     public double Value {
         get {
@@ -12,7 +12,8 @@ public sealed class FpsCounter(int frameCount = 15)
             if (frameCount < 2)
                 return 0;
 
-            return (frameCount - 1) / (_timestamps[frameCount - 1] - _timestamps[0]).TotalSeconds;
+            var duration = (_timestamps[frameCount - 1] - _timestamps[0]).TotalSeconds;
+            return (frameCount - 1) / duration;
         }
     }
 

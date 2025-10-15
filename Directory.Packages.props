@@ -2,13 +2,13 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>10.5.39</ActualLabFusionVersion>
-    <AspNetCoreVersion>[10.0.0-rc.1.25451.107,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>10.5.57</ActualLabFusionVersion>
+    <AspNetCoreVersion>[10.0.0-rc.2.25502.107,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.8.1</BlazoriseVersion>
+    <BlazoriseVersion>1.8.5</BlazoriseVersion>
     <EntityFrameworkCoreVersion>[9.0.8,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>[9.0.4,)</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[10.0.0-rc.1.25451.107,)</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>[10.0.0-rc.2.25502.107,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.12.0,)</OpenTelemetryVersion>
   </PropertyGroup>
@@ -30,7 +30,7 @@
   </ItemGroup>
   <!-- Other packages -->
   <ItemGroup>
-    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="9.4.0" />
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="9.4.1" />
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />
@@ -58,9 +58,9 @@
   </ItemGroup>
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.1" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.8.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.4.1" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.1" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.1" />
   </ItemGroup>
   <ItemGroup>
     <!-- OpenTelemetry - used only in TodoApp sample -->

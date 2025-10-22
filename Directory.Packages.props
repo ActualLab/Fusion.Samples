@@ -3,13 +3,10 @@
   <!-- Constants -->
   <PropertyGroup>
     <ActualLabFusionVersion>10.5.80</ActualLabFusionVersion>
-    <ActualLabFusionVersion9>10.4.15</ActualLabFusionVersion9>
     <AspNetCoreVersion>[10.0.0-rc.2.25502.107,)</AspNetCoreVersion>
-    <AspNetCoreVersion9>[9.0.10,)</AspNetCoreVersion9>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.8.5</BlazoriseVersion>
     <EntityFrameworkCoreVersion>[9.0.8,)</EntityFrameworkCoreVersion>
-    <EntityFrameworkCoreVersion9>[9.0.8,)</EntityFrameworkCoreVersion9>
     <EntityFrameworkCoreNpgsqlVersion>[9.0.4,)</EntityFrameworkCoreNpgsqlVersion>
     <MicrosoftExtensionsVersion>[10.0.0-rc.2.25502.107,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>

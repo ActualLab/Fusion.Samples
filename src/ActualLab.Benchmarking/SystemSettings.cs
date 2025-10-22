@@ -57,17 +57,12 @@ public static class SystemSettings
                     MinReadBufferSize = 24_000,
                     MinWriteBufferSize = 24_000,
                     RetainedBufferSize = 120_000,
-                    ReadChannelOptions = new BoundedChannelOptions(240) {
-                        FullMode = BoundedChannelFullMode.Wait,
-                        SingleReader = true,
-                        SingleWriter = true,
-                        AllowSynchronousContinuations = true,
-                    },
+                    // ReadChannelOptions aren't used by ActualLab.Rpc, it uses WebSocketChannel.ReadAllUnbuffered()
                     WriteChannelOptions = new BoundedChannelOptions(240) {
                         FullMode = BoundedChannelFullMode.Wait,
                         SingleReader = true,
                         SingleWriter = false,
-                        AllowSynchronousContinuations = true,
+                        AllowSynchronousContinuations = false,
                     },
                 };
 

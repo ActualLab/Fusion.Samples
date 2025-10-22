@@ -26,21 +26,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ActualLab.Fusion" />
+    <PackageReference Include="ActualLab.Rpc.Server" />
+    <PackageReference Include="ActualLab.RestEase" />
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore.Web" />
     <PackageReference Include="MagicOnion" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
     <PackageReference Include="StreamJsonRpc" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
-    <PackageReference Include="ActualLab.Fusion" />
-    <PackageReference Include="ActualLab.Rpc.Server" />
-    <PackageReference Include="ActualLab.RestEase" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net9'))">
-    <PackageReference Include="ActualLab.Fusion" VersionOverride="$(ActualLabFusionVersion9)" />
-    <PackageReference Include="ActualLab.Rpc.Server" VersionOverride="$(ActualLabFusionVersion9)" />
-    <PackageReference Include="ActualLab.RestEase" VersionOverride="$(ActualLabFusionVersion9)" />
   </ItemGroup>
 
   <!-- Roslyn generators/analyzers -->

@@ -26,8 +26,10 @@
   <PropertyGroup>
     <UseMultitargeting>false</UseMultitargeting>
     <UseMultitargeting Condition="$(MSBuildProjectName.Contains('Benchmark'))">true</UseMultitargeting>
+    <!-- Remove the line below if you want to run benchmarks on multiple .NET versions -->
+    <UseMultitargeting>false</UseMultitargeting>
     <TargetFramework Condition="!$(UseMultitargeting)">net10.0</TargetFramework>
-    <TargetFramework Condition="$(UseMultitargeting)">net9.0</TargetFramework>
+    <TargetFrameworks Condition="$(UseMultitargeting)">net10.0;net9.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>

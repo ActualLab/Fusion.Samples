@@ -6,11 +6,8 @@
     <RootNamespace>ActualLab.Benchmarking</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
+  <ItemGroup>
     <PackageReference Include="ActualLab.Fusion" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net9'))">
-    <PackageReference Include="ActualLab.Fusion" VersionOverride="$(ActualLabFusionVersion9)" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,6 @@
 
   <!-- Useful defaults -->
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -25,8 +24,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <UseMultitargeting>false</UseMultitargeting>
+    <UseMultitargeting Condition="$(MSBuildProjectName.Contains('Benchmark'))">true</UseMultitargeting>
+    <!-- Remove the line below if you want to run benchmarks on multiple .NET versions -->
+    <UseMultitargeting>false</UseMultitargeting>
+    <TargetFramework Condition="!$(UseMultitargeting)">net10.0</TargetFramework>
+    <TargetFrameworks Condition="$(UseMultitargeting)">net10.0;net9.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <UseFusion>true</UseFusion>
-    <UseFusion Condition="$(Project.Contains('HelloRpc'))">false</UseFusion>
+    <UseFusion Condition="$(MSBuildProjectName.Contains('HelloRpc'))">false</UseFusion>
   </PropertyGroup>
 
   <!-- Global usings -->

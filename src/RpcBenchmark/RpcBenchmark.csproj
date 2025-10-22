@@ -26,13 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ActualLab.Fusion" />
+    <PackageReference Include="ActualLab.Rpc.Server" />
+    <PackageReference Include="ActualLab.RestEase" />
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore.Web" />
     <PackageReference Include="MagicOnion" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
-    <PackageReference Include="ActualLab.Fusion" />
-    <PackageReference Include="ActualLab.Rpc.Server" />
-    <PackageReference Include="ActualLab.RestEase" />
     <PackageReference Include="StreamJsonRpc" />
   </ItemGroup>
 

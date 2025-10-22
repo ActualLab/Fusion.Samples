@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using ActualLab.Diagnostics;
 using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
@@ -56,17 +57,12 @@ public static class SystemSettings
                     MinReadBufferSize = 24_000,
                     MinWriteBufferSize = 24_000,
                     RetainedBufferSize = 120_000,
-                    ReadChannelOptions = new BoundedChannelOptions(240) {
-                        FullMode = BoundedChannelFullMode.Wait,
-                        SingleReader = true,
-                        SingleWriter = true,
-                        AllowSynchronousContinuations = true,
-                    },
+                    // ReadChannelOptions aren't used by ActualLab.Rpc, it uses WebSocketChannel.ReadAllUnbuffered()
                     WriteChannelOptions = new BoundedChannelOptions(240) {
                         FullMode = BoundedChannelFullMode.Wait,
                         SingleReader = true,
                         SingleWriter = false,
-                        AllowSynchronousContinuations = true,
+                        AllowSynchronousContinuations = false,
                     },
                 };
 
@@ -74,6 +70,7 @@ public static class SystemSettings
             WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
             WriteLine($"  Thread pool settings: {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
+            WriteLine($"  ActualLab.Fusion:     v{typeof(Computed).Assembly.GetInformationalVersion()}");
             _isApplied = true;
         }
     }

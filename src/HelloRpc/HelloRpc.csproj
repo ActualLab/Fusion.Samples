@@ -3,7 +3,6 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>Samples.HelloRpc</AssemblyName>
     <RootNamespace>Samples.HelloRpc</RootNamespace>
-    <UseFusion>false</UseFusion>
   </PropertyGroup>
 
   <ItemGroup>

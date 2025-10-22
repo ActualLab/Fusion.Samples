@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net10.0;net9.0;net8.0;net7.0;net6.0</TargetFrameworks>
     <AssemblyName>ActualLab.Benchmarking</AssemblyName>
     <RootNamespace>ActualLab.Benchmarking</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
     <PackageReference Include="ActualLab.Fusion" />
   </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net9'))">
+    <PackageReference Include="ActualLab.Fusion" VersionOverride="$(ActualLabFusionVersion9)" />
+  </ItemGroup>
+
 </Project>

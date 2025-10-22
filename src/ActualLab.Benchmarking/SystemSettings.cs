@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using ActualLab.Diagnostics;
 using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
@@ -74,6 +75,7 @@ public static class SystemSettings
             WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
             WriteLine($"  Thread pool settings: {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
+            WriteLine($"  ActualLab.Fusion:     v{typeof(Computed).Assembly.GetInformationalVersion()}");
             _isApplied = true;
         }
     }

@@ -137,7 +137,7 @@ services:
       target: sample_rpc_benchmark
     depends_on:
       - sample_rpc_benchmark_server
-    command: client -b calls -w 1000 -cc 20 -s mempack4c -n 4 https://sample_rpc_benchmark_server
+    command: client -b calls -wait -w 1000 -cc 20 -s mempack4c -n 4 https://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:
@@ -149,7 +149,7 @@ services:
       target: sample_rpc_benchmark
     depends_on:
       - sample_rpc_benchmark_server
-    command: client -b streams -w 80 -cc 4 -s mempack4c -n 4 -l rpc,grpc,signalr,jsonrpc https://sample_rpc_benchmark_server
+    command: client -b streams -wait -w 80 -cc 4 -s mempack4c -n 4 -l rpc,grpc,signalr,jsonrpc https://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:

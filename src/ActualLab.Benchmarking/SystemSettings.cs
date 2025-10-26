@@ -26,8 +26,8 @@ public static class SystemSettings
             ThreadPool.SetMinThreads(currentMinWorkerThreads, currentMinIOThreads);
             ThreadPool.SetMaxThreads(16_384, 16_384);
 
-            // Common ActualLab.Rpc tweaks
-            RpcDefaults.Mode = RpcMode.Server;
+            // ActualLab.* tweaks
+            RuntimeInfo.IsServer = true;
             RpcDefaultDelegates.CallTracerFactory = _ => null;
 
             // ActualLab.Rpc serialization formats
@@ -57,7 +57,14 @@ public static class SystemSettings
                     MinReadBufferSize = 24_000,
                     MinWriteBufferSize = 24_000,
                     RetainedBufferSize = 120_000,
-                    // ReadChannelOptions aren't used by ActualLab.Rpc, it uses WebSocketChannel.ReadAllUnbuffered()
+                    ReadMode = ChannelReadMode.Unbuffered, // Unbuffered is faster (and it's the default read mode)
+                    // ReadChannelOptions are unused when ReadMode == ChannelReadMode.Unbuffered
+                    ReadChannelOptions = new BoundedChannelOptions(240) {
+                        FullMode = BoundedChannelFullMode.Wait,
+                        SingleReader = true,
+                        SingleWriter = true,
+                        AllowSynchronousContinuations = false,
+                    },
                     WriteChannelOptions = new BoundedChannelOptions(240) {
                         FullMode = BoundedChannelFullMode.Wait,
                         SingleReader = true,

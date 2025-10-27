@@ -57,15 +57,15 @@ public static class SystemSettings
                     MinReadBufferSize = 24_000,
                     MinWriteBufferSize = 24_000,
                     RetainedBufferSize = 120_000,
-                    ReadMode = ChannelReadMode.Unbuffered, // Unbuffered is faster (and it's the default read mode)
+                    ReadMode = WebSocketChannelReadMode.Unbuffered, // Unbuffered is faster (and it's the default read mode)
                     // ReadChannelOptions are unused when ReadMode == ChannelReadMode.Unbuffered
-                    ReadChannelOptions = new BoundedChannelOptions(240) {
+                    ReadChannelOptions = new BoundedChannelOptions(100) {
                         FullMode = BoundedChannelFullMode.Wait,
                         SingleReader = true,
                         SingleWriter = true,
                         AllowSynchronousContinuations = false,
                     },
-                    WriteChannelOptions = new BoundedChannelOptions(240) {
+                    WriteChannelOptions = new BoundedChannelOptions(500) {
                         FullMode = BoundedChannelFullMode.Wait,
                         SingleReader = true,
                         SingleWriter = false,

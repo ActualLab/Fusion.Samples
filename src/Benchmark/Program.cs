@@ -42,12 +42,11 @@ async Task RunServer()
         // Core services
         var services = builder.Services;
         services.AddAppDbContext();
-        var fusion = services.AddFusion(RpcServiceMode.Server);
+        var fusion = services.AddFusion();
         fusion.AddWebServer();
 
         // Benchmark services
-        fusion.AddService<IFusionTestService, FusionTestService>();
-        fusion.Rpc.Service<IRpcTestService>().IsClientAndServer<IFusionTestService>();
+        fusion.AddServer<IFusionTestService, FusionTestService>();
 
         // Build app & initialize DB
         var app = builder.Build();

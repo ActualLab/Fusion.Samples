@@ -8,13 +8,13 @@ public class SumService(StateFactory stateFactory) : ISumService
 
     public Task Reset(CancellationToken cancellationToken)
     {
-        _accumulator.Value = 0;
+        _accumulator.Set(0);
         return Task.CompletedTask;
     }
 
     public Task Accumulate(double value, CancellationToken cancellationToken)
     {
-        _accumulator.Value += value;
+        _accumulator.Set(x => x + value);
         return Task.CompletedTask;
     }
 

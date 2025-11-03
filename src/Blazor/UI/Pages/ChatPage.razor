@@ -89,17 +89,16 @@
 @code {
     public class LocalsModel
     {
-        private string _name = "";
-
         public string Name {
-            get => _name;
+            get;
             set {
-                if (_name == value)
+                if (field == value)
                     return;
-                _name = value;
+
+                field = value;
                 IsNameModified = true;
             }
-        }
+        } = "";
 
         public bool IsNameModified { get; set; }
         public string Message { get; set; } = "";

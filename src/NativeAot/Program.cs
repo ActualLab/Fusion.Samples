@@ -36,15 +36,13 @@ var services = new ServiceCollection()
         rpc.AddWebSocketClient();
     })
     .AddFusion(fusion => {
-        // We could use .AddDistributedServicePair, but Loopback connection = infinite call loop there
-        fusion.AddClient<ITestService>(addCommandHandlers: false);
-        fusion.AddComputeService<TestService>();
-        fusion.Rpc.Service<ITestService>().IsClientAndServer<TestService>();
+        // We could use .AddDistributedService, but Loopback connection = infinite call loop there
+        fusion.AddServerAndClient<ITestService, TestService>();
     })
     .AddSingleton<RpcCallRouter>(_ => (method, args) => RpcPeerRef.Loopback)
     .BuildServiceProvider();
 
-var client = services.GetRequiredService<ITestService>();
+var client = services.RpcHub().GetClient<ITestService>();
 for (var i = 0; i < 5; i++) {
     Out.WriteLine("Calling GetTime()...");
     var now = await client.GetTime();

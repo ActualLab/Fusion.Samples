@@ -18,14 +18,8 @@
 </p>
 <p>
     This also indicates that all the update delays you see here are local
-    to <code>LiveComponent.State</code>, so they don't interfere with any
+    to <code>ComputedStateComponent.State</code>, so they don't interfere with any
     other component or logic.
-</p>
-<p style="color: darkred">
-    Note that update delay you set here only impacts the updates you get due to
-    actions performed in other windows. Your own updates are shown without
-    any delay - that's what use of <code>UICommander</code> does in
-    <code>Accumulate</code> and <code>Reset</code> action handlers.
 </p>
 
 <Note>
@@ -42,6 +36,16 @@
             </Addon>
             <TextEdit @bind-Text="@UpdateDelayText" />
         </Addons>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.Is6">
+        <p style="color: darkred">
+            The update delay you set here only impacts the updates you get due to
+            actions performed in other windows. Your own updates are shown without
+            any delay - that's what use of <code>UICommander</code> does in
+            <code>Accumulate</code> and <code>Reset</code> action handlers.
+        </p>
     </Column>
 </Row>
 

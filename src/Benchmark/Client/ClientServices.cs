@@ -1,5 +1,6 @@
 using Samples.Benchmark.Server;
 using ActualLab.RestEase;
+using ActualLab.Rpc;
 
 namespace Samples.Benchmark.Client;
 
@@ -38,7 +39,7 @@ public static class ClientServices
         }
         {
             var services = CreateBaseServiceCollection();
-            services.AddFusion().Rpc.AddClient<IRpcTestService>();
+            services.AddRpc().AddClient<IRpcTestService>(nameof(IFusionTestService));
             RemoteFusionServiceViaRpcFactory = () => {
                 var c = services.BuildServiceProvider();
                 return c.GetRequiredService<IRpcTestService>();

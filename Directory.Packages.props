@@ -2,7 +2,7 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>11.0.8</ActualLabFusionVersion>
+    <ActualLabFusionVersion>11.0.15</ActualLabFusionVersion>
     <AspNetCoreVersion>[10.0.0-rc.2.25502.107,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
     <BlazoriseVersion>1.8.5</BlazoriseVersion>
@@ -11,6 +11,7 @@
     <MicrosoftExtensionsVersion>[10.0.0-rc.2.25502.107,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.12.0,)</OpenTelemetryVersion>
+    <AspireSdkVersion>9.5.2</AspireSdkVersion>
   </PropertyGroup>
   <!-- Fusion packages -->
   <ItemGroup>
@@ -58,9 +59,9 @@
   </ItemGroup>
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireSdkVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.10.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.1" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireSdkVersion)" />
   </ItemGroup>
   <ItemGroup>
     <!-- OpenTelemetry - used only in TodoApp sample -->

@@ -17,6 +17,7 @@ using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Server;
 using ActualLab.Rpc.Testing;
+using AspNet.Security.OAuth.GitHub;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Builder;
@@ -186,7 +187,7 @@ void ConfigureServices()
         });
     }
     fusionServer.ConfigureAuthEndpoint(_ => new() {
-        DefaultSignInScheme = MicrosoftAccountDefaults.AuthenticationScheme,
+        DefaultSignInScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
         SignInPropertiesBuilder = (_, properties) => {
             properties.IsPersistent = true;
         }
@@ -229,6 +230,7 @@ void ConfigureServices()
             ctx.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(28);
             return Task.CompletedTask;
         };
+#if false // Disabled for now, MicrosoftAccountClientXxx settings have to be updated
     }).AddMicrosoftAccount(options => {
         options.ClientId = hostSettings.MicrosoftAccountClientId;
         options.ClientSecret = hostSettings.MicrosoftAccountClientSecret;
@@ -236,6 +238,7 @@ void ConfigureServices()
         options.AuthorizationEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize";
         options.TokenEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
         options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+#endif
     }).AddGitHub(options => {
         options.ClientId = hostSettings.GitHubClientId;
         options.ClientSecret = hostSettings.GitHubClientSecret;

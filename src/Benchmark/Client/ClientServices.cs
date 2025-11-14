@@ -39,10 +39,10 @@ public static class ClientServices
         }
         {
             var services = CreateBaseServiceCollection();
-            services.AddRpc().AddClient<IRpcTestService>(nameof(IFusionTestService));
+            services.AddRpc().AddClient<IFusionAsRpcTestService>();
             RemoteFusionServiceViaRpcFactory = () => {
                 var c = services.BuildServiceProvider();
-                return c.GetRequiredService<IRpcTestService>();
+                return c.GetRequiredService<IFusionAsRpcTestService>();
             };
         }
         {

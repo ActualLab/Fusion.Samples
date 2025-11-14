@@ -14,8 +14,8 @@ public interface ITestService
     Task<TestItem?> TryGet(long itemId, CancellationToken cancellationToken = default);
 }
 
-public interface IRpcTestService : ITestService, IRpcService
-{ }
+public interface IRpcTestService : ITestService, IRpcService;
 
-public interface IFusionTestService : IRpcTestService, IComputeService
-{ }
+public interface IFusionTestService : IRpcTestService, IComputeService;
+
+public interface IFusionAsRpcTestService : IRpcTestService;

@@ -75,9 +75,9 @@ public sealed class ClientFactories
         services.AddSingleton(this);
 
         // Rpc
-        services.AddRpc().AddWebSocketClient(c => RpcWebSocketClient.Options.Default with {
-            HostUrlResolver = (_, _) => BaseUrl,
-            WebSocketOwnerFactory = (_, peer) => {
+        services.AddRpc().AddWebSocketClient(c => RpcWebSocketClientOptions.Default with {
+            HostUrlResolver = _ => BaseUrl,
+            WebSocketOwnerFactory = peer => {
                 var ws = new ClientWebSocket();
                 ws.Options.HttpVersion = HttpVersion.Version11;
                 ws.Options.HttpVersionPolicy = HttpVersionPolicy.RequestVersionExact;

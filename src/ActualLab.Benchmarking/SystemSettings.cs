@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using ActualLab.Diagnostics;
 using ActualLab.OS;
 using ActualLab.Rpc;
+using ActualLab.Rpc.Clients;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.WebSockets;
@@ -28,11 +29,13 @@ public static class SystemSettings
 
             // ActualLab.* tweaks
             RuntimeInfo.IsServer = true;
-            RpcDefaultDelegates.CallTracerFactory = _ => null;
+            RpcDiagnosticsOptions.Default = RpcDiagnosticsOptions.Default with {
+                CallTracerFactory = _ => null,
+            };
 
             // ActualLab.Rpc serialization formats
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
-                () => new RpcByteArgumentSerializerV3(MemoryPackByteSerializer.Default),
+                () => new RpcByteArgumentSerializerV4(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializerV4(peer) { AllowProjection = true });
             var allFormats = RpcSerializationFormat.All.Add(custom);
             var key = (Symbol)serializationFormat.ToLowerInvariant();
@@ -42,7 +45,7 @@ public static class SystemSettings
                 Error.WriteLine($"Supported formats: {RpcSerializationFormat.All.Select(x => x.Key).ToDelimitedString()}");
                 throw new ArgumentOutOfRangeException(nameof(serializationFormat));
             }
-            RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats.ToArray());
+            RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats);
 
             // RPC argument and message serializer tweaks
             RpcArgumentSerializer.CopyThreshold = 1024;
@@ -50,14 +53,15 @@ public static class SystemSettings
 
             // WebSocketChannel<RpcMessage> settings.
             // They're here mostly for convenience - the values here are the same as the default ones.
-            RpcDefaultDelegates.WebSocketChannelOptionsProvider =
-                (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-                    Serializer = peer.Hub.SerializationFormats.Get(peer.Ref).MessageSerializerFactory.Invoke(peer),
+            RpcWebSocketClientOptions.Default = RpcWebSocketClientOptions.Default with {
+                WebSocketChannelOptionsFactory = (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
+                    Serializer = peer.SerializationFormat.MessageSerializerFactory.Invoke(peer),
                     WriteFrameSize = 12_000, // 8 x 1500(MTU) minus some reserve
                     MinReadBufferSize = 24_000,
                     MinWriteBufferSize = 24_000,
                     RetainedBufferSize = 120_000,
-                    ReadMode = WebSocketChannelReadMode.Unbuffered, // Unbuffered is faster (and it's the default read mode)
+                    ReadMode = WebSocketChannelReadMode
+                        .Unbuffered, // Unbuffered is faster (and it's the default read mode)
                     // ReadChannelOptions are unused when ReadMode == ChannelReadMode.Unbuffered
                     ReadChannelOptions = new BoundedChannelOptions(100) {
                         FullMode = BoundedChannelFullMode.Wait,
@@ -71,7 +75,8 @@ public static class SystemSettings
                         SingleWriter = false,
                         AllowSynchronousContinuations = false,
                     },
-                };
+                }
+            };
 
             WriteLine("System-wide settings:");
             WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");

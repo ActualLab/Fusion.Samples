@@ -1,4 +1,5 @@
-﻿using Samples.MultiServerRpc;
+﻿using ActualLab.Fusion.Rpc;
+using Samples.MultiServerRpc;
 using ActualLab.Fusion.Server;
 using ActualLab.IO;
 using ActualLab.Mathematics;
@@ -49,17 +50,15 @@ async Task RunClient()
 {
     var services = new ServiceCollection()
         .AddFusion(fusion => {
-            fusion.Rpc.AddWebSocketClient(_ => new RpcWebSocketClient.Options() {
-                HostUrlResolver = (_, peer) => peer.Ref.HostInfo // peer.Ref.Id is the host URL in this sample
-            });
+            fusion.Rpc.AddWebSocketClient();
             fusion.AddClient<IChat>();
         })
-        .AddSingleton<RpcCallRouter>(c => {
-            return (methodDef, args) => {
-                if (methodDef.IsCommand && Invalidation.IsActive)
+        .AddSingleton(_ => FusionRpcOptionOverrides.DefaultOutboundCallOptions with {
+            RouterFactory = method => args => {
+                if (method.Kind is RpcMethodKind.Command && Invalidation.IsActive)
                     return RpcPeerRef.Local; // Commands in invalidation mode must always execute locally
 
-                if (methodDef.Service.Type == typeof(IChat)) {
+                if (method.Service.Type == typeof(IChat)) {
                     var arg0Type = args.GetType(0);
                     int hash;
                     if (arg0Type == typeof(string))
@@ -72,7 +71,7 @@ async Task RunClient()
                     return clientPeerRefs[hash.PositiveModulo(serverCount)];
                 }
                 return RpcPeerRef.Default;
-            };
+            }
         })
         .BuildServiceProvider();
 

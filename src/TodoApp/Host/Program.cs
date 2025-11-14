@@ -161,7 +161,7 @@ void ConfigureServices()
     var fusionServer = fusion.AddWebServer(hostKind == HostKind.BackendServer);
 #if false
     // Enable this to test how the client behaves w/ a delay
-    fusion.Rpc.AddInboundMiddleware(c => new RpcRandomDelayMiddleware(c) {
+    fusion.Rpc.AddInboundCallPreprocessor(c => new RpcRandomDelayInboundCallPreprocessor() {
         Delay = new(1, 0.1),
     });
 #endif
@@ -169,13 +169,13 @@ void ConfigureServices()
     if (hostKind == HostKind.ApiServer) {
         fusion.AddClient<IAuth>(); // IAuth = a client of backend's IAuth
         fusion.AddClient<IAuthBackend>(); // IAuthBackend = a client of backend's IAuthBackend
-        fusion.Rpc.Service<IAuth>().IsServer(typeof(IAuth)).HasClient(); // Expose IAuth (a client) via RPC
+        fusion.Configure<IAuth>().IsServer(typeof(IAuth)).HasClient(); // Expose IAuth (a client) via RPC
     }
     else { // SingleServer or BackendServer
         fusion.AddOperationReprocessor();
         fusion.AddDbAuthService<AppDbContext, string>();
         if (hostKind == HostKind.BackendServer)
-            fusion.Rpc.Service<IAuthBackend>().IsServer(typeof(IAuthBackend)); // Expose IAuthBackend via RPC
+            fusion.Configure<IAuthBackend>().IsServer(typeof(IAuthBackend)); // Expose IAuthBackend via RPC
     }
 
     if (hostSettings.UseTenants) {

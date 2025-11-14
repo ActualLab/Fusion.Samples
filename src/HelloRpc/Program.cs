@@ -27,15 +27,12 @@ async Task RunServer()
     rpc.AddWebSocketServer();
     rpc.AddServer<IGreeter, Greeter>();
     rpc.AddClient<IClientNotifier>();
-    builder.Services.AddSingleton<RpcCallRouter>(c => {
-        // This service is necessary only because of IClientNotifier, which requires call routing
-        RpcHub? rpcHub = null;
-        return (methodDef, args) => {
-            rpcHub ??= c.RpcHub(); // We can't resolve it earlier, coz otherwise it will trigger recursion
-            if (methodDef.Service.Type == typeof(IClientNotifier))
-                return RpcPeerRef.FromAddress(args.Get<string>(0));
-            return RpcPeerRef.Default;
-        };
+    builder.Services.AddSingleton<RpcOutboundCallOptions>(c => RpcOutboundCallOptions.Default with {
+        RouterFactory = methodDef => {
+            if (methodDef.Service.Type == typeof(IClientNotifier)) // Special router for IClientNotifier
+                return args => RpcPeerRef.FromAddress(args.Get<string>(0));
+            return args => RpcPeerRef.Default; // The default one otherwise
+        }
     });
     var app = builder.Build();
     app.Urls.Add(baseUrl);

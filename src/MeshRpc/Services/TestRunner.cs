@@ -30,7 +30,8 @@ public class TestRunner(IServiceProvider services) : WorkerBase
                     if (Services.IsDisposedOrDisposing())
                         return;
 
-                    await Console.Error.WriteLineAsync($"{OwnHost} T{workerId} failed: {e.Message}".PastelBg(ConsoleColor.DarkRed));
+                    await Console.Error.WriteLineAsync(
+                        $"{OwnHost} T{workerId} failed: {e.Message}".PastelBg(ConsoleColor.DarkRed));
                 }
             })
             .ToArray();
@@ -50,10 +51,10 @@ public class TestRunner(IServiceProvider services) : WorkerBase
             if (mustIncrement) {
                 prefix += $".Increment({key})";
                 Console.WriteLine($"{prefix}...".Pastel(ConsoleColor.Gray));
-                var incrementTask = useFusion
-                    ? Commander.Call(new FusionCounter_Increment(key), cancellationToken)
-                    : Commander.Call(new SimpleCounter_Increment(key), cancellationToken);
-                var result = await incrementTask.ConfigureAwait(false);
+                var command = useFusion
+                    ? (ICommand<CounterWithOrigin>)new FusionCounter_Increment(key)
+                    : new SimpleCounter_Increment(key);
+                var result = await Commander.Call(command, cancellationToken);
                 Console.WriteLine($"{prefix} -> {result}");
             }
             else {
@@ -101,7 +102,8 @@ public class TestRunner(IServiceProvider services) : WorkerBase
                     isCorrect = IsCorrect(counter, trueCounter);
                 }
                 if (fixupActions.Count != 0)
-                    Console.WriteLine($"{message}: {fixupActions.ToDelimitedString()}".PastelBg(ConsoleColor.DarkYellow));
+                    Console.WriteLine(
+                        $"{message}: {fixupActions.ToDelimitedString()}".PastelBg(ConsoleColor.DarkYellow));
 
                 if (!isCorrect) {
                     var recency = counter.Counter.UpdatedAt.Elapsed;

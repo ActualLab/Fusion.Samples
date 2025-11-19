@@ -11,7 +11,6 @@ public sealed class RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
 
     public ShardRef ShardRef { get; }
     public string HostId { get; }
-    public override CancellationToken RerouteToken => _rerouteTokenSource?.Token ?? CancellationToken.None;
 
     public static RpcShardPeerRef Get(ShardRef shardRef)
     {
@@ -21,7 +20,7 @@ public sealed class RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
                 static shardRef1 => new LazySlim<ShardRef, RpcShardPeerRef>(shardRef1,
                     static shardRef2 => new RpcShardPeerRef(shardRef2)));
             var shardPeerRef = lazy.Value;
-            if (!shardPeerRef.RerouteToken.IsCancellationRequested) {
+            if (!shardPeerRef.RouteState.IsChanged()) {
                 shardPeerRef.TryStart(lazy);
                 return shardPeerRef;
             }
@@ -46,11 +45,24 @@ public sealed class RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
         if (_rerouteTokenSource is not null)
             return;
 
-        var rerouteTokenSource = new CancellationTokenSource();
-        if (Interlocked.CompareExchange(ref _rerouteTokenSource, rerouteTokenSource, null) is not null)
+        var changeTokenSource = new CancellationTokenSource();
+        if (Interlocked.CompareExchange(ref _rerouteTokenSource, changeTokenSource, null) is not null)
             return;
 
-        _ = Task.Run(async () => {
+        // Initialize RouteState once we have a token source
+        var changeToken = changeTokenSource.Token;
+        var shardLockDelayTask = Task.Delay(1000, changeToken);
+        RouteState = new RpcShardRouteState(WhenShardLocked, changeToken);
+        _ = Task.Run(CancelChangeTokenSourceWhenRerouted, CancellationToken.None);
+        return;
+
+        async ValueTask<CancellationToken> WhenShardLocked(CancellationToken cancellationToken) {
+            await shardLockDelayTask.WaitAsync(cancellationToken).SilentAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return changeToken;
+        }
+
+        async Task? CancelChangeTokenSourceWhenRerouted() {
             Console.WriteLine($"{Address}: created.".Pastel(ConsoleColor.Green));
             var computed = MeshState.State.Computed;
             if (HostId == "null")
@@ -60,6 +72,6 @@ public sealed class RpcShardPeerRef : RpcPeerRef, IMeshPeerRef
             Cache.TryRemove(ShardRef, lazy);
             await _rerouteTokenSource.CancelAsync();
             Console.WriteLine($"{Address}: rerouted.".Pastel(ConsoleColor.Yellow));
-        }, CancellationToken.None);
+        }
     }
 }

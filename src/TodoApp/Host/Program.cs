@@ -15,6 +15,7 @@ using ActualLab.Internal;
 using ActualLab.IO;
 using ActualLab.OS;
 using ActualLab.Rpc;
+using ActualLab.Rpc.Middlewares;
 using ActualLab.Rpc.Server;
 using ActualLab.Rpc.Testing;
 using AspNet.Security.OAuth.GitHub;
@@ -161,9 +162,7 @@ void ConfigureServices()
     var fusionServer = fusion.AddWebServer(hostKind == HostKind.BackendServer);
 #if false
     // Enable this to test how the client behaves w/ a delay
-    fusion.Rpc.AddInboundCallPreprocessor(c => new RpcRandomDelayInboundCallPreprocessor() {
-        Delay = new(1, 0.1),
-    });
+    fusion.Rpc.AddMiddleware(_ => new RpcInboundCallDelayer() { Delay = new(1, 0.1) });
 #endif
 
     if (hostKind == HostKind.ApiServer) {

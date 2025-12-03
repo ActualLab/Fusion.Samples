@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using ActualLab.Fusion.Authentication;
 using ActualLab.Fusion.Blazor;
 using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.Client.Caching;
-using ActualLab.Fusion.Client.Interception;
 using ActualLab.Fusion.Extensions;
 using ActualLab.Fusion.UI;
 using ActualLab.Rpc;
@@ -40,11 +38,11 @@ public static class ClientStartup
         fusion.Rpc.AddWebSocketClient(baseUri);
         // You may comment this out - the call below just enables RPC call logging
         /*
-        services.AddSingleton<RpcPeerFactory>(_ =>
-            static (hub, peerRef) => peerRef.IsServer
+        services.AddSingleton<RpcPeerOptions>(_ => RpcPeerOptions.Default with {
+            PeerFactory = (hub, peerRef) => peerRef.IsServer
                 ? throw new NotSupportedException("No server peers on the client.")
-                : new RpcClientPeer(hub, peerRef) { CallLogLevel = LogLevel.Information }
-        );
+                : new RpcClientPeer(hub, peerRef) { CallLogLevel = LogLevel.Information },
+        });
         */
 
         // Fusion services

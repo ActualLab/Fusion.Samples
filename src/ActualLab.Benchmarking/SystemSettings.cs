@@ -47,6 +47,11 @@ public static class SystemSettings
             }
             RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats);
 
+            // RPC call tracking tweaks
+            RpcLimits.Default = RpcLimits.Default with {
+                CallTimeoutCheckPeriod = new RandomTimeSpan(15, 0.1), // 15s
+            };
+
             // RPC argument and message serializer tweaks
             RpcArgumentSerializer.CopyThreshold = 1024;
             RpcByteMessageSerializer.Defaults.AllowProjection = true; // Improves large object deserialization performance

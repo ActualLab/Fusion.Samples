@@ -31,7 +31,7 @@
   </ItemGroup>
   <!-- Other packages -->
   <ItemGroup>
-    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" />
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />

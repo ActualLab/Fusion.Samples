@@ -3,15 +3,15 @@
   <!-- Constants -->
   <PropertyGroup>
     <ActualLabFusionVersion>11.4.3</ActualLabFusionVersion>
-    <AspNetCoreVersion>[10.0.0,)</AspNetCoreVersion>
+    <AspNetCoreVersion>[10.0.1,)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
-    <BlazoriseVersion>1.8.6</BlazoriseVersion>
+    <BlazoriseVersion>1.8.8</BlazoriseVersion>
     <EntityFrameworkCoreVersion>[10.0.1,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>[10.0.0,)</EntityFrameworkCoreNpgsqlVersion>
     <MicrosoftExtensionsVersion>[10.0.0,)</MicrosoftExtensionsVersion>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.14.0,)</OpenTelemetryVersion>
-    <AspireSdkVersion>13.0.0</AspireSdkVersion>
+    <AspireSdkVersion>13.1.0</AspireSdkVersion>
   </PropertyGroup>
   <!-- Fusion packages -->
   <ItemGroup>
@@ -76,9 +76,9 @@
   </ItemGroup>
   <!-- RpcBenchmark-specific packages -->
   <ItemGroup>
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.71.00" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.71.0" />
-    <PackageVersion Include="MagicOnion" Version="7.0.6" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.76.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.76.0" />
+    <PackageVersion Include="MagicOnion" Version="7.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Ookii.CommandLine" Version="5.0.0" />
     <PackageVersion Include="StreamJsonRpc" Version="2.22.23" />

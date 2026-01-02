@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Security.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,69 +30,89 @@ public partial class ServerCommand : BenchmarkCommandBase
         WriteLine($"Starting server @ {Url}");
 
         var builder = WebApplication.CreateBuilder();
-        builder.Logging.ClearProviders()
-            .AddDebug()
-            .SetMinimumLevel(LogLevel.Warning);
-            // .SetMinimumLevel(LogLevel.Debug)
-            // .AddFilter("Microsoft", LogLevel.Information)
-            // .AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Debug);
+        WebApplication app;
 
-        // Core services
-        var services = builder.Services;
-        services.AddSignalR(hub => {
-            hub.MaximumParallelInvocationsPerClient = 1000; // Can't be too high, otherwise SignalR fails!
-            hub.DisableImplicitFromServicesParameters = true;
-        });
-        var rpc = services.AddRpc();
-        rpc.AddWebSocketServer();
-        services.AddGrpc(o => o.IgnoreUnknownServices = true);
-        services.AddMagicOnion();
-        services.Configure<RouteOptions>(c => c.SuppressCheckForUnhandledSecurityMetadata = true);
-
-        // Benchmark services
-        services.AddSingleton<TestService>();
-        services.AddSingleton<JsonRpcTestService>();
-        rpc.AddServer<ITestService, TestService>();
-
-        // Kestrel
-        builder.WebHost.ConfigureKestrel(kestrel => {
-            kestrel.AddServerHeader = false;
-            kestrel.ConfigureEndpointDefaults(listen => {
-                listen.Protocols = HttpProtocols.Http1 | HttpProtocols.Http2;
-            });
-            var limits = kestrel.Limits;
-            limits.MaxConcurrentConnections = 20_000;
-            limits.MaxConcurrentUpgradedConnections = 20_000;
-            kestrel.AddServerHeader = false;
-            kestrel.ConfigureHttpsDefaults(https => {
-                https.AllowAnyClientCertificate();
-                https.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                https.HandshakeTimeout = TimeSpan.FromSeconds(30);
-            });
-            var http2 = limits.Http2;
-            http2.InitialConnectionWindowSize = 10 * 1024 * 1024;
-            http2.InitialStreamWindowSize = 10 * 768 * 1024;
-            http2.MaxStreamsPerConnection = 20_000;
-        });
-        var app = builder.Build();
-
-        // Map services
-        app.UseWebSockets();
-        app.UseMiddleware<AppServicesMiddleware>();
-        app.MapRpcWebSocketServer();
-        // app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-        app.MapGrpcService<GrpcTestService>();
-        app.MapHub<TestHub>("hubs/testService", o => {
-            o.Transports = HttpTransportType.WebSockets;
-            o.AllowStatefulReconnects = false;
-        });
-        app.MapMagicOnionService();
-        app.MapStreamJsonRpcService<JsonRpcTestService>("stream-json-rpc");
-        app.MapTestService<TestService>("/api/testService");
-        app.Urls.Add(Url);
+        // Configure services
         try {
-            await app.StartAsync(cancellationToken);
-            await TaskExt.NewNeverEndingUnreferenced().WaitAsync(cancellationToken);
+            builder.Logging.ClearProviders();
+            if (Debugger.IsAttached)
+                builder.Logging.AddDebug().SetMinimumLevel(LogLevel.Debug);
+
+            // Core services
+            var services = builder.Services;
+            services.AddSignalR(hub => {
+                hub.MaximumParallelInvocationsPerClient = 1000; // Can't be too high, otherwise SignalR fails!
+                hub.DisableImplicitFromServicesParameters = true;
+            });
+            var rpc = services.AddRpc();
+            rpc.AddWebSocketServer();
+            services.AddGrpc(o => o.IgnoreUnknownServices = true);
+            services.AddMagicOnion();
+            services.Configure<RouteOptions>(c => c.SuppressCheckForUnhandledSecurityMetadata = true);
+
+            // Benchmark services
+            services.AddSingleton<TestService>();
+            services.AddSingleton<JsonRpcTestService>();
+            rpc.AddServer<ITestService, TestService>();
+
+            // Kestrel
+            builder.WebHost.ConfigureKestrel(kestrel => {
+                kestrel.AddServerHeader = false;
+                kestrel.ConfigureEndpointDefaults(listen => {
+                    listen.Protocols = HttpProtocols.Http1 | HttpProtocols.Http2;
+                });
+                var limits = kestrel.Limits;
+                limits.MaxConcurrentConnections = 20_000;
+                limits.MaxConcurrentUpgradedConnections = 20_000;
+                kestrel.AddServerHeader = false;
+                kestrel.ConfigureHttpsDefaults(https => {
+                    https.AllowAnyClientCertificate();
+                    https.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    https.HandshakeTimeout = TimeSpan.FromSeconds(30);
+                });
+                var http2 = limits.Http2;
+                http2.InitialConnectionWindowSize = 10 * 1024 * 1024;
+                http2.InitialStreamWindowSize = 10 * 768 * 1024;
+                http2.MaxStreamsPerConnection = 20_000;
+            });
+            app = builder.Build();
+
+        }
+        catch (Exception error) {
+            await Error.WriteLineAsync($"WebApplication build failed: {error.Message}");
+            return 1;
+        }
+
+        // Configure app
+        await using var _ = app.ConfigureAwait(false);
+        try {
+            // Map services
+            app.UseWebSockets();
+            app.UseMiddleware<AppServicesMiddleware>();
+            app.MapRpcWebSocketServer();
+            // app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+            app.MapGrpcService<GrpcTestService>();
+            app.MapHub<TestHub>("hubs/testService", o => {
+                o.Transports = HttpTransportType.WebSockets;
+                o.AllowStatefulReconnects = false;
+            });
+            // app.MapMagicOnionService();
+            // There is a bug in MO that triggers "Ambiguous match found for MapGrpcService" error
+            // due to new overloads of MapGrpcService method in .NET 10.
+            // We fix it by manually registering MagicOnion service on the next line.
+            app.MapGrpcServiceFixed<MagicOnionTestService>();
+            app.MapStreamJsonRpcService<JsonRpcTestService>("stream-json-rpc");
+            app.MapTestService<TestService>("/api/testService");
+            app.Urls.Add(Url);
+        }
+        catch (Exception error) {
+            await Error.WriteLineAsync($"WebApplication configuration failed: {error.Message}");
+            return 1;
+        }
+
+        // Run app
+        try {
+            await app.RunAsync().WaitAsync(cancellationToken);
         }
         catch (OperationCanceledException) { }
         catch (Exception error) {

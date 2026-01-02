@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using ActualLab.Benchmarking;
 using Microsoft.AspNetCore.Builder;
 using Samples.Benchmark;
 using Samples.Benchmark.Client;
@@ -73,7 +74,7 @@ async Task RunClient()
 {
     // Initialize
     var dbServices = ClientServices.DbServices;
-    await ServerChecker.WhenReady(BaseUrl, stopToken);
+    await TcpProbe.WhenReady(BaseUrl, stopToken);
     await dbServices.GetRequiredService<DbInitializer>().Initialize(true, stopToken);
     WriteLine($".NET version:       {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
     WriteLine($"Item count:         {ItemCount}");

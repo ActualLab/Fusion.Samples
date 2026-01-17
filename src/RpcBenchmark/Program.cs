@@ -1,3 +1,4 @@
+using System.IO;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
@@ -17,11 +18,14 @@ public static class Program
     {
         SizeHintProviders.Register<Item>(static x => 16 + x.Data?.Length ?? 0);
 
-        TreatControlCAsInput = false;
-        CancelKeyPress += (_, ea) => {
-            StopTokenSource.Cancel();
-            ea.Cancel = true;
-        };
+        try {
+            TreatControlCAsInput = false;
+            CancelKeyPress += (_, ea) => {
+                StopTokenSource.Cancel();
+                ea.Cancel = true;
+            };
+        }
+        catch (IOException) { } // Non-interactive mode
 
         if (args.Length == 0)
             return await new TestCommand().RunAsync();

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
 using ActualLab.Benchmarking;
 using Microsoft.AspNetCore.Builder;
 using Samples.Benchmark;
@@ -18,11 +19,14 @@ RpcSerializationFormatResolver.Default = new("mempack5c");
 
 var stopTokenSource = new CancellationTokenSource();
 var stopToken = stopTokenSource.Token;
-TreatControlCAsInput = false;
-CancelKeyPress += (_, ea) => {
-    stopTokenSource.Cancel();
-    ea.Cancel = true;
-};
+try {
+    TreatControlCAsInput = false;
+    CancelKeyPress += (_, ea) => {
+        stopTokenSource.Cancel();
+        ea.Cancel = true;
+    };
+}
+catch (IOException) { } // Non-interactive mode
 
 await (args switch {
     [ "server" ] => RunServer(),
@@ -96,7 +100,8 @@ async Task RunClient()
     await new BenchmarkRunner("HTTP Client -> Fusion Service", ClientServices.RemoteFusionServiceViaHttpFactory, 5).Run();
     await new BenchmarkRunner("HTTP Client -> Regular Service", ClientServices.RemoteDbServiceViaHttpFactory, 5).Run();
 
-    ReadKey();
+    try { ReadKey(); }
+    catch (InvalidOperationException) { } // Non-interactive mode
     // ReSharper disable once AccessToDisposedClosure
     stopTokenSource.Cancel();
 }

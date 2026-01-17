@@ -93,8 +93,10 @@ public partial class ClientCommand : BenchmarkCommandBase
             await new BenchmarkRunner(this, factory, name.Contains("Stream")).RunAll(name, cancellationToken);
         }
 
-        if (Wait)
-            ReadKey();
+        if (Wait) {
+            try { ReadKey(); }
+            catch (InvalidOperationException) { } // Non-interactive mode
+        }
         // ReSharper disable once MethodHasAsyncOverload
         StopTokenSource.Cancel(); // Stops the server if it's running
         return 0;

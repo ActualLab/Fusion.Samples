@@ -20,6 +20,9 @@ Note that Ryzen 9 9950X3D has 32 logical cores due to SMT.
 
 ## Run-Benchmark.cmd
 
+The benchmark measures throughput of a simple repository-style user lookup service that retrieves and updates user records from a database: `UserService.Get(userId)` and `Update(userId, ...)`.
+
+To run the benchmark:
 ```powershell
 dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profile
 ```
@@ -41,6 +44,10 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 | Fusion Client → Fusion Service | 223.15M calls/s | **~2,239x** |
 
 ## Run-RpcBenchmark.cmd
+
+This benchmark compares **ActualLab.Rpc** with **gRPC**, **SignalR**, and other RPC frameworks. 
+The tables below include only **ActualLab.Rpc**, **gRPC**, and **SignalR**. 
+Other options, such as **StreamJsonRpc** and **RESTful API**, are way slower, so we omit them.
 
 There are two benchmarks in `RpcBenchmark` project: 
 

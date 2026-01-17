@@ -52,6 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{ED07515D-6CBC-46
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\Build.yml = .github\workflows\Build.yml
+		Benchmarks.md = Benchmarks.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActualLab.Benchmarking", "src\ActualLab.Benchmarking\ActualLab.Benchmarking.csproj", "{EFD00978-099C-4F82-A411-AE27C7DB1A29}"

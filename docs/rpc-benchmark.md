@@ -29,7 +29,7 @@ Here is what RpcBenchmark does:
 
 ## How can I run it?
 
-1. Clone the repository: `git clone git@github.com:servicetitan/ActualLab.Fusion.Samples.git`
+1. Clone the repository
 2. Run `dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj`
 
 ## Command line arguments

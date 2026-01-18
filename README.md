@@ -76,8 +76,6 @@ docker-compose build
 | [Benchmark]         | `docker-compose run --build sample_benchmark`                                                         |
 | [RpcBenchmark]      | `docker-compose run --build sample_rpc_benchmark`                                                     |
 
-A detailed description of nearly every sample can be found here: https://servicetitan.github.io/ActualLab.Fusion.Samples/
-
 ## Useful Links
 
 * Check out [Fusion repository on GitHub]

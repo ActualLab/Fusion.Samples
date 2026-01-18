@@ -28,9 +28,6 @@ and **it's nearly as easy as if there were no logic related to real-time
 updates at all**:
 ![](docs/img/Samples-Blazor.gif)
 
-<img src="https://img.shields.io/badge/-Live!-red" valign="middle"> Play with
-[live version of this sample](https://fusion-samples.servicetitan.com) right now!
-
 ## What's Inside?
 
 ### Console Samples

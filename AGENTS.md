@@ -88,6 +88,11 @@ YOU MUST ABSOLUTELY FOLLOW THESE CONVENTIONS.
 - After making changes, run at least `dotnet build Samples.sln` to verify they don't break the build.
 - Ensure all builds pass before submitting changes.
 
+## Documentation
+
+- **Live documentation**: https://fusion.actuallab.net/
+- **Documentation source**: VitePress website built from `/fusion-project/docs` folder
+
 ## Additional Notes
 
 AGENTS.md in other folders may extend and override instructions provided here.

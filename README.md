@@ -11,7 +11,7 @@ building a real-time app (an online app delivering
 some or all updates in real-time) or a high-load app.
 Moreover, it plays really well with Blazor and works on MAUI.
 
-> Curious to see Fusion in action? Explore [Voxt] –
+> Curious to see Fusion in action? Explore [Voxt.ai] –
 > a very new chat app built by the minds behind Fusion.
 >
 > Voxt fuses **real-time audio, live transcription, and AI assistance**
@@ -20,9 +20,6 @@ Moreover, it plays really well with Blazor and works on MAUI.
 > 100% code sharing across these platforms.
 > Beyond real-time updates, several of its features, like offline mode,
 > are powered by Fusion.
->
-> We're posting some code examples from Voxt codebase [here](https://voxt.ai/chat/san4Cohzym),
-> so join this chat to learn how we use it in a real app.
 
 Fusion allows you to build real-time UIs like this one —
 and **it's nearly as easy as if there were no logic related to real-time

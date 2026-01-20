@@ -1,8 +1,9 @@
-Welcome to the collection of [Fusion] samples!
+# 👾 Fusion Samples
 
-> All project updates are published on its [Fusion Place]; it's also the best place for Q/A.\
-> [![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
-> [![Fusion Place](https://img.shields.io/badge/Fusion%20%40%20Voxt-BE145B)](https://voxt.ai/chat/s-1KCdcYy9z2-uJVPKZsbEo)  
+[![Fusion](https://img.shields.io/badge/Fusion-6B5B95)](https://github.com/ActualLab/Fusion)
+[![Documentation](https://img.shields.io/badge/Documentation-88B04B)](https://fusion.actuallab.net/)
+[![Chat @ Voxt](https://img.shields.io/badge/Chat%20%40%20Voxt-BE145B)](https://voxt.ai/chat/s-1KCdcYy9z2-uJVPKZsbEo)
+[![Build](https://github.com/ActualLab/Fusion.Samples/workflows/Build/badge.svg)](https://github.com/ActualLab/Fusion.Samples/actions?query=workflow%3A%22Build%22)
 
 Don't know what Fusion is? [You should!](https://github.com/ActualLab/Fusion) 
 Fusion is your #1 partner in crime if you're 

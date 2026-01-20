@@ -186,11 +186,11 @@ please help us to make it better by completing [Fusion Feedback Form]
 [Documentation]: https://fusion.actuallab.net/
 [Voxt]: https://voxt.ai
 
-[Compute Services]: https://fusion.actuallab.net/Part01
-[Compute Service]: https://fusion.actuallab.net/Part01
-[`IComputed<T>`]: https://fusion.actuallab.net/Part01
-[Computed Value]: https://fusion.actuallab.net/Part01
-[Compute Service Clients]: https://fusion.actuallab.net/Part03
+[Compute Services]: https://fusion.actuallab.net/Part01#_1-compute-services-and-compute-methods
+[Compute Service]: https://fusion.actuallab.net/Part01#_1-compute-services-and-compute-methods
+[`IComputed<T>`]: https://fusion.actuallab.net/Part01-C
+[Computed Value]: https://fusion.actuallab.net/Part01-C
+[Compute Service Clients]: https://fusion.actuallab.net/Part02#what-is-compute-service-client
 
 [Fusion Place]: https://voxt.ai/chat/s-1KCdcYy9z2-uJVPKZsbEo
 [Fusion Feedback Form]: https://forms.gle/TpGkmTZttukhDMRB6

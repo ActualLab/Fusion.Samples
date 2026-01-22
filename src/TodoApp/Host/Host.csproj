@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="ActualLab.Fusion.EntityFramework.Redis" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" />
+    <PackageReference Include="ActualLab.Fusion.Ext.Services" />
     <PackageReference Include="ActualLab.Fusion.Server" />
   </ItemGroup>
 

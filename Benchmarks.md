@@ -1,6 +1,6 @@
 # Benchmark Results
 
-**Updated:** 2026-01-17<br/>
+**Updated:** 2026-01-22<br/>
 **ActualLab.Fusion Version:** 11.4.7
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
@@ -17,6 +17,16 @@ We ran each benchmark 2 times and took the best result for each test.
 | **.NET Version** | 10.0.1 |
 
 Note that Ryzen 9 9950X3D has 32 logical cores due to SMT.
+
+## Reference Redis Benchmark
+
+Reference benchmark using `redis-benchmark` tool on the same machine (500K requests, best of 5 runs). Optimal client count (12) was determined via binary search over 1-1000 range.
+
+| Operation | Result |
+|-----------|--------|
+| PING_INLINE | 231.59K req/s |
+| GET | 229.25K req/s |
+| SET | 229.67K req/s |
 
 ## Run-Benchmark.cmd
 
@@ -45,11 +55,11 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 
 ## Run-RpcBenchmark.cmd
 
-This benchmark compares **ActualLab.Rpc** with **gRPC**, **SignalR**, and other RPC frameworks. 
-The tables below include only **ActualLab.Rpc**, **gRPC**, and **SignalR**. 
+This benchmark compares **ActualLab.Rpc** with **gRPC**, **SignalR**, and other RPC frameworks.
+The tables below include only **ActualLab.Rpc**, **gRPC**, and **SignalR**.
 Other options, such as **StreamJsonRpc** and **RESTful API**, are way slower, so we omit them.
 
-There are two benchmarks in `RpcBenchmark` project: 
+There are two benchmarks in `RpcBenchmark` project:
 
 RPC calls:
 ```powershell

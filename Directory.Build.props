@@ -9,6 +9,14 @@
     <!-- <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled> -->
   </PropertyGroup>
 
+  <!-- Artifacts output - include parent folder as prefix to avoid conflicts between projects with same name -->
+  <PropertyGroup>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+    <_ParentFolder>$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName($(MSBuildProjectDirectory)))))</_ParentFolder>
+    <ArtifactsProjectName Condition="'$(_ParentFolder)' != 'src'">$(_ParentFolder).$(MSBuildProjectName)</ArtifactsProjectName>
+  </PropertyGroup>
+
   <!-- Disable some warnings -->
   <PropertyGroup>
     <!--

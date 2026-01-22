@@ -24,10 +24,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" />
-    <PackageReference Include="ActualLab.Fusion.Server" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework.Npgsql" />
     <PackageReference Include="ActualLab.Fusion.EntityFramework.Redis" />
+    <PackageReference Include="ActualLab.Fusion.Ext.Services" />
+    <PackageReference Include="ActualLab.Fusion.Server" />
     <PackageReference Include="ActualLab.RestEase" />
   </ItemGroup>
 

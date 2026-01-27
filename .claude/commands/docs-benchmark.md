@@ -11,7 +11,7 @@ Run all benchmarks as specified in @Benchmarks.md and update the file with the l
 
 1. Read @Benchmarks.md to understand the benchmark commands and current structure
 
-2. Run the **Run-Benchmark.cmd** benchmark (3 times, take best results):
+2. Run the **Run-Benchmark.cmd** benchmark (3 times, take best results) using a command from the corresponding section of @Benchmarks.md, which is similar to:
    ```
    dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profile
    ```
@@ -21,17 +21,19 @@ Run all benchmarks as specified in @Benchmarks.md and update the file with the l
 
 3. Run the **Run-RpcBenchmark.cmd** benchmarks (3 times each, take best results):
 
-   Calls benchmark:
+   Calls benchmark - use a command like this from the corresponding section of @Benchmarks.md with `-b calls` option:
    ```
-   dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b calls -l rpc,grpc,signalr -f msgpack5c -n 4
-   ```
-
-   Streams benchmark:
-   ```
-   dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack5c -n 4
+   dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b calls -l rpc,grpc,signalr -f msgpack6c -n 4
    ```
 
-4. Update @Benchmarks.md with:
+   Streams benchmark - use a command like this from the corresponding section of @Benchmarks.md with `-b calls` option:
+   ```
+   dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack6c -n 4
+   ```
+   
+5. Don't benchmark Redis (unless explicitly asked), its results are quite stable. 
+
+5. Update @Benchmarks.md with:
    - New "Updated" date (today's date)
    - Best results from all benchmark runs
    - Recalculate speedup values for Run-Benchmark.cmd results (relative to baseline services)

@@ -36,7 +36,7 @@ public static class SystemSettings
             // ActualLab.Rpc serialization formats
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
                 () => new RpcByteArgumentSerializerV4(MemoryPackByteSerializer.Default),
-                peer => new RpcByteMessageSerializerV4(peer) { AllowProjection = true });
+                peer => new RpcByteMessageSerializerV5(peer));
             var allFormats = RpcSerializationFormat.All.Add(custom);
             var key = (Symbol)serializationFormat.ToLowerInvariant();
             var selectedFormat = allFormats.FirstOrDefault(x => x.Key == key);
@@ -53,32 +53,21 @@ public static class SystemSettings
             };
 
             // RPC argument and message serializer tweaks
-            RpcArgumentSerializer.CopyThreshold = 1024;
-            RpcByteMessageSerializer.Defaults.AllowProjection = true; // Improves large object deserialization performance
+            RpcArgumentSerializer.CopyThreshold = 1024; // Used only by (compute methods + remote computed cache)
 
             // WebSocketChannel<RpcMessage> settings.
             // They're here mostly for convenience - the values here are the same as the default ones.
             RpcWebSocketClientOptions.Default = RpcWebSocketClientOptions.Default with {
-                WebSocketChannelOptionsFactory = (peer, _) => WebSocketChannel<RpcMessage>.Options.Default with {
-                    Serializer = peer.SerializationFormat.MessageSerializerFactory.Invoke(peer),
-                    WriteFrameSize = 12_000, // 8 x 1500(MTU) minus some reserve
-                    MinReadBufferSize = 24_000,
-                    MinWriteBufferSize = 24_000,
-                    RetainedBufferSize = 120_000,
-                    ReadMode = WebSocketChannelReadMode
-                        .Unbuffered, // Unbuffered is faster (and it's the default read mode)
-                    // ReadChannelOptions are unused when ReadMode == ChannelReadMode.Unbuffered
-                    ReadChannelOptions = new BoundedChannelOptions(100) {
-                        FullMode = BoundedChannelFullMode.Wait,
-                        SingleReader = true,
-                        SingleWriter = true,
-                        AllowSynchronousContinuations = false,
-                    },
-                    WriteChannelOptions = new BoundedChannelOptions(500) {
-                        FullMode = BoundedChannelFullMode.Wait,
-                        SingleReader = true,
-                        SingleWriter = false,
-                        AllowSynchronousContinuations = false,
+                WebSocketTransportOptionsFactory = (_, _) => RpcWebSocketTransport.Options.Default with {
+                    FrameSize = 12_000, // 8 x 1500(MTU) minus some reserve
+                    BufferSize = 16_000,
+                    MaxBufferSize = 256_000,
+                    // Use of UnboundedChannelOptions is totally fine here: if the message is enqueued
+                    WriteChannelOptions = new UnboundedChannelOptions() {
+                        // FullMode = BoundedChannelFullMode.Wait,
+                        SingleReader = true, // Must be true
+                        SingleWriter = false, // Must be false
+                        AllowSynchronousContinuations = false, // Must be false, setting it to true will kill the throughput!
                     },
                 }
             };

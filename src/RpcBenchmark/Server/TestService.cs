@@ -19,6 +19,11 @@ public class TestService : ITestService
         var stream = new RpcStream<Item>(StreamGenerator.GetItems(request, cancellationToken)) {
             AckPeriod = ackPeriod,
             AckAdvance = (ackPeriod * 2) + 1,
+            BatchSize = request.DataSize switch {
+                < 50 => 200,
+                < 500 => 20,
+                _ => 2,
+            },
         };
         return Task.FromResult(stream);
     }

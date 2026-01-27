@@ -16,8 +16,6 @@ public static class Program
 
     public static async Task<int> Main(string[] args)
     {
-        SizeHintProviders.Register<Item>(static x => 16 + x.Data?.Length ?? 0);
-
         try {
             TreatControlCAsInput = false;
             CancelKeyPress += (_, ea) => {

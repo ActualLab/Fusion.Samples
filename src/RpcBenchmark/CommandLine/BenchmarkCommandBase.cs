@@ -24,7 +24,7 @@ public abstract class BenchmarkCommandBase : AsyncCommandBase
 
     [CommandLineArgument]
     [Description("RpcSerializationFormat to use in ActualLab.Rpc tests.")]
-    [ValueDescription("mempack5c,mempack5,msgpack5c,msgpack5,json5,njson5,...")]
+    [ValueDescription("mempack6c,mempack6,msgpack6c,msgpack6,json5,njson5,...")]
     [Alias("f")]
-    public string SerializationFormat { get; set; } = "mempack5c";
+    public string SerializationFormat { get; set; } = "mempack6c";
 }

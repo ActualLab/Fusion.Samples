@@ -30,7 +30,7 @@ public static class ClientStartup
         logging.AddFilter(typeof(ComponentInfo).Namespace, LogLevel.Debug);
 
         // Default RPC client serialization format
-        RpcSerializationFormatResolver.Default = new("msgpack5"); // msgpack5c, mempack5, json5, etc.
+        RpcSerializationFormatResolver.Default = new("msgpack6"); // msgpack6c, mempack6, json5, etc.
 
         // Fusion
         var fusion = services.AddFusion();

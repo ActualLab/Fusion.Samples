@@ -81,6 +81,8 @@ dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch
 
 ### Streams
 
+Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte items, Stream10K = 10KB items.
+
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
 | Stream1 | 95.39M items/s | 38.25M items/s | 17.15M items/s |

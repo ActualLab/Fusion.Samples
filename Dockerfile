@@ -1,18 +1,3 @@
-# Tutorial
-
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS tutorial
-WORKDIR /samples
-COPY ["docs/", "docs/"]
-WORKDIR /samples/docs/tutorial
-ENV DOTNET_TRY_CLI_TELEMETRY_OPTOUT=1
-RUN dotnet tool update -g Microsoft.dotnet-try
-ENV PATH="$PATH:/root/.dotnet/tools"
-RUN apt-get update
-RUN apt-get install -y simpleproxy
-RUN echo "simpleproxy -L 50005 -R localhost:50004 -v &" >start.sh
-RUN echo "dotnet try --port 50004 /samples/docs/tutorial" >>start.sh
-ENTRYPOINT ["sh", "start.sh"]
-
 # Samples
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build

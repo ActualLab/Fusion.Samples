@@ -11,13 +11,6 @@ services:
       - "5432"
     entrypoint: ["docker-entrypoint.sh", "-c", "shared_buffers=256MB", "-c", "max_connections=1000"]
 
-  tutorial:
-    build:
-      context: .
-      target: tutorial
-    ports:
-     - "50005:50005"
-
   sample_hello_world:
     build:
       context: .

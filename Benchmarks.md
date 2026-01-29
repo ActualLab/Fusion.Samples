@@ -1,7 +1,7 @@
 # Benchmark Results
 
-**Updated:** 2026-01-27<br/>
-**ActualLab.Fusion Version:** 12.0.9
+**Updated:** 2026-01-29<br/>
+**ActualLab.Fusion Version:** 12.0.45
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
 
@@ -41,17 +41,17 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| Regular Service | 136.40K calls/s | |
-| Fusion Service | 264.71M calls/s | **~1,941x** |
+| Regular Service | 135.44K calls/s | |
+| Fusion Service | 266.58M calls/s | **~1,968x** |
 
 ### Remote Services
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| HTTP Client → Regular Service | 100.33K calls/s | |
-| HTTP Client → Fusion Service | 423.41K calls/s | **~4.2x** |
-| ActualLab.Rpc Client → Fusion Service | 5.85M calls/s | **~58x** |
-| Fusion Client → Fusion Service | 222.06M calls/s | **~2,214x** |
+| HTTP Client → Regular Service | 100.72K calls/s | |
+| HTTP Client → Fusion Service | 431.35K calls/s | **~4.3x** |
+| ActualLab.Rpc Client → Fusion Service | 6.92M calls/s | **~69x** |
+| Fusion Client → Fusion Service | 226.73M calls/s | **~2,251x** |
 
 ## Run-RpcBenchmark.cmd
 
@@ -75,9 +75,9 @@ dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Sum | 7.34M calls/s | 1.11M calls/s | 5.35M calls/s |
-| GetUser | 6.65M calls/s | 1.10M calls/s | 4.41M calls/s |
-| SayHello | 4.98M calls/s | 1.02M calls/s | 2.24M calls/s |
+| Sum | 9.33M calls/s | 1.11M calls/s | 5.30M calls/s |
+| GetUser | 8.37M calls/s | 1.10M calls/s | 4.43M calls/s |
+| SayHello | 5.99M calls/s | 1.04M calls/s | 2.25M calls/s |
 
 ### Streams
 
@@ -85,6 +85,16 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Stream1 | 95.39M items/s | 38.25M items/s | 17.15M items/s |
-| Stream100 | 46.46M items/s | 20.77M items/s | 13.78M items/s |
-| Stream10K | 941.40K items/s | 691.20K items/s | 460.80K items/s |
+| Stream1 | 101.17M items/s | 39.59M items/s | 17.17M items/s |
+| Stream100 | 47.53M items/s | 21.19M items/s | 14.00M items/s |
+| Stream10K | 955.44K items/s | 691.20K items/s | 460.80K items/s |
+
+### Throughput
+
+Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 bytes.
+
+| Test | ActualLab.Rpc | gRPC | SignalR |
+|------|---------------|------|---------|
+| Stream1 | 101.17 MB/s | 39.59 MB/s | 17.17 MB/s |
+| Stream100 | 4.75 GB/s | 2.12 GB/s | 1.40 GB/s |
+| Stream10K | 9.78 GB/s | 7.08 GB/s | 4.72 GB/s |

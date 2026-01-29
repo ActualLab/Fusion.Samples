@@ -1,11 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{01FE6776-E788-46B2-93E4-1CEDB01AA851}"
-	ProjectSection(SolutionItems) = preProject
-		docs\index.md = docs\index.md
-		docs\rpc-benchmark.md = docs\rpc-benchmark.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5A8469D-C4BB-4808-8E44-FF4DFCA57BDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{9B29BD3F-7D94-4936-8379-61A2F48259AF}"
@@ -82,29 +76,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "src\Todo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeAot", "src\NativeAot\NativeAot.csproj", "{16F342FF-A151-442E-8849-B6D81DFFAE05}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{8842F2FF-42F2-4B67-AEC6-F4CC7807C1AD}"
-	ProjectSection(SolutionItems) = preProject
-		docs\tutorial\Fusion-Cheat-Sheet.md = docs\tutorial\Fusion-Cheat-Sheet.md
-		docs\tutorial\Intro.md = docs\tutorial\Intro.md
-		docs\tutorial\Part00.md = docs\tutorial\Part00.md
-		docs\tutorial\Part01.md = docs\tutorial\Part01.md
-		docs\tutorial\Part02.md = docs\tutorial\Part02.md
-		docs\tutorial\Part03.md = docs\tutorial\Part03.md
-		docs\tutorial\Part04.md = docs\tutorial\Part04.md
-		docs\tutorial\Part05.md = docs\tutorial\Part05.md
-		docs\tutorial\Part06.md = docs\tutorial\Part06.md
-		docs\tutorial\Part07.md = docs\tutorial\Part07.md
-		docs\tutorial\Part08.md = docs\tutorial\Part08.md
-		docs\tutorial\Part09.md = docs\tutorial\Part09.md
-		docs\tutorial\Part10.md = docs\tutorial\Part10.md
-		docs\tutorial\Part11.md = docs\tutorial\Part11.md
-		docs\tutorial\Part12.md = docs\tutorial\Part12.md
-		docs\tutorial\Part13.md = docs\tutorial\Part13.md
-		docs\tutorial\PartFF.md = docs\tutorial\PartFF.md
-		docs\tutorial\QuickStart.md = docs\tutorial\QuickStart.md
-		docs\tutorial\README.md = docs\tutorial\README.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,7 +112,6 @@ Global
 		{E11C307A-7C57-4E5B-A830-7432896686C9} = {ED0683EF-EAFD-4703-A832-DEB7227A80B8}
 		{FAFB997A-4A71-4E37-AC65-26FDA4DD5565} = {ED0683EF-EAFD-4703-A832-DEB7227A80B8}
 		{16F342FF-A151-442E-8849-B6D81DFFAE05} = {B5A8469D-C4BB-4808-8E44-FF4DFCA57BDE}
-		{8842F2FF-42F2-4B67-AEC6-F4CC7807C1AD} = {01FE6776-E788-46B2-93E4-1CEDB01AA851}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BA3D19EB-DDFD-4DB6-B60F-A110E22E9C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

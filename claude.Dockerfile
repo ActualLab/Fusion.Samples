@@ -21,13 +21,18 @@ RUN apt-get update && apt-get install -y \
     ripgrep fd-find vim nano \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PowerShell
-RUN wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    rm packages-microsoft-prod.deb && \
-    apt-get update && \
-    apt-get install -y powershell && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install PowerShell (the Microsoft Debian repo is amd64-only for `powershell`)
+# TODO: do we need explicit powershell installation? it's already preinstalled
+RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
+        wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb && \
+        dpkg -i packages-microsoft-prod.deb && \
+        rm packages-microsoft-prod.deb && \
+        apt-get update && \
+        apt-get install -y powershell && \
+        apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    else \
+        echo "Skipping PowerShell install on $ARCH"; \
+    fi
 
 # Install Google Cloud CLI
 RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
@@ -52,11 +57,9 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 9
 # Install .NET wasm-tools workload (needed for Blazor WebAssembly)
 RUN dotnet workload install wasm-tools
 
-# Install Playwright browser dependencies (for running Playwright tests)
-RUN npx playwright install-deps
-
-# Install Playwright npm package globally (speeds up first use)
-RUN npm install -g playwright
+# Install Playwright npm package globally and browser dependencies
+RUN npm install -g playwright && \
+    playwright install-deps
 
 # Create non-root user
 ARG USERNAME=claude
@@ -103,12 +106,12 @@ USER $USERNAME
 ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
 ENV PATH=$PATH:/usr/local/share/npm-global/bin
 
-# Install Claude Code CLI
-ENV CLAUDE_INSTALL_METHOD=npm
-RUN npm install -g @anthropic-ai/claude-code
-
 # Pre-download Playwright Chromium browser (~280MB, speeds up first use)
-RUN npx playwright install chromium
+RUN playwright install chromium
+
+# Install Claude Code CLI (pinned version, auto-update disabled)
+ENV DISABLE_AUTOUPDATER=1
+RUN npm install -g @anthropic-ai/claude-code@2.1.25
 
 # Default working directory (overridden by -w flag in docker run)
 WORKDIR /proj

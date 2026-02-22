@@ -1375,7 +1375,7 @@
           return dispatcher;
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var React4 = require_react(), Internals = {
+        var React5 = require_react(), Internals = {
           d: {
             f: noop,
             r: function() {
@@ -1393,7 +1393,7 @@
           },
           p: 0,
           findDOMNode: null
-        }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React4.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+        }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React5.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
         "function" === typeof Map && null != Map.prototype && "function" === typeof Map.prototype.forEach && "function" === typeof Set && null != Set.prototype && "function" === typeof Set.prototype.clear && "function" === typeof Set.prototype.forEach || console.error(
           "React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills"
         );
@@ -2928,7 +2928,7 @@
           "number" === type && getActiveElement(node.ownerDocument) === node || node.defaultValue === "" + value || (node.defaultValue = "" + value);
         }
         function validateOptionProps(element, props) {
-          null == props.value && ("object" === typeof props.children && null !== props.children ? React4.Children.forEach(props.children, function(child) {
+          null == props.value && ("object" === typeof props.children && null !== props.children ? React5.Children.forEach(props.children, function(child) {
             null == child || "string" === typeof child || "number" === typeof child || "bigint" === typeof child || didWarnInvalidChild || (didWarnInvalidChild = true, console.error(
               "Cannot infer the option value of complex children. Pass a `value` prop or use a plain string as children to <option>."
             ));
@@ -18560,14 +18560,14 @@
           ));
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var Scheduler = require_scheduler(), React4 = require_react(), ReactDOM = require_react_dom(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
+        var Scheduler = require_scheduler(), React5 = require_react(), ReactDOM = require_react_dom(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
         Symbol.for("react.scope");
         var REACT_ACTIVITY_TYPE = Symbol.for("react.activity");
         Symbol.for("react.legacy_hidden");
         Symbol.for("react.tracing_marker");
         var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
         Symbol.for("react.view_transition");
-        var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React4.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
+        var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React5.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
           pending: false,
           data: null,
           method: null,
@@ -21355,7 +21355,7 @@
           }
         };
         (function() {
-          var isomorphicReactPackageVersion = React4.version;
+          var isomorphicReactPackageVersion = React5.version;
           if ("19.2.4" !== isomorphicReactPackageVersion)
             throw Error(
               'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.2.4\nLearn more: https://react.dev/warnings/version-mismatch")
@@ -21709,18 +21709,18 @@
         function isValidElement(object) {
           return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
         }
-        var React4 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React4.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+        var React5 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React5.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
           return null;
         };
-        React4 = {
+        React5 = {
           react_stack_bottom_frame: function(callStackForError) {
             return callStackForError();
           }
         };
         var specialPropKeyWarningShown;
         var didWarnAboutElementRef = {};
-        var unknownOwnerDebugStack = React4.react_stack_bottom_frame.bind(
-          React4,
+        var unknownOwnerDebugStack = React5.react_stack_bottom_frame.bind(
+          React5,
           UnknownOwner
         )();
         var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
@@ -22054,7 +22054,12 @@
     error: "$sys.Error:1",
     cancel: "$sys.Cancel:0",
     keepAlive: "$sys.KeepAlive:1",
-    reconnect: "$sys.Reconnect:3"
+    reconnect: "$sys.Reconnect:3",
+    ack: "$sys.Ack:2",
+    ackEnd: "$sys.AckEnd:1",
+    item: "$sys.I:2",
+    batch: "$sys.B:2",
+    end: "$sys.End:2"
   };
   var ENVELOPE_DELIMITER = "\n";
   var ARG_DELIMITER = "";
@@ -22165,18 +22170,18 @@
   var RpcType = {
     object: /* @__PURE__ */ Symbol("object"),
     stream: /* @__PURE__ */ Symbol("stream"),
+    noWait: /* @__PURE__ */ Symbol("noWait"),
     void: /* @__PURE__ */ Symbol("void")
   };
   function wireMethodName(def) {
     return `${def.serviceName}.${def.name}:${def.wireArgCount}`;
   }
-  function defineRpcService(name, methods, options) {
-    const ctOffset = options?.ctOffset ?? 0;
+  function defineRpcService(name, methods) {
     const map = /* @__PURE__ */ new Map();
     for (const [key, input] of Object.entries(methods)) {
       const colonIndex = key.indexOf(":");
       const cleanName = colonIndex >= 0 ? key.substring(0, colonIndex) : key;
-      const wireArgCount = input.args.length + ctOffset;
+      const wireArgCount = input.wireArgCount ?? input.args.length + 1;
       const mapKey = `${cleanName}:${wireArgCount}`;
       map.set(mapKey, {
         name: cleanName,
@@ -22184,8 +22189,8 @@
         argCount: input.args.length,
         wireArgCount,
         callTypeId: input.callTypeId ?? 0,
-        stream: input.stream ?? input.returns === RpcType.stream,
-        noWait: input.noWait ?? false
+        stream: input.returns === RpcType.stream,
+        noWait: input.returns === RpcType.noWait
       });
     }
     return { name, methods: map };
@@ -22286,38 +22291,254 @@
       this._calls.clear();
     }
   };
-  function handleSystemCall(message, args, outboundTracker, inboundTracker) {
-    const method = message.Method;
-    const relatedId = message.RelatedId ?? 0;
-    switch (method) {
-      case RpcSystemCalls.ok: {
-        const call = outboundTracker.get(relatedId);
-        if (call !== void 0) {
-          if (call.removeOnOk) {
-            outboundTracker.remove(relatedId);
+  var RpcObjectKind = { Local: 0, Remote: 1 };
+  function parseStreamRef(value) {
+    if (typeof value !== "string") return null;
+    const parts = value.split(",");
+    if (parts.length !== 4) return null;
+    const hostId = parts[0];
+    const localId = parseInt(parts[1], 10);
+    const ackPeriod = parseInt(parts[2], 10);
+    const ackAdvance = parseInt(parts[3], 10);
+    if (isNaN(localId) || isNaN(ackPeriod) || isNaN(ackAdvance)) return null;
+    return { hostId, localId, ackPeriod, ackAdvance };
+  }
+  var RpcStream = class {
+    id;
+    kind = RpcObjectKind.Remote;
+    peer;
+    ackPeriod;
+    ackAdvance;
+    _buffer = [];
+    _nextExpectedIndex = 0;
+    _consumerWaiting = null;
+    _completed = false;
+    _completionError = null;
+    _disposed = false;
+    _started = false;
+    _iterating = false;
+    _ackSentUpTo = 0;
+    constructor(ref, peer2) {
+      this.id = { hostId: ref.hostId, localId: ref.localId };
+      this.peer = peer2;
+      this.ackPeriod = ref.ackPeriod;
+      this.ackAdvance = ref.ackAdvance;
+    }
+    /** Called by system call handler when a single item arrives ($sys.I). */
+    onItem(index, item) {
+      if (this._disposed || this._completed) return;
+      if (index > this._nextExpectedIndex) {
+        this._sendAck(this._nextExpectedIndex, true);
+        return;
+      }
+      if (index < this._nextExpectedIndex) {
+        this._maybeSendAck(index + 1);
+        return;
+      }
+      this._buffer.push(item);
+      this._nextExpectedIndex = index + 1;
+      this._maybeSendAck(this._nextExpectedIndex);
+      this._notifyConsumer();
+    }
+    /** Called by system call handler when a batch arrives ($sys.B). */
+    onBatch(index, items) {
+      if (this._disposed || this._completed) return;
+      if (index > this._nextExpectedIndex) {
+        this._sendAck(this._nextExpectedIndex, true);
+        return;
+      }
+      if (index < this._nextExpectedIndex) {
+        this._maybeSendAck(index + items.length);
+        return;
+      }
+      for (const item of items) this._buffer.push(item);
+      this._nextExpectedIndex = index + items.length;
+      this._maybeSendAck(this._nextExpectedIndex);
+      this._notifyConsumer();
+    }
+    /** Called by system call handler when the stream ends ($sys.End). */
+    onEnd(index, error) {
+      if (this._disposed || this._completed) return;
+      this._completed = true;
+      this._completionError = error;
+      this._notifyConsumer();
+    }
+    // -- IRpcObject --
+    reconnect() {
+      this._sendAck(this._nextExpectedIndex, true);
+    }
+    disconnect() {
+      if (this._completed) return;
+      this._completed = true;
+      this._completionError = new Error("Peer disconnected.");
+      this._notifyConsumer();
+    }
+    // -- AsyncIterable --
+    [Symbol.asyncIterator]() {
+      if (this._iterating) throw new Error("RpcStream can only be iterated once.");
+      this._iterating = true;
+      let bufferIndex = 0;
+      let consumedIndex = 0;
+      const self = this;
+      return {
+        async next() {
+          if (!self._started) {
+            self._started = true;
+            self._sendAck(0, true);
           }
-          call.result.resolve(args[0]);
+          while (true) {
+            if (bufferIndex < self._buffer.length) {
+              const value = self._buffer[bufferIndex];
+              bufferIndex++;
+              consumedIndex++;
+              return { value, done: false };
+            }
+            if (self._completed) {
+              if (self._completionError) throw self._completionError;
+              return { value: void 0, done: true };
+            }
+            self._consumerWaiting = new PromiseSource();
+            await self._consumerWaiting.promise;
+          }
+        },
+        async return() {
+          self._sendAckEnd();
+          self.dispose();
+          return { value: void 0, done: true };
         }
-        break;
-      }
-      case RpcSystemCalls.error: {
-        const call = outboundTracker.remove(relatedId);
-        if (call !== void 0) {
-          const errorInfo = args[0];
-          const msg = errorInfo?.Message ?? errorInfo?.message ?? "RPC error";
-          call.result.reject(new Error(msg));
-        }
-        break;
-      }
-      case RpcSystemCalls.cancel: {
-        inboundTracker.remove(relatedId);
-        break;
-      }
-      case RpcSystemCalls.keepAlive: {
-        break;
+      };
+    }
+    dispose() {
+      if (this._disposed) return;
+      this._disposed = true;
+      this._completed = true;
+      this.peer.remoteObjects.unregister(this);
+      this._notifyConsumer();
+    }
+    // -- Private --
+    _notifyConsumer() {
+      if (this._consumerWaiting !== null) {
+        this._consumerWaiting.resolve();
+        this._consumerWaiting = null;
       }
     }
+    _maybeSendAck(nextIndex) {
+      if (this.ackPeriod <= 0) return;
+      const threshold = this._ackSentUpTo + this.ackPeriod;
+      if (nextIndex >= threshold) {
+        this._sendAck(nextIndex, false);
+      }
+    }
+    _sendAck(nextIndex, _mustReset) {
+      this._ackSentUpTo = nextIndex;
+      const conn = this.peer.connection;
+      if (conn) {
+        this.peer.hub.systemCallSender.ack(conn, this.id.localId, nextIndex, this.id.hostId);
+      }
+    }
+    _sendAckEnd() {
+      const conn = this.peer.connection;
+      if (conn) {
+        this.peer.hub.systemCallSender.ackEnd(conn, this.id.localId, this.id.hostId);
+      }
+    }
+  };
+  function resolveStreamRefs(value, peer2) {
+    if (value === null || value === void 0) return value;
+    if (typeof value === "string") {
+      const ref = parseStreamRef(value);
+      if (ref !== null) {
+        const stream = new RpcStream(ref, peer2);
+        peer2.remoteObjects.register(stream);
+        return stream;
+      }
+      return value;
+    }
+    if (Array.isArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        value[i] = resolveStreamRefs(value[i], peer2);
+      }
+      return value;
+    }
+    if (typeof value === "object") {
+      for (const key of Object.keys(value)) {
+        value[key] = resolveStreamRefs(
+          value[key],
+          peer2
+        );
+      }
+      return value;
+    }
+    return value;
   }
+  var RpcSystemCallHandler = class {
+    handle(message, args, peer2) {
+      const method = message.Method;
+      const relatedId = message.RelatedId ?? 0;
+      switch (method) {
+        case RpcSystemCalls.ok: {
+          const call = peer2.outbound.get(relatedId);
+          if (call !== void 0) {
+            if (call.removeOnOk) {
+              peer2.outbound.remove(relatedId);
+            }
+            call.result.resolve(args[0]);
+          }
+          break;
+        }
+        case RpcSystemCalls.error: {
+          const call = peer2.outbound.remove(relatedId);
+          if (call !== void 0) {
+            const errorInfo = args[0];
+            const msg = errorInfo?.Message ?? errorInfo?.message ?? "RPC error";
+            call.result.reject(new Error(msg));
+          }
+          break;
+        }
+        case RpcSystemCalls.cancel: {
+          peer2.inbound.remove(relatedId);
+          break;
+        }
+        case RpcSystemCalls.keepAlive: {
+          break;
+        }
+        case RpcSystemCalls.item: {
+          const stream = peer2.remoteObjects.get(relatedId);
+          if (stream) stream.onItem(args[0], resolveStreamRefs(args[1], peer2));
+          break;
+        }
+        case RpcSystemCalls.batch: {
+          const stream = peer2.remoteObjects.get(relatedId);
+          if (stream) {
+            const items = args[1];
+            for (let i = 0; i < items.length; i++) items[i] = resolveStreamRefs(items[i], peer2);
+            stream.onBatch(args[0], items);
+          }
+          break;
+        }
+        case RpcSystemCalls.end: {
+          const stream = peer2.remoteObjects.get(relatedId);
+          if (stream) {
+            const errorInfo = args[1];
+            const msg = errorInfo?.Message ?? errorInfo?.message;
+            const error = msg ? new Error(msg) : null;
+            stream.onEnd(args[0], error);
+          }
+          break;
+        }
+        case RpcSystemCalls.ack: {
+          const sender = peer2.sharedObjects.get(relatedId);
+          sender?.onAck(args[0], args[1]);
+          break;
+        }
+        case RpcSystemCalls.ackEnd: {
+          const sender = peer2.sharedObjects.get(relatedId);
+          sender?.onAckEnd(args[0]);
+          break;
+        }
+      }
+    }
+  };
   var RpcSystemCallSender = class {
     handshake(conn, peerId, hubId, index) {
       const msg = serializeMessage({ Method: RpcSystemCalls.handshake }, [{
@@ -22349,6 +22570,175 @@
       const msg = serializeMessage({ Method: RpcSystemCalls.keepAlive }, [activeCallIds]);
       conn.send(msg);
     }
+    item(conn, localId, index, item) {
+      const msg = serializeMessage(
+        { Method: RpcSystemCalls.item, RelatedId: localId },
+        [index, item]
+      );
+      conn.send(msg);
+    }
+    batch(conn, localId, index, items) {
+      const msg = serializeMessage(
+        { Method: RpcSystemCalls.batch, RelatedId: localId },
+        [index, items]
+      );
+      conn.send(msg);
+    }
+    end(conn, localId, index, error = null) {
+      const msg = serializeMessage(
+        { Method: RpcSystemCalls.end, RelatedId: localId },
+        [index, error]
+      );
+      conn.send(msg);
+    }
+    ack(conn, localId, nextIndex, hostId) {
+      const msg = serializeMessage(
+        { Method: RpcSystemCalls.ack, RelatedId: localId },
+        [nextIndex, hostId]
+      );
+      conn.send(msg);
+    }
+    ackEnd(conn, localId, hostId) {
+      const msg = serializeMessage(
+        { Method: RpcSystemCalls.ackEnd, RelatedId: localId },
+        [hostId]
+      );
+      conn.send(msg);
+    }
+  };
+  var DEFAULT_ACK_PERIOD = 256;
+  var DEFAULT_ACK_ADVANCE = 128;
+  var RpcStreamSender = class {
+    id;
+    kind = RpcObjectKind.Local;
+    peer;
+    ackPeriod;
+    ackAdvance;
+    _nextIndex = 0;
+    _ended = false;
+    _started = new PromiseSource();
+    constructor(peer2, ackPeriod = DEFAULT_ACK_PERIOD, ackAdvance = DEFAULT_ACK_ADVANCE) {
+      const localId = peer2.sharedObjects.nextId();
+      this.id = { hostId: peer2.hub.hubId, localId };
+      this.peer = peer2;
+      this.ackPeriod = ackPeriod;
+      this.ackAdvance = ackAdvance;
+    }
+    /** Returns the stream reference string for the $sys.Ok response. */
+    toRef() {
+      return `${this.id.hostId},${this.id.localId},${this.ackPeriod},${this.ackAdvance}`;
+    }
+    /** Called by system call handler when $sys.Ack is received from the client. */
+    onAck(_nextIndex, _hostId) {
+      if (!this._started.isCompleted) {
+        this._started.resolve();
+      }
+    }
+    /** Called by system call handler when $sys.AckEnd is received from the client. */
+    onAckEnd(_hostId) {
+      this._ended = true;
+      this.peer.sharedObjects.unregister(this);
+    }
+    /** Send a single item to the client. */
+    sendItem(item) {
+      if (this._ended) return;
+      const conn = this.peer.connection;
+      if (!conn) return;
+      this.peer.hub.systemCallSender.item(conn, this.id.localId, this._nextIndex, item);
+      this._nextIndex++;
+    }
+    /** Send a batch of items to the client. */
+    sendBatch(items) {
+      if (this._ended || items.length === 0) return;
+      const conn = this.peer.connection;
+      if (!conn) return;
+      this.peer.hub.systemCallSender.batch(conn, this.id.localId, this._nextIndex, items);
+      this._nextIndex += items.length;
+    }
+    /** Signal stream completion to the client. */
+    sendEnd(error) {
+      if (this._ended) return;
+      this._ended = true;
+      const conn = this.peer.connection;
+      if (!conn) return;
+      const errorInfo = error ? { Message: error.message } : null;
+      this.peer.hub.systemCallSender.end(conn, this.id.localId, this._nextIndex, errorInfo);
+    }
+    /**
+     * Consume an AsyncIterable and send all items to the client.
+     * Waits for the client's initial Ack before starting to pump items.
+     */
+    async writeFrom(source) {
+      await this._started.promise;
+      try {
+        for await (const item of source) {
+          if (this._ended) return;
+          this.sendItem(item);
+        }
+        if (!this._ended) {
+          this.sendEnd();
+        }
+      } catch (e) {
+        if (!this._ended) {
+          this.sendEnd(e instanceof Error ? e : new Error(String(e)));
+        }
+      }
+    }
+    // -- IRpcObject --
+    reconnect() {
+    }
+    disconnect() {
+      this._ended = true;
+      if (!this._started.isCompleted) {
+        this._started.resolve();
+      }
+      this.peer.sharedObjects.unregister(this);
+    }
+  };
+  var RpcRemoteObjectTracker = class {
+    _objects = /* @__PURE__ */ new Map();
+    register(obj) {
+      this._objects.set(obj.id.localId, obj);
+    }
+    get(localId) {
+      return this._objects.get(localId);
+    }
+    unregister(obj) {
+      this._objects.delete(obj.id.localId);
+    }
+    disconnectAll() {
+      for (const obj of this._objects.values()) {
+        obj.disconnect();
+      }
+      this._objects.clear();
+    }
+    reconnectAll() {
+      for (const obj of this._objects.values()) {
+        obj.reconnect();
+      }
+    }
+  };
+  var RpcSharedObjectTracker = class {
+    _nextId = 1;
+    _objects = /* @__PURE__ */ new Map();
+    nextId() {
+      return this._nextId++;
+    }
+    register(obj) {
+      this._objects.set(obj.id.localId, obj);
+    }
+    get(localId) {
+      return this._objects.get(localId);
+    }
+    unregister(obj) {
+      this._objects.delete(obj.id.localId);
+    }
+    disconnectAll() {
+      for (const obj of this._objects.values()) {
+        obj.disconnect();
+      }
+      this._objects.clear();
+    }
   };
   var RpcClientPeerReconnectDelayer = class extends RetryDelayer {
     constructor() {
@@ -22370,6 +22760,8 @@
     _connection;
     outbound = new RpcOutboundCallTracker();
     inbound = new RpcInboundCallTracker();
+    remoteObjects = new RpcRemoteObjectTracker();
+    sharedObjects = new RpcSharedObjectTracker();
     connected = new EventHandlerSet();
     disconnected = new EventHandlerSet();
     _pendingSends = [];
@@ -22377,6 +22769,9 @@
     constructor(ref, hub2) {
       this.ref = ref;
       this._hub = hub2;
+    }
+    get hub() {
+      return this._hub;
     }
     get connection() {
       return this._connection;
@@ -22443,6 +22838,8 @@
     }
     close() {
       this._stopKeepAlive();
+      this.remoteObjects.disconnectAll();
+      this.sharedObjects.disconnectAll();
       for (const call of this._pendingSends) {
         if (!call.result.isCompleted)
           call.result.reject(new Error("Peer closed."));
@@ -22476,7 +22873,7 @@
         return;
       }
       if (method.startsWith("$sys")) {
-        this._hub.handleSystemCall(message, args, this.outbound, this.inbound);
+        this._hub.systemCallHandler.handle(message, args, this);
         return;
       }
       this._handleInbound(message, args);
@@ -22496,7 +22893,12 @@
           try {
             const context = this._connection !== void 0 ? { __rpcDispatch: true, callId: relatedId, connection: this._connection } : void 0;
             const result2 = await serviceHost.dispatch(method, args, context);
-            if (!isNoWait && this._connection !== void 0) {
+            if (methodDef?.stream === true && this._connection !== void 0) {
+              const sender = new RpcStreamSender(this);
+              this.sharedObjects.register(sender);
+              this._hub.systemCallSender.ok(this._connection, relatedId, sender.toRef());
+              void sender.writeFrom(result2);
+            } else if (!isNoWait && this._connection !== void 0) {
               this._hub.systemCallSender.ok(this._connection, relatedId, result2);
             }
           } catch (e) {
@@ -22608,14 +23010,14 @@
         this._connectionKind = 0;
         if (this._disposed) break;
         this._tryIndex++;
-        const delay = this.reconnectDelayer.getDelay(this._tryIndex);
-        if (delay.isLimitExceeded) {
+        const delay2 = this.reconnectDelayer.getDelay(this._tryIndex);
+        if (delay2.isLimitExceeded) {
           this._disposed = true;
           break;
         }
-        this._setReconnectsAt(delay.endsAt);
+        this._setReconnectsAt(delay2.endsAt);
         try {
-          await delay.promise;
+          await delay2.promise;
         } finally {
           this._setReconnectsAt(0);
         }
@@ -22631,6 +23033,11 @@
     _reconnect(_isPeerChanged) {
       if (this._connection === void 0) return;
       const conn = this._connection;
+      if (_isPeerChanged) {
+        this.remoteObjects.disconnectAll();
+      } else {
+        this.remoteObjects.reconnectAll();
+      }
       const trackerCalls = [...this.outbound.values()];
       for (const call of trackerCalls) {
         if (!call.removeOnOk && call.result.isCompleted) {
@@ -22714,6 +23121,7 @@
     peers = /* @__PURE__ */ new Map();
     serviceHost;
     systemCallSender = new RpcSystemCallSender();
+    systemCallHandler = new RpcSystemCallHandler();
     constructor(hubId) {
       this.hubId = hubId ?? crypto.randomUUID();
       this.serviceHost = new RpcServiceHost();
@@ -22787,19 +23195,14 @@
       for (const peer2 of this.peers.values()) peer2.close();
       this.peers.clear();
     }
-    /** Dispatch an inbound system call. Override in FusionHub to handle compute-specific system calls. */
-    handleSystemCall(message, args, outbound, inbound) {
-      handleSystemCall(message, args, outbound, inbound);
-    }
     /** Build an RpcServiceDef from decorator metadata on a contract class. Override in FusionHub for compute support. */
     _buildServiceDef(cls) {
       const svcMeta = getServiceMeta(cls);
       if (svcMeta === void 0) throw new Error("Contract class missing @rpcService metadata");
       const methodsMeta = getMethodsMeta(cls) ?? {};
-      const ctOffset = svcMeta.ctOffset ?? 0;
       const methods = /* @__PURE__ */ new Map();
       for (const [name, meta] of Object.entries(methodsMeta)) {
-        const wireArgCount = meta.argCount + ctOffset;
+        const wireArgCount = meta.argCount + 1;
         const mapKey = `${name}:${wireArgCount}`;
         methods.set(mapKey, {
           name,
@@ -22807,8 +23210,8 @@
           argCount: meta.argCount,
           wireArgCount,
           callTypeId: 0,
-          stream: meta.stream ?? false,
-          noWait: meta.noWait ?? false
+          stream: meta.returns === RpcType.stream,
+          noWait: meta.returns === RpcType.noWait
         });
       }
       return { name: svcMeta.name, methods };
@@ -22832,11 +23235,24 @@
           peer2.callNoWait(wireName, callArgs);
         };
       }
+      if (methodDef.stream) {
+        return async (...args) => {
+          const callArgs = args.slice(0, methodDef.argCount);
+          const outboundCall = peer2.call(wireName, callArgs);
+          const result2 = await outboundCall.result.promise;
+          const ref = parseStreamRef(result2);
+          if (!ref) throw new Error(`Expected stream reference, got: ${JSON.stringify(result2)}`);
+          const stream = new RpcStream(ref, peer2);
+          peer2.remoteObjects.register(stream);
+          return stream;
+        };
+      }
       const callOptions = methodDef.callTypeId !== 0 ? { callTypeId: methodDef.callTypeId } : void 0;
       return async (...args) => {
         const callArgs = args.slice(0, methodDef.argCount);
         const outboundCall = peer2.call(wireName, callArgs, callOptions);
-        return outboundCall.result.promise;
+        const result2 = await outboundCall.result.promise;
+        return resolveStreamRefs(result2, peer2);
       };
     }
   };
@@ -23538,14 +23954,32 @@
   };
   var FUSION_CALL_TYPE_ID = 1;
   var FUSION_INVALIDATE_METHOD = "$sys-c.Invalidate:0";
+  var FusionSystemCallHandler = class extends RpcSystemCallHandler {
+    handle(message, args, peer2) {
+      const method = message.Method;
+      const relatedId = message.RelatedId ?? 0;
+      if (method === FUSION_INVALIDATE_METHOD) {
+        const call = peer2.outbound.remove(relatedId);
+        if (call instanceof RpcOutboundComputeCall) {
+          call.whenInvalidated.resolve();
+        }
+        return;
+      }
+      super.handle(message, args, peer2);
+    }
+  };
   function defineComputeService(name, methods) {
     const withCallType = {};
     for (const [methodName, input] of Object.entries(methods)) {
       withCallType[methodName] = { ...input, callTypeId: input.callTypeId ?? FUSION_CALL_TYPE_ID };
     }
-    return defineRpcService(name, withCallType, { ctOffset: 1 });
+    return defineRpcService(name, withCallType);
   }
   var FusionHub = class extends RpcHub {
+    constructor(hubId) {
+      super(hubId);
+      this.systemCallHandler = new FusionSystemCallHandler();
+    }
     /** Accept an incoming WebSocket and create a server peer. */
     acceptConnection(ws) {
       const ref = `server://${crypto.randomUUID()}`;
@@ -23561,28 +23995,14 @@
       peer2.accept(conn);
       return peer2;
     }
-    /** Handle compute-specific system calls ($sys-c.Invalidate), then delegate to base. */
-    handleSystemCall(message, args, outbound, inbound) {
-      const method = message.Method;
-      const relatedId = message.RelatedId ?? 0;
-      if (method === FUSION_INVALIDATE_METHOD) {
-        const call = outbound.remove(relatedId);
-        if (call instanceof RpcOutboundComputeCall) {
-          call.whenInvalidated.resolve();
-        }
-        return;
-      }
-      super.handleSystemCall(message, args, outbound, inbound);
-    }
-    /** Override to apply ctOffset=1 default and FUSION_CALL_TYPE_ID for compute methods. */
+    /** Override to apply FUSION_CALL_TYPE_ID for compute methods. */
     _buildServiceDef(cls) {
       const svcMeta = getServiceMeta(cls);
       if (svcMeta === void 0) throw new Error("Contract class missing @rpcService metadata");
       const methodsMeta = getMethodsMeta(cls) ?? {};
-      const ctOffset = svcMeta.ctOffset ?? 1;
       const methods = /* @__PURE__ */ new Map();
       for (const [name, meta] of Object.entries(methodsMeta)) {
-        const wireArgCount = meta.argCount + ctOffset;
+        const wireArgCount = meta.argCount + 1;
         const mapKey = `${name}:${wireArgCount}`;
         methods.set(mapKey, {
           name,
@@ -23590,8 +24010,8 @@
           argCount: meta.argCount,
           wireArgCount,
           callTypeId: meta.compute === true ? FUSION_CALL_TYPE_ID : 0,
-          stream: meta.stream ?? false,
-          noWait: meta.noWait ?? false
+          stream: meta.returns === RpcType.stream,
+          noWait: meta.returns === RpcType.noWait
         });
       }
       return { name: svcMeta.name, methods };
@@ -23666,6 +24086,25 @@
     Remove: { args: [{}], callTypeId: 0 }
     // (command) → void
   });
+
+  // src/simple-api.ts
+  var SimpleServiceDef = defineRpcService("ISimpleService", {
+    Greet: { args: [""] },
+    GetTable: { args: [""] },
+    Ping: { args: [""], returns: RpcType.noWait, wireArgCount: 1 }
+    // no CT
+  });
+  var SimpleClientSideServiceDef = defineRpcService("ISimpleClientSideService", {
+    Pong: { args: [""], returns: RpcType.noWait, wireArgCount: 1 }
+    // no CT
+  });
+  function createPongService(onPong) {
+    return {
+      Pong(message) {
+        onPong(message);
+      }
+    };
+  }
 
   // src/todos.ts
   var _getSummary_dec, _list_dec, _init;
@@ -23937,8 +24376,136 @@
     ] });
   }
 
-  // src/index.tsx
+  // src/RpcExampleApp.tsx
+  var import_react6 = __toESM(require_react(), 1);
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
+  var ROW_LIMIT = 16;
+  var ITEM_LIMIT = 16;
+  var PING_INTERVAL_MS = 500;
+  function RpcExampleApp({ api: api2, monitor: monitor2, pongListeners: pongListeners2 }) {
+    const [greeting, setGreeting] = import_react6.default.useState("");
+    const [table, setTable] = import_react6.default.useState(null);
+    const [lastPing, setLastPing] = import_react6.default.useState("");
+    const [lastPong, setLastPong] = import_react6.default.useState("");
+    const [, forceRender] = import_react6.default.useReducer((c) => c + 1, 0);
+    const triggerRender = import_react6.default.useCallback(() => forceRender(), []);
+    import_react6.default.useEffect(() => {
+      let cancelled = false;
+      let pingIndex = 0;
+      const onPong = (message) => {
+        if (!cancelled) setLastPong(message);
+      };
+      pongListeners2.add(onPong);
+      void (async () => {
+        while (!cancelled) {
+          pingIndex++;
+          const message = `Ping ${pingIndex}`;
+          setLastPing(message);
+          setLastPong("");
+          try {
+            api2.Ping(message);
+          } catch {
+          }
+          await delay(PING_INTERVAL_MS);
+        }
+      })();
+      return () => {
+        cancelled = true;
+        pongListeners2.delete(onPong);
+      };
+    }, [api2, pongListeners2]);
+    import_react6.default.useEffect(() => {
+      const abortController = new AbortController();
+      const signal = abortController.signal;
+      void (async () => {
+        try {
+          const [greetResult, tableResult] = await Promise.all([
+            api2.Greet("Fusion explorer"),
+            api2.GetTable("Streamed table")
+          ]);
+          if (signal.aborted) return;
+          setGreeting(greetResult);
+          const model = {
+            title: tableResult.title,
+            rows: [],
+            isCompleted: false
+          };
+          setTable(model);
+          await readTable(tableResult, model, signal, triggerRender);
+        } catch (err) {
+          if (!signal.aborted) console.error("RPC Example error:", err);
+        }
+      })();
+      return () => abortController.abort();
+    }, [api2, triggerRender]);
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("h1", { children: "RPC Example - React" }),
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(ConnectionStatusBanner, { monitor: monitor2 }),
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "my-1", children: [
+        "Greet: ",
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("b", { children: greeting || "..." })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "my-1", children: [
+        "Ping-pong: ",
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("b", { children: lastPing }),
+        " - ",
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("b", { children: lastPong })
+      ] }),
+      table && /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "my-1", children: [
+          "GetTable: ",
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("b", { children: table.title }),
+          table.isCompleted && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "text-secondary", children: " - completed" })
+        ] }),
+        table.rows.map((row) => /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "mx-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("span", { children: [
+            "Row ",
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("b", { children: row.index }),
+            ":"
+          ] }),
+          " ",
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: row.items.join(", ") }),
+          row.isCompleted && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "text-secondary", children: " - completed" })
+        ] }, row.index))
+      ] })
+    ] });
+  }
+  function delay(ms) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+  async function readTable(table, model, signal, triggerRender) {
+    let rowCount = 0;
+    for await (const row of table.rows) {
+      if (signal.aborted) break;
+      const rowModel = { index: row.index, items: [], isCompleted: false };
+      model.rows.push(rowModel);
+      triggerRender();
+      void readRow(row, rowModel, signal, triggerRender);
+      rowCount++;
+      if (rowCount >= ROW_LIMIT) break;
+    }
+    model.isCompleted = true;
+    triggerRender();
+  }
+  async function readRow(row, model, signal, triggerRender) {
+    try {
+      let itemCount = 0;
+      for await (const item of row.items) {
+        if (signal.aborted) break;
+        model.items.push(item);
+        triggerRender();
+        itemCount++;
+        if (itemCount >= ITEM_LIMIT) break;
+      }
+    } catch (err) {
+      if (!signal.aborted) console.error(`Row ${model.index} stream error:`, err);
+    }
+    model.isCompleted = true;
+    triggerRender();
+  }
+
+  // src/index.tsx
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
   function getWsUrl() {
     const loc = window.location;
     const protocol = loc.protocol === "https:" ? "wss:" : "ws:";
@@ -23948,8 +24515,13 @@
   var peer = new RpcClientPeer(hub, getWsUrl());
   hub.addPeer(peer);
   var api = hub.addClient(peer, TodoApiDef);
+  var simpleApi = hub.addClient(peer, SimpleServiceDef);
   var todos = new Todos(api);
   var monitor = new RpcPeerStateMonitor(peer);
+  var pongListeners = /* @__PURE__ */ new Set();
+  hub.addService(SimpleClientSideServiceDef, createPongService((msg) => {
+    for (const listener of pongListeners) listener(msg);
+  }));
   void peer.run();
   var root = null;
   var todoReactApp = {
@@ -23960,7 +24532,7 @@
         return;
       }
       root = (0, import_client.createRoot)(container);
-      root.render(/* @__PURE__ */ (0, import_jsx_runtime5.jsx)(TodoApp, { todos, api, monitor }));
+      root.render(/* @__PURE__ */ (0, import_jsx_runtime6.jsx)(TodoApp, { todos, api, monitor }));
     },
     unmount() {
       root?.unmount();
@@ -23970,7 +24542,26 @@
       peer.reconnectDelayer.cancelDelays();
     }
   };
+  var rpcExampleRoot = null;
+  var rpcExampleReactApp = {
+    mount(elementId) {
+      const container = document.getElementById(elementId);
+      if (!container) {
+        console.error(`RpcExampleReactApp: element #${elementId} not found`);
+        return;
+      }
+      rpcExampleRoot = (0, import_client.createRoot)(container);
+      rpcExampleRoot.render(
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(RpcExampleApp, { api: simpleApi, monitor, pongListeners })
+      );
+    },
+    unmount() {
+      rpcExampleRoot?.unmount();
+      rpcExampleRoot = null;
+    }
+  };
   window.TodoReactApp = todoReactApp;
+  window.RpcExampleReactApp = rpcExampleReactApp;
 })();
 /*! Bundled license information:
 

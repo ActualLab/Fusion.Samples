@@ -115,6 +115,7 @@ void ConfigureServices()
     // });
 
     fusion.AddDbAuthService<AppDbContext, long>();
+    fusionServer.AddAuthEndpoints();
     fusionServer.ConfigureAuthEndpoint(_ => new() {
         DefaultSignInScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
         SignInPropertiesBuilder = (_, properties) => {

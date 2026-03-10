@@ -71,5 +71,10 @@
     // Action handlers
 
     private void Apply()
+        // UI changes MutableState.Value's properties (ValueA and ValueB), but doesn't set the .Value itself.
+        // And `MutableState.Value = MutableState.Value` won't work here, coz MutableState
+        // ignores assignments of the same value (in terms of .Equals(), which is referential for LocalModel).
+        // So the best way to indicate it's changed is to invalidate it:
         => MutableState.Invalidate();
+
 }

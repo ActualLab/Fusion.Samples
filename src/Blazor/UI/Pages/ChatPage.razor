@@ -1,6 +1,6 @@
 @page "/chat"
 @using System.Threading
-@inherits MixedStateComponent<ChatPage.Model, ChatPage.LocalsModel>
+@inherits MixedStateComponent<ChatPage.Model, ChatPage.LocalModel>
 @inject IAuth Auth
 @inject IChatService Chats
 
@@ -87,7 +87,7 @@
 </AuthorizeView>
 
 @code {
-    public class LocalsModel
+    public class LocalModel
     {
         public string Name {
             get;
@@ -120,7 +120,7 @@
         MustRenderAfterEvent = true;
     }
 
-    protected override MutableState<LocalsModel>.Options GetMutableStateOptions()
+    protected override MutableState<LocalModel>.Options GetMutableStateOptions()
         => new () { InitialValue = new() };
 
     protected override ComputedState<Model>.Options GetStateOptions()
@@ -164,6 +164,10 @@
             return; // The error will be displayed in the UI anyway
 
         MutableState.Value.Message = "";
+        // We just changed MutableState.Value's property, but didn't set the .Value itself.
+        // And `MutableState.Value = MutableState.Value` won't work here, coz MutableState
+        // ignores assignments of the same value (in terms of .Equals(), which is referential for LocalsModel).
+        // So the best way to indicate it's changed is to invalidate it:
         MutableState.Invalidate();
     }
 

@@ -63,6 +63,11 @@ public partial class ClientCommand : BenchmarkCommandBase
     public int TryCount { get; set; } = 4;
 
     [CommandLineArgument]
+    [Description("Search for best worker count and client concurrency per framework using the first test.")]
+    [Alias("s")]
+    public bool Search { get; set; }
+
+    [CommandLineArgument]
     [Description("Wait for a key press when benchmark ends.")]
     public bool Wait { get; set; }
 
@@ -79,9 +84,14 @@ public partial class ClientCommand : BenchmarkCommandBase
         WriteLine("Client settings:");
         WriteLine($"  Server URL:           {Url}");
         WriteLine($"  Test plan:            {WarmupDuration:N}s warmup, {TryCount} x {Duration:N}s runs");
-        WriteLine($"  Client count:         {(WorkersValue + ClientConcurrencyValue - 1) / ClientConcurrencyValue}");
-        WriteLine($"  Client concurrency:   {ClientConcurrencyValue}");
-        WriteLine($"  Total worker count:   {WorkersValue}");
+        if (Search) {
+            WriteLine($"  Parameter search:     enabled (per-framework auto-tuning)");
+        }
+        else {
+            WriteLine($"  Client count:         {(WorkersValue + ClientConcurrencyValue - 1) / ClientConcurrencyValue}");
+            WriteLine($"  Client concurrency:   {ClientConcurrencyValue}");
+            WriteLine($"  Total worker count:   {WorkersValue}");
+        }
         await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken); // Let server to complete the startup
 
         // Run
@@ -90,7 +100,25 @@ public partial class ClientCommand : BenchmarkCommandBase
         var benchmarkKinds = Libraries.Split(",").Select(LibraryKindExt.Parse).ToArray();
         foreach (var benchmarkKind in benchmarkKinds) {
             var (name, factory) = clientFactories[benchmarkKind];
-            await new BenchmarkRunner(this, factory, name.Contains("Stream")).RunAll(name, cancellationToken);
+            var isStreaming = name.Contains("Stream");
+
+            if (Search) {
+                WriteLine($"{name} parameter search:");
+                var (bestWorkers, bestConcurrency) = await ParameterSearcher.FindBest(
+                    this, factory, isStreaming, cancellationToken);
+                if (bestWorkers < 0) {
+                    WriteLine($"  Skipped (not supported)");
+                    continue;
+                }
+                Workers = bestWorkers;
+                ClientConcurrency = bestConcurrency;
+                WriteLine($"  Best: workers={bestWorkers}, concurrency={bestConcurrency}");
+                // Re-create factory since search may have exhausted connections
+                clientFactories = new ClientFactories(Url);
+                factory = clientFactories[benchmarkKind].Factory;
+            }
+
+            await new BenchmarkRunner(this, factory, isStreaming).RunAll(name, cancellationToken);
         }
 
         if (Wait) {

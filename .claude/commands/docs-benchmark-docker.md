@@ -35,12 +35,15 @@ Check the `AC_OS` environment variable - if it equals `Linux in Docker`, abort w
    docker-compose run --build sample_rpc_benchmark_calls
    ```
    Wait for completion and collect results. Tests 6 frameworks: ActualLab.Rpc, SignalR, gRPC, MagicOnion, StreamJsonRpc, HTTP.
+   The `-s` flag enables per-framework parameter search (auto-tuning of worker count and concurrency).
+   Latency percentiles (p50/p95/p99) are also reported for each call test.
 
 5. **Run the streams benchmark:**
    ```
    docker-compose run --build sample_rpc_benchmark_streams
    ```
    Wait for completion and collect results. Tests 4 frameworks: ActualLab.Rpc, gRPC, SignalR, StreamJsonRpc.
+   The `-s` flag enables per-framework parameter search.
 
 6. **Update @Benchmarks.md** with Docker benchmark results:
    - Add or update section `## Docker-Based RPC Benchmarks` after the native RPC benchmark section
@@ -54,10 +57,11 @@ Check the `AC_OS` environment variable - if it equals `Linux in Docker`, abort w
 
 The benchmark outputs results in this format (take the final value after `->` arrow):
 ```
-ActualLab.Rpc:
-  Sum      :   1.49M   1.49M   1.48M   1.49M ->   1.49M calls/s
-  GetUser  :   1.40M   1.39M   1.39M   1.40M ->   1.40M calls/s
+ActualLab.Rpc @ 1000 workers, 20 concurrency (50 clients):
+  Sum      :   1.49M   1.49M   1.48M   1.49M ->   1.49M calls/s, p50=12μs, p95=45μs, p99=123μs
+  GetUser  :   1.40M   1.39M   1.39M   1.40M ->   1.40M calls/s, p50=15μs, p95=55μs, p99=150μs
 ```
+When `-s` is used, the output also includes a parameter search section before each framework showing the auto-tuned worker count and concurrency.
 
 ## Related
 

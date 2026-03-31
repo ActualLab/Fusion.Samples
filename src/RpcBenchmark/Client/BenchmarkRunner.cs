@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using ActualLab.Benchmarking;
 using ActualLab.OS;
 
 namespace Samples.RpcBenchmark.Client;
@@ -37,11 +39,12 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
 
     public async Task RunAll(string title, CancellationToken cancellationToken)
     {
-        WriteLine($"{title}:");
+        var clientCount = (Workers.Length + Command.ClientConcurrencyValue - 1) / Command.ClientConcurrencyValue;
+        WriteLine($"{title} @ {Workers.Length} workers, {Command.ClientConcurrencyValue} concurrency ({clientCount} clients):");
         if (Command.Benchmark == BenchmarkKind.Calls) {
-            await RunOne("Sum", w => w.Sum, cancellationToken);
-            await RunOne("GetUser", w => w.GetUser, cancellationToken);
-            await RunOne("SayHello", w => w.SayHello, cancellationToken);
+            await RunOneWithLatency("Sum", w => w.Sum, cancellationToken);
+            await RunOneWithLatency("GetUser", w => w.GetUser, cancellationToken);
+            await RunOneWithLatency("SayHello", w => w.SayHello, cancellationToken);
         }
         else {
             await RunOne("Stream1", w => w.Stream1, cancellationToken);
@@ -86,5 +89,64 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
         Title = title;
         Interlocked.Exchange(ref _currentOperationFactory, operationFactory);
         return Run(cancellationToken);
+    }
+
+    private async Task RunOneWithLatency(
+        string title,
+        Func<BenchmarkWorker, Func<CancellationToken, Task>> operationFactory,
+        CancellationToken cancellationToken)
+    {
+        // Run throughput without trailing newline
+        WriteNewLine = false;
+        await RunOne(title, operationFactory, cancellationToken);
+        WriteNewLine = true;
+
+        // Run latency pass and append to same line
+        var (p50, p95, p99) = await MeasureLatency(operationFactory, cancellationToken);
+        WriteLine($", p50={p50}, p95={p95}, p99={p99}");
+    }
+
+    private async Task<(string P50, string P95, string P99)> MeasureLatency(
+        Func<BenchmarkWorker, Func<CancellationToken, Task>> operationFactory,
+        CancellationToken cancellationToken)
+    {
+        const int sampleMask = 127; // Sample every 128th call (~0.78%)
+
+        var recorders = new LatencyRecorder[Workers.Length];
+        for (var i = 0; i < recorders.Length; i++)
+            recorders[i] = new LatencyRecorder();
+
+        // Wrap operations to sample latency on ~1% of calls
+        Func<int, Func<CancellationToken, Task>> wrappedFactory = i => {
+            var recorder = recorders[i];
+            var operation = operationFactory(Workers[i]);
+            var count = 0L;
+            return async ct => {
+                if ((count++ & sampleMask) == 0) {
+                    var start = Stopwatch.GetTimestamp();
+                    await operation(ct).ConfigureAwait(false);
+                    recorder.Record(Stopwatch.GetTimestamp() - start);
+                }
+                else {
+                    await operation(ct).ConfigureAwait(false);
+                }
+            };
+        };
+
+        // Brief warmup (system is already warm from throughput pass)
+        await Benchmarks.CallFrequency(
+            Workers.Length, Command.WarmupDuration / 3, cancellationToken,
+            wrappedFactory, i => Workers[i].WhenReady());
+
+        // Reset recorders to discard warmup samples
+        foreach (var r in recorders)
+            r.Reset();
+        GC.Collect();
+
+        // Measure
+        await Benchmarks.CallFrequency(
+            Workers.Length, Command.Duration, cancellationToken, wrappedFactory);
+
+        return LatencyRecorder.ComputePercentiles(recorders);
     }
 }

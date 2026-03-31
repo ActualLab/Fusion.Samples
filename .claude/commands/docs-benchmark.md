@@ -23,12 +23,19 @@ Run all benchmarks as specified in @Benchmarks.md and update the file with the l
 
 3. Run the **Run-RpcBenchmark.cmd** benchmarks (3 times each sequentially, take best results):
 
-   Calls benchmark - use a command like this from the corresponding section of @Benchmarks.md with `-b calls` option:
+   Key options:
+   - `-b calls|streams` - benchmark kind
+   - `-l <libs>` - comma-separated list of libraries to test
+   - `-f <format>` - serialization format (e.g., `msgpack6c`, `mempack6c`)
+   - `-s` - enable per-framework parameter search (auto-tunes worker count and concurrency per framework)
+   - `-n <count>` - number of tries per test (best result selected)
+
+   Calls benchmark:
    ```
    dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b calls -l rpc,grpc,signalr -f msgpack6c -n 4
    ```
 
-   Streams benchmark - use a command like this from the corresponding section of @Benchmarks.md with `-b calls` option:
+   Streams benchmark:
    ```
    dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack6c -n 4
    ```

@@ -9,7 +9,7 @@ public abstract class BenchmarkRunnerBase<TResult>
     public Func<TResult, string> ResultFormatter { get; init; } = result => result?.ToString() ?? "n/a";
     public IComparer<TResult> ResultComparer { get; init; } = Comparer<TResult>.Default;
     public Action<string> Writer { get; init; } = Write;
-    public bool WriteNewLine { get; init; } = true;
+    public bool WriteNewLine { get; set; } = true;
 
     public async Task Run(CancellationToken cancellationToken = default)
     {

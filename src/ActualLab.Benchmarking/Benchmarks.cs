@@ -1,3 +1,5 @@
+using System.Net.Http;
+
 namespace ActualLab.Benchmarking;
 
 public static class Benchmarks

@@ -1,11 +1,9 @@
 # Benchmark Results
 
-**Updated:** 2026-01-29<br/>
-**ActualLab.Fusion Version:** 12.0.45
+**Updated:** 2026-04-01<br/>
+**ActualLab.Fusion Version:** 12.1.130
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
-
-We ran each benchmark 3 times and took the best result for each test.
 
 ## Test Environment
 
@@ -14,7 +12,7 @@ We ran each benchmark 3 times and took the best result for each test.
 | **CPU** | AMD Ryzen 9 9950X3D 16-Core Processor |
 | **RAM** | 96 GB DDR5 |
 | **OS** | Windows 11 |
-| **.NET Version** | 10.0.1 |
+| **.NET Version** | 10.0.5 |
 
 Note that Ryzen 9 9950X3D has 32 logical cores due to SMT.
 
@@ -41,17 +39,17 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| Regular Service | 135.44K calls/s | |
-| Fusion Service | 266.58M calls/s | **~1,968x** |
+| Regular Service | 112.07K calls/s | |
+| Fusion Service | 253.12M calls/s | **~2,259x** |
 
 ### Remote Services
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| HTTP Client → Regular Service | 100.72K calls/s | |
-| HTTP Client → Fusion Service | 431.35K calls/s | **~4.3x** |
-| ActualLab.Rpc Client → Fusion Service | 6.92M calls/s | **~69x** |
-| Fusion Client → Fusion Service | 226.73M calls/s | **~2,251x** |
+| HTTP Client → Regular Service | 76.03K calls/s | |
+| HTTP Client → Fusion Service | 305.22K calls/s | **~4.0x** |
+| ActualLab.Rpc Client → Fusion Service | 7.58M calls/s | **~100x** |
+| Fusion Client → Fusion Service | 216.00M calls/s | **~2,841x** |
 
 ## Run-RpcBenchmark.cmd
 
@@ -63,21 +61,29 @@ There are two benchmarks in `RpcBenchmark` project:
 
 RPC calls:
 ```powershell
-dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b calls -l rpc,grpc,signalr -f msgpack6c -n 4
+dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b calls -l rpc,grpc,signalr -f msgpack6c -s -n 6
 ```
 
 RPC streaming:
 ```powershell
-dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack6c -n 4
+dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack6c -s -n 6
 ```
 
 ### Calls
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Sum | 9.33M calls/s | 1.11M calls/s | 5.30M calls/s |
-| GetUser | 8.37M calls/s | 1.10M calls/s | 4.43M calls/s |
-| SayHello | 5.99M calls/s | 1.04M calls/s | 2.25M calls/s |
+| Sum | 9.46M calls/s | 1.30M calls/s | 5.03M calls/s |
+| GetUser | 8.75M calls/s | 1.27M calls/s | 4.29M calls/s |
+| SayHello | 5.94M calls/s | 1.19M calls/s | 2.16M calls/s |
+
+### Call Latency
+
+| Test | ActualLab.Rpc (p50 / p95 / p99) | gRPC (p50 / p95 / p99) | SignalR (p50 / p95 / p99) |
+|------|----------------------------------|------------------------|---------------------------|
+| Sum | 1.2ms / 1.7ms / 7.9ms | 2.2ms / 2.9ms / 8.0ms | 3.1ms / 4.0ms / 9.5ms |
+| GetUser | 1.4ms / 1.8ms / 5.6ms | 2.3ms / 3.2ms / 8.9ms | 3.7ms / 5.1ms / 10.2ms |
+| SayHello | 2.0ms / 2.9ms / 7.4ms | 2.4ms / 3.3ms / 8.7ms | 7.1ms / 10.3ms / 14.5ms |
 
 ### Streams
 
@@ -85,9 +91,9 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Stream1 | 101.17M items/s | 39.59M items/s | 17.17M items/s |
-| Stream100 | 47.53M items/s | 21.19M items/s | 14.00M items/s |
-| Stream10K | 955.44K items/s | 691.20K items/s | 460.80K items/s |
+| Stream1 | 97.55M items/s | 42.70M items/s | 16.39M items/s |
+| Stream100 | 43.31M items/s | 25.14M items/s | 13.12M items/s |
+| Stream10K | 808.56K items/s | 578.52K items/s | 415.08K items/s |
 
 ### Throughput
 
@@ -95,9 +101,9 @@ Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 b
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Stream1 | 101.17 MB/s | 39.59 MB/s | 17.17 MB/s |
-| Stream100 | 4.75 GB/s | 2.12 GB/s | 1.40 GB/s |
-| Stream10K | 9.78 GB/s | 7.08 GB/s | 4.72 GB/s |
+| Stream1 | 97.55 MB/s | 42.70 MB/s | 16.39 MB/s |
+| Stream100 | 4.33 GB/s | 2.51 GB/s | 1.31 GB/s |
+| Stream10K | 8.28 GB/s | 5.92 GB/s | 4.25 GB/s |
 
 ## Docker-Based RPC Benchmarks
 
@@ -109,12 +115,23 @@ ensuring the server is the bottleneck. This setup matches [grpc_bench](https://g
 
 | Framework | Sum | GetUser | SayHello |
 |-----------|-----|---------|----------|
-| ActualLab.Rpc | 1.49M calls/s | 1.40M calls/s | 1.13M calls/s |
-| SignalR | 1.31M calls/s | 1.14M calls/s | 667.69K calls/s |
-| gRPC | 480.48K calls/s | 476.97K calls/s | 447.06K calls/s |
-| MagicOnion | 453.41K calls/s | 448.39K calls/s | 417.47K calls/s |
-| StreamJsonRpc | 279.14K calls/s | 236.43K calls/s | 107.29K calls/s |
-| HTTP | 164.10K calls/s | 156.26K calls/s | 129.30K calls/s |
+| ActualLab.Rpc | 4.75M calls/s | 4.38M calls/s | 2.52M calls/s |
+| SignalR | 2.23M calls/s | 1.82M calls/s | 842.45K calls/s |
+| gRPC | 437.85K calls/s | 441.44K calls/s | 399.32K calls/s |
+| MagicOnion | 392.59K calls/s | 402.85K calls/s | 362.84K calls/s |
+| StreamJsonRpc | 265.72K calls/s | 226.77K calls/s | 99.09K calls/s |
+| HTTP | 105.25K calls/s | 103.12K calls/s | 88.18K calls/s |
+
+### Docker Call Latency
+
+| Framework | Sum (p50 / p95 / p99) | GetUser (p50 / p95 / p99) | SayHello (p50 / p95 / p99) |
+|-----------|-----------------------|---------------------------|----------------------------|
+| ActualLab.Rpc | 3.8ms / 8.1ms / 23.7ms | 4.3ms / 7.6ms / 16.2ms | 6.5ms / 35.5ms / 39.9ms |
+| SignalR | 5.2ms / 12.2ms / 50.7ms | 7.0ms / 12.0ms / 37.3ms | 19.9ms / 51.0ms / 58.1ms |
+| gRPC | 3.3ms / 32.3ms / 45.4ms | 3.5ms / 6.8ms / 32.1ms | 4.2ms / 9.6ms / 36.2ms |
+| MagicOnion | 4.5ms / 8.3ms / 24.1ms | 5.0ms / 10.8ms / 23.1ms | 5.5ms / 8.8ms / 12.3ms |
+| StreamJsonRpc | 43.4ms / 56.4ms / 59.6ms | 58.9ms / 70.1ms / 72.5ms | 107.3ms / 212.3ms / 222.0ms |
+| HTTP | 33.9ms / 51.4ms / 54.9ms | 34.2ms / 44.3ms / 45.9ms | 30.4ms / 44.0ms / 45.5ms |
 
 ### Docker Streams
 
@@ -122,7 +139,7 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Framework | Stream1 | Stream100 | Stream10K |
 |-----------|---------|-----------|-----------|
-| ActualLab.Rpc | 34.24M items/s | 15.56M items/s | 432.72K items/s |
-| gRPC | 12.60M items/s | 6.15M items/s | 259.20K items/s |
-| SignalR | 5.28M items/s | 3.93M items/s | 202.32K items/s |
-| StreamJsonRpc | 144.00K items/s | 144.00K items/s | 86.40K items/s |
+| ActualLab.Rpc | 31.80M items/s | 12.66M items/s | 279.72K items/s |
+| gRPC | 11.27M items/s | 6.04M items/s | 125.64K items/s |
+| SignalR | 5.42M items/s | 3.62M items/s | 106.20K items/s |
+| StreamJsonRpc | 115.20K items/s | 115.20K items/s | 0 items/s |

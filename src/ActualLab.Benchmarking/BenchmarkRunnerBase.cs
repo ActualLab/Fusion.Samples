@@ -15,12 +15,13 @@ public abstract class BenchmarkRunnerBase<TResult>
     {
         Writer.Invoke(TitleFormatter.Invoke(Title));
 
-        await Reset();
+        await Benchmarks.SettleDown();
         await Warmup(cancellationToken);
+        await Benchmarks.SettleDown();
 
         var bestResult = default(TResult)!;
         for (var i = 0; i < TryCount; i++) {
-            await Reset();
+            await Benchmarks.SettleDown();
             var result = await Benchmark(cancellationToken).ConfigureAwait(false);
             Writer.Invoke(ResultFormatter.Invoke(result) + " ");
 
@@ -40,12 +41,5 @@ public abstract class BenchmarkRunnerBase<TResult>
     protected abstract Task Warmup(CancellationToken cancellationToken);
     protected abstract Task<TResult> Benchmark(CancellationToken cancellationToken);
 
-    protected static async Task Reset()
-    {
-        for (var i = 0; i < 3; i++) {
-            if (i != 0)
-                await Task.Delay(50);
-            GC.Collect();
-        }
-    }
+
 }

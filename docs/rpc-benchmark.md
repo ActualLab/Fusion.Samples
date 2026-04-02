@@ -47,7 +47,7 @@ Key client options:
 - `-d <TestDuration>` - the duration of each test in seconds, the default is `5`
 - `-n <TryCount>` - the number of times to run each test to select the best result, the default is `4`
 - `-l <Libraries>` - comma-separated list of libraries to benchmark, which must be a subset of `Rpc,SignalR,StreamJsonRpc,MagicOnion,Grpc,Http`, the default is full set
-- `-f <Format>` - RPC serialization format to use in ActualLab.Rpc tests, the default is `mempack6c`
+- `-f <Format>` - RPC serialization format to use in ActualLab.Rpc tests, the default is `msgpack6c`
 - `-s` - enable per-framework parameter search: automatically finds the best `-w` and `-cc` for each framework using coordinate descent with exponential step search, then runs the full benchmark with those parameters. This eliminates bias from fixed parameters that may favor one framework over another. Latency percentiles (p50/p95/p99) are also measured for calls benchmarks.
 - `-wait` - wait for a key press before terminating.
 

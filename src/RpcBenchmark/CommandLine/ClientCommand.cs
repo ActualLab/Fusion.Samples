@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Net.Http;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
 using Ookii.CommandLine.Validation;
@@ -33,7 +34,7 @@ public partial class ClientCommand : BenchmarkCommandBase
     [ValidateRange(1, null)]
     [Alias("cc")]
     public int? ClientConcurrency { get; set; }
-    public int ClientConcurrencyValue => ClientConcurrency ?? (Benchmark == BenchmarkKind.Calls ? 100 : 4);
+    public int ClientConcurrencyValue => ClientConcurrency ?? (Benchmark == BenchmarkKind.Calls ? 200 : 4);
 
     [CommandLineArgument]
     [Description("Worker count - the total number of worker tasks.")]
@@ -41,7 +42,7 @@ public partial class ClientCommand : BenchmarkCommandBase
     [ValidateRange(1, null)]
     [Alias("w")]
     public int? Workers { get; set; }
-    public int WorkersValue => Workers ?? (int)(HardwareInfo.ProcessorCount * (Benchmark == BenchmarkKind.Calls ? 300 : 4));
+    public int WorkersValue => Workers ?? (int)(HardwareInfo.ProcessorCount * (Benchmark == BenchmarkKind.Calls ? 400 : 8));
 
     [CommandLineArgument]
     [Description("Test duration in seconds.")]
@@ -81,6 +82,9 @@ public partial class ClientCommand : BenchmarkCommandBase
         SystemSettings.Apply(MinWorkerThreads, MinIOThreads, SerializationFormat);
 
         await TcpProbe.WhenReady(Url, cancellationToken);
+        Benchmarks.RemoteGCClient = new HttpClient(new HttpClientHandler {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+        }) { BaseAddress = new Uri(Url) };
         WriteLine("Client settings:");
         WriteLine($"  Server URL:           {Url}");
         WriteLine($"  Test plan:            {WarmupDuration:N}s warmup, {TryCount} x {Duration:N}s runs");

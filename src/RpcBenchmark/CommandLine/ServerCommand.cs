@@ -103,6 +103,13 @@ public partial class ServerCommand : BenchmarkCommandBase
             app.MapGrpcServiceFixed<MagicOnionTestService>();
             app.MapStreamJsonRpcService<JsonRpcTestService>("stream-json-rpc");
             app.MapTestService<TestService>("/api/testService");
+            app.MapGet("/gc-collect", async () => {
+                for (var i = 0; i < 3; i++) {
+                    GC.Collect();
+                    await Task.Delay(25);
+                }
+                return Microsoft.AspNetCore.Http.Results.Ok();
+            });
             app.Urls.Add(Url);
         }
         catch (Exception error) {

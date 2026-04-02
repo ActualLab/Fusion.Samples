@@ -15,7 +15,7 @@ using ActualLab.Rpc.Server;
 // var minThreadCount = WorkerCount * 2;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
-RpcSerializationFormatResolver.Default = new("mempack6c");
+RpcSerializationFormatResolver.Default = new("msgpack6c");
 
 var stopTokenSource = new CancellationTokenSource();
 var stopToken = stopTokenSource.Token;
@@ -82,7 +82,7 @@ async Task RunClient()
     await dbServices.GetRequiredService<DbInitializer>().Initialize(true, stopToken);
     WriteLine($".NET version:       {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
     WriteLine($"Item count:         {ItemCount}");
-    WriteLine($"Client concurrency: {TestServiceConcurrency} workers per client or test service");
+    WriteLine($"Client concurrency: {ClientConcurrency} workers per client");
     WriteLine($"Writer count:       {WriterCount}");
     var benchmarkRunner = new BenchmarkRunner("Initialize", ClientServices.LocalDbServiceFactory);
     await benchmarkRunner.Initialize(stopToken);
@@ -90,15 +90,15 @@ async Task RunClient()
     // Run
     WriteLine();
     WriteLine("Local services:");
-    await new BenchmarkRunner("Fusion Service", ClientServices.LocalFusionServiceFactory).Run();
-    await new BenchmarkRunner("Regular Service", ClientServices.LocalDbServiceFactory, 2).Run();
+    await new BenchmarkRunner("Fusion Service", ClientServices.LocalFusionServiceFactory, 10).Run();
+    await new BenchmarkRunner("Regular Service", ClientServices.LocalDbServiceFactory, 200).Run();
 
     WriteLine();
     WriteLine("Remote services:");
-    await new BenchmarkRunner("Fusion Client -> Fusion Service", ClientServices.RemoteFusionServiceFactory).Run();
-    await new BenchmarkRunner("ActualLab.Rpc Client -> Fusion Service", ClientServices.RemoteFusionServiceViaRpcFactory, 10).Run();
-    await new BenchmarkRunner("HTTP Client -> Fusion Service", ClientServices.RemoteFusionServiceViaHttpFactory, 5).Run();
-    await new BenchmarkRunner("HTTP Client -> Regular Service", ClientServices.RemoteDbServiceViaHttpFactory, 5).Run();
+    await new BenchmarkRunner("Fusion Client -> Fusion Service", ClientServices.RemoteFusionServiceFactory, 30).Run();
+    await new BenchmarkRunner("ActualLab.Rpc Client -> Fusion Service", ClientServices.RemoteFusionServiceViaRpcFactory, 400).Run();
+    await new BenchmarkRunner("HTTP Client -> Fusion Service", ClientServices.RemoteFusionServiceViaHttpFactory, 100).Run();
+    await new BenchmarkRunner("HTTP Client -> Regular Service", ClientServices.RemoteDbServiceViaHttpFactory, 100).Run();
 
     try { ReadKey(); }
     catch (InvalidOperationException) { } // Non-interactive mode

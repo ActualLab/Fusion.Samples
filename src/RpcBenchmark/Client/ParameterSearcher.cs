@@ -1,11 +1,12 @@
-using ActualLab.Benchmarking;
 using ActualLab.OS;
-using static System.Console;
 
 namespace Samples.RpcBenchmark.Client;
 
 public static class ParameterSearcher
 {
+    private const int TopCandidates = 3;
+    private const int VerificationRuns = 2;
+
     public static async Task<(int Workers, int ClientConcurrency)> FindBest(
         ClientCommand command,
         Func<ITestService> clientFactory,
@@ -20,11 +21,11 @@ public static class ParameterSearcher
         var warmupDuration = Math.Min(command.WarmupDuration, 1.0);
 
         Func<BenchmarkWorker, Func<CancellationToken, Task>> operationFactory =
-            isCalls ? w => w.Sum : w => w.Stream1;
+            isCalls ? w => w.Sum : w => w.Stream100;
 
         // Initial values
-        var concurrency = isCalls ? 100 : 4;
-        var workers = isCalls ? cpuCount * 200 : cpuCount * 4;
+        var concurrency = isCalls ? 200 : 4;
+        var workers = isCalls ? cpuCount * 400 : cpuCount * 8;
 
         // Ranges
         var minWorkers = Math.Max(cpuCount, 1);
@@ -32,12 +33,27 @@ public static class ParameterSearcher
         var minConcurrency = isCalls ? 5 : 1;
         var maxConcurrency = isCalls ? 1000 : 32;
 
-        Task<double> Evaluate(int w, int cc) => RunQuickTest(
-            clientFactory, isStreaming, w, cc,
-            testDuration, warmupDuration, operationFactory, command.Benchmark,
-            cancellationToken);
+        // Cache of all (workers, concurrency, score) results
+        var cache = new List<(int Workers, int Concurrency, double Score)>();
+
+        async Task<double> Evaluate(int w, int cc)
+        {
+            // Check cache for exact match
+            foreach (var (cw, ccc, cs) in cache) {
+                if (cw == w && ccc == cc)
+                    return cs;
+            }
+            var score = await RunQuickTest(
+                clientFactory, isStreaming, w, cc,
+                testDuration, warmupDuration, operationFactory, command.Benchmark,
+                cancellationToken);
+            cache.Add((w, cc, score));
+            return score;
+        }
 
         // Initial worker search at default concurrency
+        await Benchmarks.SettleDown();
+        await Benchmarks.SettleDown();
         Write($"  cc={concurrency}, workers ");
         var (foundWorkers, score) = await ExponentialSearch("w", workers, minWorkers, maxWorkers, w => Evaluate(w, concurrency));
         WriteLine();
@@ -47,6 +63,8 @@ public static class ParameterSearcher
 
         // Coordinate descent: alternate between optimizing concurrency and workers
         for (var iter = 0; iter < 3; iter++) {
+            await Benchmarks.SettleDown();
+            await Benchmarks.SettleDown();
             Write($"  w={workers}, concurrency ");
             var (newConcurrency, _) = await ExponentialSearch(
                 "cc", concurrency, minConcurrency, maxConcurrency, cc => Evaluate(workers, cc));
@@ -57,6 +75,8 @@ public static class ParameterSearcher
             if (!concurrencyChanged && iter > 0)
                 break;
 
+            await Benchmarks.SettleDown();
+            await Benchmarks.SettleDown();
             Write($"  cc={concurrency}, workers ");
             var (newWorkers, __) = await ExponentialSearch(
                 "w", workers, minWorkers, maxWorkers, w => Evaluate(w, concurrency));
@@ -66,6 +86,41 @@ public static class ParameterSearcher
 
             if (!workersChanged)
                 break;
+        }
+
+        // Verification: pick top candidates, triple-test each, select the best
+        var candidates = cache
+            .Where(r => r.Score > 0)
+            .OrderByDescending(r => r.Score)
+            .DistinctBy(r => (r.Workers, r.Concurrency))
+            .Take(TopCandidates)
+            .ToList();
+
+        if (candidates.Count > 1) {
+            Write("  Verifying top candidates: ");
+            var bestScore = 0.0;
+            var bestW = workers;
+            var bestCC = concurrency;
+            foreach (var (cw, ccc, cachedScore) in candidates) {
+                var maxScore = cachedScore;
+                for (var i = 0; i < VerificationRuns; i++) {
+                    var s = await RunQuickTest(
+                        clientFactory, isStreaming, cw, ccc,
+                        testDuration, warmupDuration, operationFactory, command.Benchmark,
+                        cancellationToken);
+                    if (s > maxScore)
+                        maxScore = s;
+                }
+                Write($"({cw},{ccc})->{maxScore.FormatCount()} ");
+                if (maxScore > bestScore) {
+                    bestScore = maxScore;
+                    bestW = cw;
+                    bestCC = ccc;
+                }
+            }
+            workers = bestW;
+            concurrency = bestCC;
+            WriteLine();
         }
 
         return (workers, concurrency);

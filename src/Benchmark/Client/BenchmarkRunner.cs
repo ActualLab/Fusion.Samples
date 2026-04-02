@@ -7,17 +7,17 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
 {
     private BenchmarkWorker[] Workers { get; }
 
-    public BenchmarkRunner(string title, Func<ITestService> clientFactory, double readerCountMultiplier = 1)
+    public BenchmarkRunner(string title, Func<ITestService> clientFactory, int cpuCountMultiplier = 10)
     {
-        var readerCount = ReaderCount * readerCountMultiplier;
-        var workerCount = (int)(WriterCount + readerCount);
-        Title = $"{title,-40} {readerCount,5} readers";
+        var readerCount = CpuCount * cpuCountMultiplier;
+        var workerCount = WriterCount + readerCount;
+        Title = $"{title,-48} {readerCount,5} readers";
         TryCount = Settings.TryCount;
         ResultFormatter = x => $"{x.FormatCount(),7}";
         Workers = new BenchmarkWorker[workerCount];
         var client = (ITestService)null!;
         for (var i = 0; i < Workers.Length; i++) {
-            if (i % TestServiceConcurrency == 0)
+            if (i % ClientConcurrency == 0)
                 client = clientFactory.Invoke();
             if (i < WriterCount)
                 Workers[i] = new BenchmarkWritingWorker(client);

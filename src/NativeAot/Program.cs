@@ -1,20 +1,20 @@
-﻿using System.Reflection;
-using ActualLab.Fusion.Rpc;
-using ActualLab.Fusion.Trimming;
+using System.Reflection;
 using ActualLab.Interception;
-using ActualLab.Interception.Trimming;
 using ActualLab.Rpc;
-using ActualLab.Trimming;
 using MemoryPack;
 using MessagePack;
 using static System.Console;
 
 #pragma warning disable IL3050
 
-// TestServiceProxy.KeepCode(); // A code like this this might be used to force-load assemblies with proxies
-CodeKeeper.Set<ProxyCodeKeeper, FusionProxyCodeKeeper>();
-if (RuntimeCodegen.NativeMode != RuntimeCodegenMode.DynamicMethods)
-    CodeKeeper.RunActions();
+AppDomain.CurrentDomain.UnhandledException += (_, args) => {
+    Error.WriteLine($"UNHANDLED: {args.ExceptionObject}");
+    Error.Flush();
+};
+AppDomain.CurrentDomain.FirstChanceException += (_, args) => {
+    Error.WriteLine($"FCE: {args.Exception.GetType().Name}: {args.Exception.Message}");
+    Error.Flush();
+};
 
 WriteLine($"RuntimeCodegen.Mode: {RuntimeCodegen.Mode}");
 WriteLine($"ArgumentList.UseGenerics: {ArgumentList.UseGenerics}");
@@ -57,8 +57,6 @@ for (var i = 0; i < 5; i++) {
 }
 var hello = await client.OnSayHello(new SayHelloCommand("AOT"));
 Out.WriteLine($"OnSayHello() -> {hello}");
-
-// Used types
 
 public static class Invoker
 {

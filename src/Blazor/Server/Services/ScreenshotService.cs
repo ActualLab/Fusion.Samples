@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Samples.Blazor.Abstractions;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -43,13 +44,30 @@ public class ScreenshotService : IScreenshotService
 
     public virtual async Task<RpcStream<Screenshot>> StreamScreenshots(int width, CancellationToken cancellationToken = default)
     {
-        var cScreenshot0 = await Computed
-            .Capture(() => GetScreenshot(width, cancellationToken))
-            .ConfigureAwait(false);
-        var screenshots = cScreenshot0
-            .Changes(FixedDelayer.YieldUnsafe, CancellationToken.None)
-            .Select(c => c.Value);
-        return new RpcStream<Screenshot>(screenshots) { AckPeriod = 5, AckAdvance = 11 };
+        var frameDuration = TimeSpan.FromSeconds(1.0 / IScreenshotService.FrameRate);
+        var screenshots = ProduceScreenshots(cancellationToken);
+        return new RpcStream<Screenshot>(screenshots) {
+            IsRealTime = true,
+            AckPeriod = 3,
+            AckAdvance = 7,
+        };
+
+        async IAsyncEnumerable<Screenshot> ProduceScreenshots([EnumeratorCancellation] CancellationToken ct)
+        {
+            var nextFrameAt = CpuTimestamp.Now;
+            while (!ct.IsCancellationRequested) {
+                var screenshot = await GetScreenshot(width, ct).ConfigureAwait(false);
+                yield return screenshot;
+
+                nextFrameAt += frameDuration;
+                var delay = nextFrameAt - CpuTimestamp.Now;
+                if (delay > TimeSpan.Zero)
+                    await Task.Delay(delay, ct).ConfigureAwait(false);
+                else
+                    nextFrameAt = CpuTimestamp.Now; // fell behind, reset
+            }
+        }
+
     }
 
     public virtual async Task<Screenshot> GetScreenshot(int width, CancellationToken cancellationToken = default)
@@ -66,7 +84,7 @@ public class ScreenshotService : IScreenshotService
         // to produce the next screenshot in advance & instantly return the prev. one.
         var currentProducer = Task.Run(TakeScreenshot, default);
         var prevProducer = Interlocked.Exchange(ref _currentProducer, currentProducer) ?? currentProducer;
-        Computed.GetCurrent()!.Invalidated += c => Task.Delay(1000).ContinueWith(_ => {
+        Computed.GetCurrent().Invalidated += c => Task.Delay(1000).ContinueWith(_ => {
             // Let's dispose the bitmap in 1 second after invalidation
             var computed = (Computed<DirectBitmap>) c;
             if (computed.HasValue)

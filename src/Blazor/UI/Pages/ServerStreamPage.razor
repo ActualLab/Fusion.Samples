@@ -18,6 +18,12 @@
     font-size: 1.5rem;
     color: white
 }
+.screencast-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    object-fit: contain;
+}
 </style>
 
 <h1>Screencast - via ActualLab.Rpc (RpcStream)</h1>
@@ -32,7 +38,7 @@
 
 <Paragraph Margin="Margin.Is3.OnY" Style="position: relative">
     <span class="fps">FPS: <b>@fps</b></span>
-    <img src="@src" alt="Server screen" width="99.9%"/><br/>
+    <img class="screencast-img" src="@src" alt="Server screen"/>
 </Paragraph>
 
 @code {
@@ -69,43 +75,14 @@
         _screenshot = new();
         StateHasChanged();
         var width = ParsedWidth;
-        var frameDuration = TimeSpan.FromSeconds(1.0 / IScreenshotService.FrameRate);
-        var bufferDuration = TimeSpan.FromSeconds(1);
-        var delayLag = -2 * frameDuration;
-        var resetLag = 2 * bufferDuration;
         var cancellationToken = _stopCts.Token;
         _ = Task.Run(async () => {
             while (!cancellationToken.IsCancellationRequested) {
                 try {
-                    Console.WriteLine("Getting new stream...");
+                    Console.WriteLine("Getting new real-time stream...");
                     var screenshots = await Screenshots.StreamScreenshots(width, cancellationToken).ConfigureAwait(false);
-                    var bufferedScreenshots = screenshots.WithBuffer((int)(bufferDuration / frameDuration), cancellationToken);
-                    var firstFrameAt = default(CpuTimestamp);
-                    var firstFrameOffset = default(TimeSpan);
-                    await foreach (var screenshot in bufferedScreenshots.ConfigureAwait(false)) {
-                        if (firstFrameAt == default) {
-                            firstFrameAt = CpuTimestamp.Now + 0.5 * bufferDuration; // Playing at 50% of buffer size
-                            firstFrameOffset = screenshot.FrameOffset;
-                        }
-                        var displayAt = firstFrameAt + (screenshot.FrameOffset - firstFrameOffset);
-                        var lag = CpuTimestamp.Now - displayAt;
-                        if (lag < delayLag) {
-                            // Wait & buffer more
-                            var delay = delayLag - lag;
-                            Console.WriteLine("Lag: {0:N0}ms -> delay {0:N0}ms", delay.TotalMilliseconds);
-                            await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
-                        }
-                        else {
-                            if (lag > resetLag) {
-                                Console.WriteLine("!!! Lag: {0:N0}ms -> reset");
-                                break; // Restart streaming: the lag is too big
-                            }
-                            if (lag > bufferDuration) {
-                                Console.WriteLine("! Lag: {0:N0}ms -> skip frame");
-                                continue; // Skip the frame & display the next one
-                            }
-                        }
-                        await InvokeAsync(() => {
+                    await foreach (var screenshot in screenshots.WithCancellation(cancellationToken).ConfigureAwait(false)) {
+                        _ = InvokeAsync(() => {
                             _screenshot = screenshot;
                             StateHasChanged();
                         }).ConfigureAwait(false);

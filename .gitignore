@@ -32,6 +32,10 @@ StyleCopReport.xml
 [Pp]ackages/
 node_modules/
 
+# Generated JS bundles (built by TypeScriptUI/build.mjs)
+src/TodoApp/Host/wwwroot/js/todo-react.js
+src/TodoApp/Host/wwwroot/js/todo-react.js.map
+
 # Log files & folders
 *.log
 *.binlog

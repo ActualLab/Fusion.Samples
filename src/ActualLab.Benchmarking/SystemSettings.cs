@@ -6,6 +6,7 @@ using ActualLab.Rpc.Clients;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.WebSockets;
+using ActualLab.Serialization;
 
 namespace ActualLab.Benchmarking;
 
@@ -34,6 +35,7 @@ public static class SystemSettings
             };
 
             // ActualLab.Rpc serialization formats
+            RpcNerdbankSerializationFormat.Register();
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
                 () => new RpcByteArgumentSerializerV4(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializerV5(peer));

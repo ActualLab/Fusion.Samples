@@ -3,8 +3,11 @@ using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.WebSockets;
+using ActualLab.Serialization;
 using Ookii.CommandLine;
 using Ookii.CommandLine.Commands;
+using PolyType.ReflectionProvider;
+using PolyType.Utilities;
 
 namespace Samples.RpcBenchmark;
 
@@ -16,6 +19,12 @@ public static class Program
 
     public static async Task<int> Main(string[] args)
     {
+        // Prefer source-generated PolyType shapes for RPC contract types;
+        // reflection provider handles RPC-internal and transitively-reachable types.
+        NerdbankMessagePackByteSerializer.DefaultTypeShapeProvider = new AggregatingTypeShapeProvider(
+            NerdbankShapesWitness.GeneratedTypeShapeProvider,
+            ReflectionTypeShapeProvider.Default);
+
         try {
             TreatControlCAsInput = false;
             CancelKeyPress += (_, ea) => {

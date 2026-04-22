@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Include="ActualLab.Fusion" />
     <PackageReference Include="ActualLab.Rpc.Server" />
+    <PackageReference Include="ActualLab.Serialization.NerdbankMessagePack" />
     <PackageReference Include="ActualLab.RestEase" />
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore.Web" />

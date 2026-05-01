@@ -49,7 +49,7 @@ public class ScreenshotService : IScreenshotService
         return new RpcStream<Screenshot>(screenshots) {
             IsRealTime = true,
             AckPeriod = 3,
-            AckAdvance = 7,
+            BufferSize = 7,
         };
 
         async IAsyncEnumerable<Screenshot> ProduceScreenshots([EnumeratorCancellation] CancellationToken ct)

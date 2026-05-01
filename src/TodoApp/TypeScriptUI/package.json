@@ -8,11 +8,11 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@actuallab/core": "^12.3.76",
-    "@actuallab/rpc": "^12.3.76",
-    "@actuallab/fusion": "^12.3.76",
-    "@actuallab/fusion-rpc": "^12.3.76",
-    "@actuallab/fusion-react": "^12.3.76"
+    "@actuallab/core": "^12.4.6",
+    "@actuallab/rpc": "^12.4.6",
+    "@actuallab/fusion": "^12.4.6",
+    "@actuallab/fusion-rpc": "^12.4.6",
+    "@actuallab/fusion-react": "^12.4.6"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",

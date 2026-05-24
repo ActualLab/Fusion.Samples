@@ -79,7 +79,8 @@ public partial class ClientCommand : BenchmarkCommandBase
     public override async Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
         Url = Url.NormalizeBaseUrl();
-        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, SerializationFormat);
+        var (transport, format) = ParseSerializationFormat();
+        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
 
         await TcpProbe.WhenReady(Url, cancellationToken);
         Benchmarks.RemoteGCClient = new HttpClient(new HttpClientHandler {
@@ -100,7 +101,7 @@ public partial class ClientCommand : BenchmarkCommandBase
 
         // Run
         WriteLine();
-        var clientFactories = new ClientFactories(Url);
+        var clientFactories = new ClientFactories(Url, transport);
         var benchmarkKinds = Libraries.Split(",").Select(LibraryKindExt.Parse).ToArray();
         foreach (var benchmarkKind in benchmarkKinds) {
             var (name, factory) = clientFactories[benchmarkKind];
@@ -118,7 +119,7 @@ public partial class ClientCommand : BenchmarkCommandBase
                 ClientConcurrency = bestConcurrency;
                 WriteLine($"  Best: workers={bestWorkers}, concurrency={bestConcurrency}");
                 // Re-create factory since search may have exhausted connections
-                clientFactories = new ClientFactories(Url);
+                clientFactories = new ClientFactories(Url, transport);
                 factory = clientFactories[benchmarkKind].Factory;
             }
 

@@ -11,8 +11,9 @@ public partial class TestCommand : ClientCommand
 {
     public override Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
-        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, SerializationFormat);
-        var serverCommand = new ServerCommand() { Url = Url };
+        var (transport, format) = ParseSerializationFormat();
+        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
+        var serverCommand = new ServerCommand() { Url = Url, SerializationFormat = SerializationFormat };
         _ = serverCommand.RunAsync(cancellationToken);
         return base.RunAsync(cancellationToken);
     }

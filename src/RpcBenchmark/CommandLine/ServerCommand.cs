@@ -26,7 +26,8 @@ public partial class ServerCommand : BenchmarkCommandBase
     public override async Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
         Url = Url.NormalizeBaseUrl();
-        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, SerializationFormat);
+        var (transport, format) = ParseSerializationFormat();
+        SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
         WriteLine($"Starting server @ {Url}");
 
         var builder = WebApplication.CreateBuilder();
@@ -46,6 +47,7 @@ public partial class ServerCommand : BenchmarkCommandBase
             });
             var rpc = services.AddRpc();
             rpc.AddWebSocketServer();
+            rpc.AddHttpServer();
             services.AddGrpc(o => o.IgnoreUnknownServices = true);
             services.AddMagicOnion();
             services.Configure<RouteOptions>(c => c.SuppressCheckForUnhandledSecurityMetadata = true);
@@ -90,6 +92,7 @@ public partial class ServerCommand : BenchmarkCommandBase
             app.UseWebSockets();
             app.UseMiddleware<AppServicesMiddleware>();
             app.MapRpcWebSocketServer();
+            app.MapRpcHttpServer();
             // app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.MapGrpcService<GrpcTestService>();
             app.MapHub<TestHub>("hubs/testService", o => {

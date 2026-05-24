@@ -16,6 +16,7 @@ namespace Samples.RpcBenchmark.Client;
 public sealed class ClientFactories
 {
     public readonly string BaseUrl;
+    public readonly string RpcTransport;
     public readonly Func<ITestService> Rpc;
     public readonly Func<ITestService> SignalR;
     public readonly Func<ITestService> StreamJsonRpc;
@@ -25,7 +26,7 @@ public sealed class ClientFactories
 
     public (string Name, Func<ITestService> Factory) this[LibraryKind libraryKind]
         => libraryKind switch {
-            LibraryKind.ActualLabRpc => ("ActualLab.Rpc", Rpc),
+            LibraryKind.ActualLabRpc => ($"ActualLab.Rpc ({RpcTransport})", Rpc),
             LibraryKind.SignalR => ("SignalR", SignalR),
             LibraryKind.StreamJsonRpc => ("StreamJsonRpc", StreamJsonRpc),
             LibraryKind.MagicOnion => ("MagicOnion", MagicOnion),
@@ -34,9 +35,10 @@ public sealed class ClientFactories
             _ => throw new ArgumentOutOfRangeException(nameof(libraryKind), libraryKind, null)
         };
 
-    public ClientFactories(string baseUrl)
+    public ClientFactories(string baseUrl, string rpcTransport = "ws")
     {
         BaseUrl = baseUrl;
+        RpcTransport = rpcTransport;
         Rpc = CreateClientFactory<ITestService>();
         SignalR = CreateClientFactory<SignalRTestClient>();
         StreamJsonRpc = CreateClientFactory<StreamJsonRpcTestClient>();
@@ -75,16 +77,28 @@ public sealed class ClientFactories
         services.AddSingleton(this);
 
         // Rpc
-        services.AddRpc().AddWebSocketClient(c => RpcWebSocketClientOptions.Default with {
-            HostUrlResolver = _ => BaseUrl,
-            WebSocketOwnerFactory = peer => {
-                var ws = new ClientWebSocket();
-                ws.Options.HttpVersion = HttpVersion.Version11;
-                ws.Options.HttpVersionPolicy = HttpVersionPolicy.RequestVersionExact;
-                ws.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
-                return new WebSocketOwner(peer.Ref.Address, ws, c);
-            },
-        });
+        var rpc = services.AddRpc();
+        if (string.Equals(RpcTransport, "http", StringComparison.OrdinalIgnoreCase))
+            rpc.AddHttpClient(c => RpcHttpClientOptions.Default with {
+                HostUrlResolver = _ => BaseUrl,
+                HttpClientFactory = _ => new HttpClient(new SocketsHttpHandler {
+                    EnableMultipleHttp2Connections = true,
+                    SslOptions = new SslClientAuthenticationOptions {
+                        RemoteCertificateValidationCallback = (_, _, _, _) => true,
+                    },
+                }),
+            });
+        else
+            rpc.AddWebSocketClient(c => RpcWebSocketClientOptions.Default with {
+                HostUrlResolver = _ => BaseUrl,
+                WebSocketOwnerFactory = peer => {
+                    var ws = new ClientWebSocket();
+                    ws.Options.HttpVersion = HttpVersion.Version11;
+                    ws.Options.HttpVersionPolicy = HttpVersionPolicy.RequestVersionExact;
+                    ws.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
+                    return new WebSocketOwner(peer.Ref.Address, ws, c);
+                },
+            });
 
         // SignalR
         services.AddSingleton(c => {

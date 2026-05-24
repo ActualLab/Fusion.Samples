@@ -3,10 +3,8 @@ using ActualLab.Diagnostics;
 using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Clients;
-using ActualLab.Rpc.Infrastructure;
 using ActualLab.Rpc.Serialization;
 using ActualLab.Rpc.WebSockets;
-using ActualLab.Serialization;
 
 namespace ActualLab.Benchmarking;
 
@@ -15,7 +13,7 @@ public static class SystemSettings
     private static readonly object Lock = new();
     private static bool _isApplied;
 
-    public static void Apply(int minWorkerThreads, int minIOThreads, string serializationFormat)
+    public static void Apply(int minWorkerThreads, int minIOThreads, string rpcTransport, string serializationFormat)
     {
         lock (Lock) {
             if (_isApplied)
@@ -77,6 +75,7 @@ public static class SystemSettings
             WriteLine("System-wide settings:");
             WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
             WriteLine($"  Thread pool settings: {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");
+            WriteLine($"  RPC transport:        {rpcTransport} (affects only ActualLab.Rpc tests)");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
             WriteLine($"  ActualLab.Fusion:     v{typeof(Computed).Assembly.GetInformationalVersion()}");
             _isApplied = true;

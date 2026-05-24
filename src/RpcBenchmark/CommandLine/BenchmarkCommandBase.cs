@@ -23,8 +23,23 @@ public abstract class BenchmarkCommandBase : AsyncCommandBase
     public int MinIOThreads { get; set; } = HardwareInfo.ProcessorCount * 10;
 
     [CommandLineArgument]
-    [Description("RpcSerializationFormat to use in ActualLab.Rpc tests.")]
-    [ValueDescription("msgpack6c,msgpack6,mempack6c,mempack6,nmsgpack6c,nmsgpack6,json5,njson5,...")]
+    [Description("RPC transport and serialization format for ActualLab.Rpc tests. Format: [transport:]format (transport: ws|http, default ws).")]
+    [ValueDescription("[ws|http:]msgpack6c,msgpack6,mempack6c,mempack6,nmsgpack6c,nmsgpack6,json5,njson5,...")]
     [Alias("f")]
     public string SerializationFormat { get; set; } = "msgpack6c";
+
+    // Protected methods
+
+    protected (string Transport, string Format) ParseSerializationFormat()
+    {
+        var s = SerializationFormat;
+        var i = s.IndexOf(':');
+        if (i < 0)
+            return ("ws", s);
+
+        var transport = s[..i].ToLowerInvariant();
+        if (transport is not ("ws" or "http"))
+            throw new ArgumentException($"Unsupported RPC transport '{transport}'. Use 'ws' or 'http'.");
+        return (transport, s[(i + 1)..]);
+    }
 }

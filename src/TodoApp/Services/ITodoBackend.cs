@@ -15,23 +15,23 @@ public interface ITodoBackend : IComputeService
 
     // Queries
     [ComputeMethod]
-    public Task<TodoItem?> Get(string folder, Ulid id, CancellationToken cancellationToken = default);
+    public Task<TodoItem?> Get(string scope, Ulid id, CancellationToken cancellationToken = default);
     [ComputeMethod]
-    public Task<Ulid[]> ListIds(string folder, int count, CancellationToken cancellationToken = default);
+    public Task<Ulid[]> ListIds(string scope, int count, CancellationToken cancellationToken = default);
     [ComputeMethod(InvalidationDelay = 0.5)]
-    public Task<TodoSummary> GetSummary(string folder, CancellationToken cancellationToken = default);
+    public Task<TodoSummary> GetSummary(string scope, CancellationToken cancellationToken = default);
 }
 
 [DataContract, MemoryPackable, MessagePackObject(true)]
 // ReSharper disable once InconsistentNaming
 public sealed partial record TodoBackend_AddOrUpdate(
-    [property: DataMember] string Folder,
+    [property: DataMember] string Scope,
     [property: DataMember] TodoItem Item
 ) : IBackendCommand<TodoItem>;
 
 [DataContract, MemoryPackable, MessagePackObject(true)]
 // ReSharper disable once InconsistentNaming
 public sealed partial record TodoBackend_Remove(
-    [property: DataMember] string Folder,
+    [property: DataMember] string Scope,
     [property: DataMember] Ulid Id
 ) : IBackendCommand<Unit>;

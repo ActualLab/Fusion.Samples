@@ -14,16 +14,16 @@ public static class TenantExt
             ? DbShard.Validate(session.GetTag(SessionTag))
             : DbShard.Single;
 
-    public static string GetTenant(this string folder)
+    public static string GetTenant(this string scope)
     {
         if (!UseTenants)
             return DbShard.Single;
 
-        var slashIndex = folder.IndexOf('/');
+        var slashIndex = scope.IndexOf('/');
         if (slashIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(folder));
+            throw new ArgumentOutOfRangeException(nameof(scope));
 
-        return DbShard.Validate(folder[..slashIndex]);
+        return DbShard.Validate(scope[..slashIndex]);
     }
 
     public static Func<HttpContext, string> CreateTagExtractor(int tenant0Port, int tenantCount, int? ownPort)

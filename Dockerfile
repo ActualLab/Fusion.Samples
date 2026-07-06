@@ -80,3 +80,17 @@ ENV Logging__Console__FormatterName=
 ENV Server__GitHubClientId=7d519556dd8207a36355
 ENV Server__GitHubClientSecret=8e161ca4799b7e76e1c25429728db6b2430f2057
 ENTRYPOINT ["dotnet", "/app/Samples.Blazor.Server.dll"]
+
+# Create TodoApp sample image for website (published Release on the runtime image)
+FROM build AS publish_todoapp
+WORKDIR /samples
+RUN dotnet publish -c:Release --no-build --no-restore src/TodoApp/Host/Host.csproj
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime_todoapp
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+WORKDIR /app
+COPY --from=publish_todoapp /samples/artifacts/publish/TodoApp.Host/release .
+
+FROM runtime_todoapp AS sample_todoapp_ws
+ENV Logging__Console__FormatterName=
+ENTRYPOINT ["dotnet", "/app/Samples.TodoApp.Host.dll"]

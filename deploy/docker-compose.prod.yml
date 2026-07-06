@@ -1,0 +1,51 @@
+# Production stack for hosting two Fusion samples as websites on the shared VM:
+#   todoapp-app         -> todoapp.actuallab.net
+#   blazor-app          -> blazor-samples.actuallab.net
+#
+# TLS + routing are handled by the shared edge Caddy (from the BoardGames
+# deployment), which owns ports 80/443 on this host. These containers publish
+# no ports; they join that Caddy's network ("boardgames_default") as an external
+# network and are reached by their container names. Both samples use Sqlite, so
+# there's no database service here.
+#
+# Usage on the host:
+#   cd deploy && docker compose -f docker-compose.prod.yml up -d --build
+name: fusion-samples
+
+services:
+  todoapp-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: sample_todoapp_ws
+    container_name: todoapp-app
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    networks:
+      - edge
+
+  blazor-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: sample_blazor_ws
+    container_name: blazor-app
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    networks:
+      - edge
+
+networks:
+  # The shared edge network created by the BoardGames deployment; the edge Caddy
+  # lives here and routes the subdomains to the containers above.
+  edge:
+    name: boardgames_default
+    external: true

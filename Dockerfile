@@ -77,8 +77,8 @@ COPY --from=publish /samples/artifacts/publish/Blazor.Server/release .
 # Create Blazor sample image for website
 FROM runtime AS sample_blazor_ws
 ENV Logging__Console__FormatterName=
-ENV Server__GitHubClientId=7d519556dd8207a36355
-ENV Server__GitHubClientSecret=8e161ca4799b7e76e1c25429728db6b2430f2057
+ENV Server__GitHubClientId=Iv23liclgDFiYO8LJoHM
+ENV Server__GitHubClientSecret=fdbae91e208663689f2c519b424f6bee46260ee7
 ENTRYPOINT ["dotnet", "/app/Samples.Blazor.Server.dll"]
 
 # --- Lean, self-contained website images ---------------------------------
@@ -103,8 +103,8 @@ RUN dotnet publish -c:Release -o /publish src/Blazor/Server/Server.csproj
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS web_blazor
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 ENV Logging__Console__FormatterName=
-ENV Server__GitHubClientId=7d519556dd8207a36355
-ENV Server__GitHubClientSecret=8e161ca4799b7e76e1c25429728db6b2430f2057
+ENV Server__GitHubClientId=Iv23liclgDFiYO8LJoHM
+ENV Server__GitHubClientSecret=fdbae91e208663689f2c519b424f6bee46260ee7
 WORKDIR /app
 COPY --from=web_build_blazor /publish .
 ENTRYPOINT ["dotnet", "Samples.Blazor.Server.dll"]

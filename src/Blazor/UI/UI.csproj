@@ -25,6 +25,10 @@
   <!-- Extra trimming roots -->
   <ItemGroup>
     <TrimmerRootAssembly Include="Samples.Blazor.UI" />
+    <!-- Contracts carry MemoryPack's source-generated formatters + [ModuleInitializer].
+         Under TrimMode=full the trimmer strips the formatters the initializer registers,
+         so its <Module> static ctor throws at WASM startup. Root the whole assembly. -->
+    <TrimmerRootAssembly Include="Samples.Blazor.Abstractions" />
     <!-- Blazorise isn't trimmable, so... -->
     <TrimmerRootAssembly Include="Blazorise" />
     <TrimmerRootAssembly Include="Blazorise.Bootstrap5" />

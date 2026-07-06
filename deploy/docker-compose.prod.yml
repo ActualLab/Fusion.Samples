@@ -17,7 +17,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-      target: sample_todoapp_ws
+      target: web_todoapp
     container_name: todoapp-app
     restart: unless-stopped
     expose:
@@ -32,7 +32,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-      target: sample_blazor_ws
+      target: web_blazor
     container_name: blazor-app
     restart: unless-stopped
     expose:

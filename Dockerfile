@@ -81,16 +81,45 @@ ENV Server__GitHubClientId=7d519556dd8207a36355
 ENV Server__GitHubClientSecret=8e161ca4799b7e76e1c25429728db6b2430f2057
 ENTRYPOINT ["dotnet", "/app/Samples.Blazor.Server.dll"]
 
-# Create TodoApp sample image for website (published Release on the runtime image)
-FROM build AS publish_todoapp
+# --- Lean, self-contained website images ---------------------------------
+# These publish only the single web project (+ its project references) instead
+# of the whole solution. That keeps the build fast and, importantly, avoids
+# projects that don't build cleanly on arm64 (e.g. RpcBenchmark, whose grpc
+# protoc tool segfaults there). Used by deploy/docker-compose.prod.yml.
+
+# Blazor sample website
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_blazor
+RUN dotnet workload install wasm-tools
 WORKDIR /samples
-RUN dotnet publish -c:Release --no-build --no-restore src/TodoApp/Host/Host.csproj
+COPY ["src/", "src/"]
+COPY ["*.props", "."]
+COPY Samples.sln .
+RUN dotnet publish -c:Release -o /publish src/Blazor/Server/Server.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime_todoapp
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS web_blazor
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
-WORKDIR /app
-COPY --from=publish_todoapp /samples/artifacts/publish/TodoApp.Host/release .
-
-FROM runtime_todoapp AS sample_todoapp_ws
 ENV Logging__Console__FormatterName=
-ENTRYPOINT ["dotnet", "/app/Samples.TodoApp.Host.dll"]
+ENV Server__GitHubClientId=7d519556dd8207a36355
+ENV Server__GitHubClientSecret=8e161ca4799b7e76e1c25429728db6b2430f2057
+WORKDIR /app
+COPY --from=web_build_blazor /publish .
+ENTRYPOINT ["dotnet", "Samples.Blazor.Server.dll"]
+
+# TodoApp sample website (its Host build runs npm for the optional TypeScript UI)
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_todoapp
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nodejs npm \
+    && rm -rf /var/lib/apt/lists/*
+RUN dotnet workload install wasm-tools
+WORKDIR /samples
+COPY ["src/", "src/"]
+COPY ["*.props", "."]
+COPY Samples.sln .
+RUN dotnet publish -c:Release -o /publish src/TodoApp/Host/Host.csproj
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS web_todoapp
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+ENV Logging__Console__FormatterName=
+WORKDIR /app
+COPY --from=web_build_todoapp /publish .
+ENTRYPOINT ["dotnet", "Samples.TodoApp.Host.dll"]

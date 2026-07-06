@@ -14,6 +14,8 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
     <IsTrimmable>true</IsTrimmable>
+    <!-- TEMP diagnostic: keep full exception messages so WASM boot errors are readable -->
+    <UseSystemResourceKeys>false</UseSystemResourceKeys>
     <RunAOTCompilation>false</RunAOTCompilation>
     <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
     <!--

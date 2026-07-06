@@ -25,27 +25,12 @@
   <!-- Extra trimming roots -->
   <ItemGroup>
     <TrimmerRootAssembly Include="Samples.Blazor.UI" />
-    <!-- Contracts carry MemoryPack's source-generated formatters + [ModuleInitializer]. -->
-    <TrimmerRootAssembly Include="Samples.Blazor.Abstractions" />
-    <!-- The Fusion/ActualLab runtime is IsTrimmable but relies on module initializers,
-         source-generated proxies and MemoryPack formatters, and references BCL types
-         the trimmer can't see are needed (e.g. RadixHeapSet -> PriorityQueue<,>). Under
-         TrimMode=full those get stripped and ActualLab.Rpc's RpcModuleInitializer throws
-         a TypeLoadException at WASM startup. Root the runtime so full trimming only
-         touches the BCL / Blazor / everything else. -->
-    <TrimmerRootAssembly Include="ActualLab.Core" />
-    <TrimmerRootAssembly Include="ActualLab.Interception" />
-    <TrimmerRootAssembly Include="ActualLab.Rpc" />
-    <TrimmerRootAssembly Include="ActualLab.CommandR" />
-    <TrimmerRootAssembly Include="ActualLab.Fusion" />
     <!-- Blazorise isn't trimmable, so... -->
     <TrimmerRootAssembly Include="Blazorise" />
     <TrimmerRootAssembly Include="Blazorise.Bootstrap5" />
     <TrimmerRootAssembly Include="Blazorise.DataGrid" />
     <TrimmerRootAssembly Include="Blazorise.Icons.FontAwesome" />
     <TrimmerRootAssembly Include="Blazorise.Sidebar" />
-    <!-- Preserve BCL types the ActualLab runtime needs but the trimmer strips. -->
-    <TrimmerRootDescriptor Include="..\..\..\TrimmerRoots.xml" />
   </ItemGroup>
 
   <ItemGroup>

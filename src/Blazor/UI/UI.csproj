@@ -44,6 +44,8 @@
     <TrimmerRootAssembly Include="Blazorise.DataGrid" />
     <TrimmerRootAssembly Include="Blazorise.Icons.FontAwesome" />
     <TrimmerRootAssembly Include="Blazorise.Sidebar" />
+    <!-- Preserve BCL types the ActualLab runtime needs but the trimmer strips. -->
+    <TrimmerRootDescriptor Include="..\..\..\TrimmerRoots.xml" />
   </ItemGroup>
 
   <ItemGroup>

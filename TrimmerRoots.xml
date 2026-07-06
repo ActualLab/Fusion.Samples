@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ILLink descriptor for the WASM sample UIs (full trimming).
+
+  ActualLab.Core's RadixHeapSet<T> (used by the RPC timer system that
+  ActualLab.Rpc.RpcModuleInitializer initializes at startup) references
+  System.Collections.Generic.PriorityQueue<,>. TrimMode=full removes that type
+  from System.Private.CoreLib because the trimmer can't see it's reachable, so
+  the module initializer throws a TypeLoadException and the app fails to boot in
+  WASM render mode. Preserving the type here keeps full trimming everywhere else.
+-->
+<linker>
+  <assembly fullname="System.Collections">
+    <type fullname="System.Collections.Generic.PriorityQueue`2" preserve="all" />
+  </assembly>
+</linker>

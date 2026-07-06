@@ -89,6 +89,10 @@ ENTRYPOINT ["dotnet", "/app/Samples.Blazor.Server.dll"]
 
 # Blazor sample website
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_blazor
+# python3 + libatomic1 are needed by the WASM native relinking during Release publish
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
 RUN dotnet workload install wasm-tools
 WORKDIR /samples
 COPY ["src/", "src/"]
@@ -107,8 +111,9 @@ ENTRYPOINT ["dotnet", "Samples.Blazor.Server.dll"]
 
 # TodoApp sample website (its Host build runs npm for the optional TypeScript UI)
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_todoapp
+# nodejs/npm for the TypeScript UI; python3/libatomic1 for WASM native relinking
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends nodejs npm \
+    && apt-get install -y --no-install-recommends nodejs npm python3 libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 RUN dotnet workload install wasm-tools
 WORKDIR /samples

@@ -1,11 +1,17 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using ActualLab.Api;
 using ActualLab.Trimming;
+using MessagePack.Formatters;
 using Samples.TodoApp.UI;
 
-// Full trimming would drop MemoryPack's built-in PriorityQueue<,> formatter target,
-// which its formatter provider initializes on the first serialization at startup.
+// Retain runtime-resolved serialization code that TrimMode=full strips but the app
+// needs over RPC. Both are reached only via reflection, so the trimmer can't see them:
+// - MemoryPack's built-in PriorityQueue<,> formatter target, initialized at startup.
+// - MessagePack's GenericDictionaryFormatter for ApiMap<string,string> (User.Claims /
+//   Identities), which DynamicGenericResolver instantiates via Activator.CreateInstance.
 CodeKeeper.Keep<PriorityQueue<object, object>>();
+CodeKeeper.Keep<GenericDictionaryFormatter<string, string, ApiMap<string, string>>>();
 
 try {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);

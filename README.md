@@ -69,6 +69,8 @@ database persistence (SQLite), and Entity Framework Core integration.
 Demonstrates multiple compute services including chat, composition,
 image streaming, and real-time sum calculations.
 
+🌐 **Live demo: [blazor-samples.actuallab.net](https://blazor-samples.actuallab.net/)**
+
 ![](docs/img/Samples-Blazor-Auth.gif)
 
 #### [TodoApp Sample]
@@ -77,6 +79,23 @@ A comprehensive todo application supporting both single-server and multi-tenant
 distributed architectures with PostgreSQL, SQL Server, or SQLite backends.
 Showcases Fusion's database entity resolvers, sharding, backend/API
 server separation patterns, and RPC streaming.
+
+🌐 **Live demo: [todoapp.actuallab.net](https://todoapp.actuallab.net/)**
+
+### Standalone Sample Apps
+
+#### [Board Games]
+
+A real-time multiplayer board game app: play **Gomoku, Tic-Tac-Toe, Connect Four,
+Reversi, and Rock-Paper-Scissors** against others, with a live game lobby, in-game
+chat with user/game mentions, and online-presence tracking — all kept in sync
+automatically by Fusion, everywhere. It's built on .NET 10, Blazor (Server +
+WebAssembly), EF Core, and PostgreSQL, with GitHub / Microsoft sign-in.
+
+Unlike the samples above, it lives in its **own repository**:
+[github.com/alexyakunin/BoardGames](https://github.com/alexyakunin/BoardGames).
+
+🌐 **Live demo: [boardgames.actuallab.net](https://boardgames.actuallab.net/)**
 
 ### RPC Samples
 
@@ -176,6 +195,7 @@ please help us to make it better by completing [Fusion Feedback Form]
 [HelloBlazorHybrid]: src/HelloBlazorHybrid
 [Blazor Sample]: src/Blazor
 [TodoApp Sample]: src/TodoApp
+[Board Games]: https://github.com/alexyakunin/BoardGames
 [MiniRpc]: src/MiniRpc
 [MultiServerRpc]: src/MultiServerRpc
 [MeshRpc]: src/MeshRpc

@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ActualLab.Trimming;
 using Samples.Blazor.UI;
 
-// MemoryPack's built-in PriorityQueue<,> formatter target is reached only via
-// reflection at startup, so TrimMode=full strips it unless we keep it here.
-CodeKeeper.Keep<PriorityQueue<object, object>>();
+// Retain serialization code that full trimming can't trace because it's reached only
+// via reflection. Never runs - the branch exists so the trimmer sees the references.
+if (CodeKeeper.AlwaysFalse) {
+    // MemoryPack's built-in PriorityQueue<,> formatter target, initialized at startup.
+    CodeKeeper.Keep<PriorityQueue<object, object>>();
+}
 
 try {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);

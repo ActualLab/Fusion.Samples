@@ -1,13 +1,29 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using ActualLab.Api;
+using ActualLab.Collections;
+using ActualLab.Fusion.Authentication;
 using ActualLab.Trimming;
+using MessagePack.Formatters;
+using MessagePack.ImmutableCollection;
 using Samples.Blazor.UI;
 
 // Retain serialization code that full trimming can't trace because it's reached only
 // via reflection. Never runs - the branch exists so the trimmer sees the references.
+// MessagePack resolves collection formatters through reflection (DynamicGenericResolver /
+// ImmutableCollectionResolver), so every such formatter the auth types use must be kept.
 if (CodeKeeper.AlwaysFalse) {
     // MemoryPack's built-in PriorityQueue<,> formatter target, initialized at startup.
     CodeKeeper.Keep<PriorityQueue<object, object>>();
+    // User.Claims / JsonCompatibleIdentities are ApiMap<string,string>.
+    CodeKeeper.Keep<GenericDictionaryFormatter<string, string, ApiMap<string, string>>>();
+    // The Authentication page lists sessions (ImmutableArray<SessionInfo>); SessionInfo.Options
+    // is a typeless ImmutableOptionSet backed by ImmutableDictionary<string, object>. This sample
+    // never stores option values, so no value-type formatters are needed.
+    CodeKeeper.Keep<ImmutableArrayFormatter<SessionInfo>>();
+    CodeKeeper.Keep<InterfaceImmutableDictionaryFormatter<string, object>>();
+    CodeKeeper.KeepSerializable<SessionInfo>();
+    CodeKeeper.KeepSerializable<ImmutableOptionSet>();
 }
 
 try {

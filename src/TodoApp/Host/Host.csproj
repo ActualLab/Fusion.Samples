@@ -50,10 +50,20 @@
     <TypeScriptUISource Include="$(TypeScriptUIDir)/build.mjs" />
   </ItemGroup>
 
-  <Target Name="BuildTypeScriptUI" BeforeTargets="BeforeBuild"
+  <Target Name="BuildTypeScriptUI" BeforeTargets="IncludeTypeScriptUIStaticAssets"
           Inputs="@(TypeScriptUISource)" Outputs="$(TodoReactJsOutput)">
     <Exec Command="npm install" WorkingDirectory="$(TypeScriptUIDir)" />
     <Exec Command="npm run build" WorkingDirectory="$(TypeScriptUIDir)" />
+  </Target>
+
+  <!-- todo-react.js is generated (and gitignored), so it's missing from the evaluation-time
+       wwwroot glob. Register it as Content before static web assets are resolved, otherwise
+       MapStaticAssets never learns about it and serves 404 (as does a fresh local first run). -->
+  <Target Name="IncludeTypeScriptUIStaticAssets" BeforeTargets="AssignTargetPaths">
+    <ItemGroup>
+      <Content Remove="wwwroot\js\todo-react.js" />
+      <Content Include="wwwroot\js\todo-react.js" />
+    </ItemGroup>
   </Target>
 
 </Project>

@@ -13,9 +13,9 @@ public class DbTodo
     public bool IsDone { get; set; }
 
     public DbTodo() { }
-    public DbTodo(string scope, TodoItem item)
+    public DbTodo(string folder, TodoItem item)
     {
-        Key = ComposeKey(scope, item.Id);
+        Key = ComposeKey(folder, item.Id);
         UpdateFrom(item);
     }
 
@@ -28,17 +28,17 @@ public class DbTodo
     public TodoItem ToModel()
         => new(SplitKey(Key).Id, Title, IsDone);
 
-    public static string ComposeKey(string scope, Ulid id)
-        => $"{scope}/{id.ToString()}";
+    public static string ComposeKey(string folder, Ulid id)
+        => $"{folder}/{id.ToString()}";
 
-    public static (string Scope, Ulid Id) SplitKey(string key)
+    public static (string Folder, Ulid Id) SplitKey(string key)
     {
         var lastSlashIndex = key.LastIndexOf('/');
         if (lastSlashIndex < 0)
             throw new ArgumentOutOfRangeException(nameof(key));
 
-        var scope = key[..lastSlashIndex];
+        var folder = key[..lastSlashIndex];
         var id = Ulid.Parse(key[(lastSlashIndex + 1)..], CultureInfo.InvariantCulture);
-        return (scope, id);
+        return (folder, id);
     }
 }

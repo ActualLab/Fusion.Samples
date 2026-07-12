@@ -13,21 +13,21 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
 
     public virtual async Task<TodoItem> AddOrUpdate(TodoBackend_AddOrUpdate command, CancellationToken cancellationToken = default)
     {
-        var (scope, item) = command;
+        var (folder, item) = command;
         var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive) {
             // Invalidation logic
             var isNew = context.Operation.Items.Get<bool>("New");
             var isDoneChanged = context.Operation.Items.Get<bool>("IsDoneChanged");
-            _ = Get(scope, item.Id, default);
+            _ = Get(folder, item.Id, default);
             if (isNew)
-                _ = PseudoListIds(scope);
+                _ = PseudoListIds(folder);
             if (isNew || isDoneChanged)
-                _ = GetSummary(scope, default);
+                _ = GetSummary(folder, default);
             return null!;
         }
 
-        var tenant = scope.GetTenant();
+        var tenant = folder.GetTenant();
         var dbContext = await DbHub.CreateOperationDbContext(tenant, cancellationToken).ConfigureAwait(false);
         await using var _1 = dbContext.ConfigureAwait(false);
 
@@ -41,12 +41,12 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
 
         if (item.Id == Ulid.Empty) {
             item = item with { Id = Ulid.NewUlid() };
-            dbContext.Add(new DbTodo(scope, item));
+            dbContext.Add(new DbTodo(folder, item));
             // A tag for Invalidation.IsActive block indicating an item was added
             CommandContext.GetCurrent().Operation.Items.Set("New", true);
         }
         else {
-            var key = DbTodo.ComposeKey(scope, item.Id);
+            var key = DbTodo.ComposeKey(folder, item.Id);
             var dbItem = await dbContext.Todos
                 .SingleAsync(x => x.Key == key, cancellationToken)
                 .ConfigureAwait(false);
@@ -63,21 +63,21 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
 
     public virtual async Task Remove(TodoBackend_Remove command, CancellationToken cancellationToken = default)
     {
-        var (scope, id) = command;
+        var (folder, id) = command;
         if (Invalidation.IsActive) {
             // Invalidation logic
-            _ = Get(scope, id, default);
-            _ = GetSummary(scope, default);
-            _ = PseudoListIds(scope);
+            _ = Get(folder, id, default);
+            _ = GetSummary(folder, default);
+            _ = PseudoListIds(folder);
             return;
         }
 
-        var tenant = scope.GetTenant();
+        var tenant = folder.GetTenant();
         var dbContext = await DbHub.CreateOperationDbContext(tenant, cancellationToken).ConfigureAwait(false);
         await using var _1 = dbContext.ConfigureAwait(false);
 
         var dbTodo = await dbContext
-            .FindAsync<DbTodo>(DbKey.Compose(DbTodo.ComposeKey(scope, id)), cancellationToken)
+            .FindAsync<DbTodo>(DbKey.Compose(DbTodo.ComposeKey(folder, id)), cancellationToken)
             .ConfigureAwait(false);
         if (dbTodo is not null) {
             dbContext.Remove(dbTodo);
@@ -87,24 +87,24 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
 
     // Queries
 
-    public virtual async Task<TodoItem?> Get(string scope, Ulid id, CancellationToken cancellationToken = default)
+    public virtual async Task<TodoItem?> Get(string folder, Ulid id, CancellationToken cancellationToken = default)
     {
-        var tenant = scope.GetTenant();
+        var tenant = folder.GetTenant();
         var dbTodo = await DbTodoResolver
-            .Get(tenant, DbTodo.ComposeKey(scope, id), cancellationToken)
+            .Get(tenant, DbTodo.ComposeKey(folder, id), cancellationToken)
             .ConfigureAwait(false);
         return dbTodo?.ToModel();
     }
 
-    public virtual async Task<Ulid[]> ListIds(string scope, int limit, CancellationToken cancellationToken = default)
+    public virtual async Task<Ulid[]> ListIds(string folder, int limit, CancellationToken cancellationToken = default)
     {
-        await PseudoListIds(scope).ConfigureAwait(false);
+        await PseudoListIds(folder).ConfigureAwait(false);
 
-        var tenant = scope.GetTenant();
+        var tenant = folder.GetTenant();
         var dbContext = await DbHub.CreateDbContext(tenant, cancellationToken).ConfigureAwait(false);
         await using var _ = dbContext.ConfigureAwait(false);
 
-        var prefix = $"{scope}/";
+        var prefix = $"{folder}/";
         var keys = await dbContext.Todos
             .Where(x => x.Key.StartsWith(prefix))
             .OrderBy(x => x.Key) // We want 100% stable order here
@@ -115,15 +115,15 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
         return keys.Select(id => DbTodo.SplitKey(id).Id).ToArray();
     }
 
-    public virtual async Task<TodoSummary> GetSummary(string scope, CancellationToken cancellationToken = default)
+    public virtual async Task<TodoSummary> GetSummary(string folder, CancellationToken cancellationToken = default)
     {
-        var tenant = scope.GetTenant();
+        var tenant = folder.GetTenant();
         var dbContext = await DbHub.CreateDbContext(tenant, cancellationToken).ConfigureAwait(false);
         await using var _1 = dbContext.ConfigureAwait(false);
         var tx = await dbContext.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         await using var _2 = tx.ConfigureAwait(false);
 
-        var prefix = $"{scope}/";
+        var prefix = $"{folder}/";
         var count = await dbContext.Todos
             .CountAsync(x => x.Key.StartsWith(prefix), cancellationToken)
             .ConfigureAwait(false);
@@ -136,9 +136,9 @@ public class TodoBackend(IServiceProvider services) : DbServiceBase<AppDbContext
     // Pseudo queries
 
     // This is a "pseudo access" method that's called solely to become a dependency.
-    // When it gets invalidated, it also invalidates all ListIds(scope, <any_limit>) at once.
+    // When it gets invalidated, it also invalidates all ListIds(folder, <any_limit>) at once.
     // See the places it's called from to understand how it works.
     [ComputeMethod]
-    protected virtual Task<Unit> PseudoListIds(string scope)
+    protected virtual Task<Unit> PseudoListIds(string folder)
         => TaskExt.UnitTask;
 }

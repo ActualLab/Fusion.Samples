@@ -7,6 +7,7 @@ using ActualLab.Serialization.Internal;
 using ActualLab.Trimming;
 using MessagePack.Formatters;
 using MessagePack.ImmutableCollection;
+using Samples.Blazor.Abstractions;
 using Samples.Blazor.UI;
 
 // Retain serialization code that full trimming can't trace because it's reached only
@@ -28,6 +29,10 @@ if (CodeKeeper.AlwaysFalse) {
     CodeKeeper.Keep<InterfaceImmutableDictionaryFormatter<string, object>>();
     CodeKeeper.KeepSerializable<SessionInfo>();
     CodeKeeper.KeepSerializable<ImmutableOptionSet>();
+    // The /chat page returns ChatMessageList, whose Messages is ImmutableArray<ChatMessage>
+    // and Users is ImmutableDictionary<string, User> - both formatters are resolved reflectively.
+    CodeKeeper.Keep<ImmutableArrayFormatter<ChatMessage>>();
+    CodeKeeper.Keep<ImmutableDictionaryFormatter<string, User>>();
 }
 
 try {

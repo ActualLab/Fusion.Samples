@@ -44,8 +44,8 @@ services:
       - edge
 
 networks:
-  # The shared edge network created by the BoardGames deployment; the edge Caddy
-  # lives here and routes the subdomains to the containers above.
+  # The shared edge network (created on the host; the edge Caddy from
+  # ActualLab/DeployConfigs routes the subdomains to the containers above).
   edge:
-    name: boardgames_default
     external: true
+    name: edge

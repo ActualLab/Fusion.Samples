@@ -84,6 +84,22 @@ server separation patterns, and RPC streaming.
 
 ### Standalone Sample Apps
 
+#### [TownHall]
+
+A live audience Q&A app ("Slido-lite"): anyone can spin up a town hall (a room)
+and become its owner; participants post questions and upvote others', and the
+list re-sorts by votes in real time, with a trending panel highlighting the
+questions gaining votes right now. Everyone also signals their mood on a 5-emoji
+scale, rendered as a big generated SVG face plus a live distribution chart.
+It's built on .NET 10, Blazor (Server + WebAssembly), EF Core, and PostgreSQL.
+
+It exists to compare real-time frameworks — the same app will be reimplemented
+on several stacks (plain .NET, SignalR, and more) to measure the code delta each
+one produces; the Fusion version comes first. Like Board Games, it lives in its
+**own repository**: [github.com/ActualLab/Fusion.TownHall](https://github.com/ActualLab/Fusion.TownHall).
+
+<img src="https://img.shields.io/badge/-Live%20demo:-green" valign="middle"> [townhall.actuallab.net](https://townhall.actuallab.net/)
+
 #### [Board Games]
 
 A real-time multiplayer board game app: play **Gomoku, Tic-Tac-Toe, Connect Four,
@@ -195,6 +211,7 @@ please help us to make it better by completing [Fusion Feedback Form]
 [HelloBlazorHybrid]: src/HelloBlazorHybrid
 [Blazor Sample]: src/Blazor
 [TodoApp Sample]: src/TodoApp
+[TownHall]: https://github.com/ActualLab/Fusion.TownHall
 [Board Games]: https://github.com/alexyakunin/BoardGames
 [MiniRpc]: src/MiniRpc
 [MultiServerRpc]: src/MultiServerRpc

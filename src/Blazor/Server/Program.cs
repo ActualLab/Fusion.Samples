@@ -84,7 +84,7 @@ void ConfigureServices()
     services.AddSingleton(serverSettings);
 
     // DbContext & related services
-    var appTempDir = FilePath.GetApplicationTempDirectory("", true);
+    var appTempDir = FilePath.GetApplicationTempDirectory();
     var dbPath = appTempDir & "BlazorApp_v1.db";
     services.AddDbContextFactory<AppDbContext>(db => {
         db.UseSqlite($"Data Source={dbPath}");

@@ -7,7 +7,7 @@ public static class ServiceCollectionExt
 {
     public static IServiceCollection AddAppDbContext(this IServiceCollection services)
     {
-        var dbHost = Environment.GetEnvironmentVariable("DbHost").NullIfEmpty() ?? "localhost";
+        var dbHost = Environment.GetEnvironmentVariable("DbHost").NullIfEmpty() ?? "127.0.0.1";
         var dbConnectionString = string.Format(DbConnectionString, dbHost);
         services.AddPooledDbContextFactory<AppDbContext>((_, dbContext) => {
             dbContext.UseNpgsql(dbConnectionString, _ => { });

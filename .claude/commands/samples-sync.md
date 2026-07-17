@@ -60,13 +60,23 @@ Sync these file types:
    - File exists only in Samples (ORPHAN → may need deletion or is Samples-specific)
    - File exists in both with DIFFERENT sizes (MODIFIED → needs review)
    - File exists in both with SAME size (UNCHANGED → skip)
+   - File is in the **Known Differences** list below (KEEP → intentional, do not copy)
 
-4. **Present findings** in a table:
+   **Caveat — line endings:** Fusion is CRLF, this repo is LF, so almost every
+   file differs in size by exactly its line count with no real content change.
+   Confirm real differences with a CRLF-agnostic diff before treating a file as
+   MODIFIED, e.g. `diff --strip-trailing-cr <samples> <fusion>`. A size delta
+   equal to the line count = line endings only → treat as UNCHANGED.
+
+4. **Present findings** in a table. **Always show KEEP rows too** — never
+   silently drop a known-intentional difference; the point is to make it visible
+   that it was seen and deliberately not synced.
    ```
    | Status | Relative Path | Fusion Size | Samples Size |
    |--------|---------------|-------------|--------------|
    | NEW | Abstractions/IStockApi.cs | 1234 | - |
    | MODIFIED | Host/Program.cs | 5678 | 5432 |
+   | KEEP | UI/Program.cs | 2873 | 2363 |
    | ORPHAN | UI/CustomPage.razor | - | 2345 |
    ```
 
@@ -78,6 +88,8 @@ Sync these file types:
    - NEW files: copy from Fusion to Samples
    - MODIFIED files: overwrite Samples with Fusion version (or skip)
    - ORPHAN files: leave as-is (Samples-specific) or delete
+   - KEEP files: do NOT offer to sync — they're intentional (see Known
+     Differences). List them so the user knows they were checked, nothing more.
 
 7. **Execute sync**:
    - For NEW files: read from Fusion, write to Samples
@@ -93,16 +105,26 @@ All `.csproj` files use different reference styles:
 - **Fusion samples**: Use `<ProjectReference>` to local Fusion source projects
 - **This project**: Use `<PackageReference>` to NuGet packages
 
-### Global Imports Differences
-Fusion has additional global `using` statements that this project doesn't need:
-- `using System.Collections.Concurrent;` in some files (Fusion's global imports)
-- `using System.Collections.Generic;` and `using System.Diagnostics.CodeAnalysis;` in HelloCart/Directory.Build.props
+### Global Usings — kept in sync (should stay identical)
+Project-level global usings are deliberately aligned so any `.cs` file is
+portable between the two repos. Keep them identical going forward:
+- Root `Directory.Build.props` (Fusion `samples/Directory.Build.props` ↔ this
+  repo's repo-root `Directory.Build.props`) — same `<Using>` set and order.
+- `TodoApp/Directory.Build.props` and `HelloCart/Directory.Build.props` — same
+  `<Using>` set on both sides.
 
-### Culture/Locale Testing Code (Fusion-specific)
-Fusion samples include fr-FR culture setup for testing localization - ignore these:
-- `TodoApp/Host/Program.cs` - Middleware that sets fr-FR culture
-- `TodoApp/UI/Program.cs` - WebAssembly culture setup + debug logging
-- `TodoApp/UI/ClientStartup.cs` - Commented `ComputedSynchronizer` line
+If a per-file `using` is already covered by a global using (e.g.
+`using System.Collections.Concurrent;`), it's redundant — the file should NOT
+carry it on either side.
+
+### Intentional code differences — OK to keep, but STILL SHOW them
+Deliberate Fusion-side dev/test tweaks. Mark these **KEEP** in the findings
+(show them so it's clear they were checked), but do NOT copy them into this repo:
+- `TodoApp/Host/Program.cs` — Fusion-only fr-FR culture middleware (localization testing).
+- `TodoApp/UI/Program.cs` — Fusion-only fr-FR culture setup + `ComponentInfo.DebugLog`
+  debug logging + a commented-out benchmark snippet.
+- `TodoApp/UI/ClientStartup.cs` — RPC serialization default differs (this repo:
+  `msgpack6c`; Fusion: `json5np`) + Fusion-only commented `ComputedSynchronizer.DefaultCurrent` line.
 
 ### Configuration Files
 - `Host/appsettings.json` has environment-specific configuration

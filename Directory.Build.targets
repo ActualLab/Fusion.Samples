@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!--
+  UseFusionSource=true replaces every ActualLab.* package reference with a project
+  reference to a local ActualLab.Fusion repository clone, so unpublished Fusion
+  changes can be tested here without building NuGet packages:
+
+    dotnet build -c Release src/RpcBenchmark/RpcBenchmark.csproj -p:UseFusionSource=true
+
+  FusionSourceDir must point to the "src" folder of the clone; the default assumes
+  the ActualLab.Fusion repo sits next to this one.
+  -->
+  <PropertyGroup>
+    <UseFusionSource Condition="'$(UseFusionSource)' == ''">false</UseFusionSource>
+    <FusionSourceDir Condition="'$(FusionSourceDir)' == ''">$(MSBuildThisFileDirectory)..\ActualLab.Fusion\src\</FusionSourceDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(UseFusionSource)">
+    <!-- Every swappable ActualLab.* package; keep in sync with Directory.Packages.props.
+         ActualLab.Generators is a Roslyn generator, so it's swapped separately below. -->
+    <_FusionLibPackage Include="ActualLab.Fusion;ActualLab.Fusion.Blazor;ActualLab.Fusion.Blazor.Authentication;ActualLab.Fusion.EntityFramework;ActualLab.Fusion.EntityFramework.Npgsql;ActualLab.Fusion.EntityFramework.Redis;ActualLab.Fusion.Ext.Contracts;ActualLab.Fusion.Ext.Services;ActualLab.Fusion.Server;ActualLab.RestEase;ActualLab.Rpc.Server;ActualLab.Serialization.NerdbankMessagePack" />
+
+    <!-- _FusionLibReference = PackageReference ∩ _FusionLibPackage, computed via double Remove
+         (evaluation-phase item conditions can't reference %(Identity), so no direct filtering) -->
+    <_FusionOtherPackageReference Include="@(PackageReference)" />
+    <_FusionOtherPackageReference Remove="@(_FusionLibPackage)" />
+    <_FusionLibReference Include="@(PackageReference)" />
+    <_FusionLibReference Remove="@(_FusionOtherPackageReference)" />
+    <_FusionGenReference Include="@(PackageReference->WithMetadataValue('Identity', 'ActualLab.Generators'))" />
+
+    <PackageReference Remove="@(_FusionLibReference);@(_FusionGenReference)" />
+    <ProjectReference Include="@(_FusionLibReference->'$(FusionSourceDir)%(Identity)\%(Identity).csproj')" />
+    <ProjectReference Include="@(_FusionGenReference->'$(FusionSourceDir)%(Identity)\%(Identity).csproj')"
+        OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

@@ -4,7 +4,7 @@ namespace Samples.Benchmark;
 
 public static class Settings
 {
-    public static readonly string BaseUrl = "http://localhost:22333/";
+    public static readonly string BaseUrl = "http://127.0.0.1:22333/";
     public static readonly string DbConnectionString =
         "Server={0};Database=fusion_benchmark;Port=5432;" +
         "User Id=postgres;Password=postgres;" +

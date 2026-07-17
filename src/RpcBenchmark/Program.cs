@@ -13,7 +13,7 @@ namespace Samples.RpcBenchmark;
 
 public static class Program
 {
-    public static readonly string DefaultUrl = "https://localhost:22444/";
+    public static readonly string DefaultUrl = "https://127.0.0.1:22444/";
     public static readonly CancellationTokenSource StopTokenSource = new();
     public static readonly CancellationToken StopToken = StopTokenSource.Token;
 

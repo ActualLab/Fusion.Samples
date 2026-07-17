@@ -78,6 +78,7 @@ public static class SystemSettings
             WriteLine($"  RPC transport:        {rpcTransport} (affects only ActualLab.Rpc tests)");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
             WriteLine($"  ActualLab.Fusion:     v{typeof(Computed).Assembly.GetInformationalVersion()}");
+            LoopbackInfo.WarnIfLoopbackThrottled();
             _isApplied = true;
         }
     }

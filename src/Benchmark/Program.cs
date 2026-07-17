@@ -84,6 +84,7 @@ async Task RunClient()
     WriteLine($"Item count:         {ItemCount}");
     WriteLine($"Client concurrency: {ClientConcurrency} workers per client");
     WriteLine($"Writer count:       {WriterCount}");
+    LoopbackInfo.WarnIfLoopbackThrottled();
     var benchmarkRunner = new BenchmarkRunner("Initialize", ClientServices.LocalDbServiceFactory);
     await benchmarkRunner.Initialize(stopToken);
 

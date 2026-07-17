@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Security;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -67,8 +68,30 @@ public sealed class ClientFactories
             services.AddSingleton<TClient>();
         return () => {
             var c = services.BuildServiceProvider();
-            return c.GetRequiredService<TClient>();
+            var client = c.GetRequiredService<TClient>();
+            ClientProviders.Add(client, c); // So the provider can be disposed together with the client
+            return client;
         };
+    }
+
+    // Each Invoke of a client factory builds its own ServiceProvider (= its own RpcClientPeer
+    // and connection). Disposing the client proxy alone leaks the provider and everything it
+    // owns, so we map client -> provider here and dispose the provider in DisposeClient.
+    public static readonly ConditionalWeakTable<object, IServiceProvider> ClientProviders = new();
+
+    public static async Task DisposeClient(object client)
+    {
+        if (ClientProviders.TryGetValue(client, out var provider)) {
+            ClientProviders.Remove(client);
+            if (provider is IAsyncDisposable ad)
+                await ad.DisposeAsync().ConfigureAwait(false);
+            else if (provider is IDisposable d)
+                d.Dispose();
+        }
+        else if (client is IAsyncDisposable ad)
+            await ad.DisposeAsync().ConfigureAwait(false);
+        else if (client is IDisposable d)
+            d.Dispose();
     }
 
     private IServiceCollection CreateBaseServiceCollection()

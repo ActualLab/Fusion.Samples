@@ -213,11 +213,10 @@ public static class ParameterSearcher
             return -1; // Signal that this framework doesn't support the operation
         }
         finally {
-            // Dispose clients
+            // Dispose clients (and the ServiceProvider each one owns) - in parallel, since a
+            // graceful WebSocket close per client is slow when done sequentially.
             var clients = workers.Select(w => w.Client).ToHashSet();
-            foreach (var c in clients)
-                if (c is IDisposable d)
-                    d.Dispose();
+            await Task.WhenAll(clients.Select(ClientFactories.DisposeClient)).ConfigureAwait(false);
             await Task.Delay(200);
         }
     }

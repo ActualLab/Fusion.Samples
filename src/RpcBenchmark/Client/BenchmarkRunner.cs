@@ -52,11 +52,10 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
             await RunOne("Stream10K", w => w.Stream10K, cancellationToken);
         }
 
-        // Dispose clients
+        // Dispose clients (and the ServiceProvider each one owns) - in parallel, since a
+        // graceful WebSocket close per client is slow when done sequentially.
         var clients = Workers.Select(w => w.Client).ToHashSet();
-        foreach (var client in clients)
-            if (client is IDisposable d)
-                d.Dispose();
+        await Task.WhenAll(clients.Select(ClientFactories.DisposeClient)).ConfigureAwait(false);
         await Task.Delay(500).ConfigureAwait(false); // Wait when HTTP connections actually get closed
     }
 

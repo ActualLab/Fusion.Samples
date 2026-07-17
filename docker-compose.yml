@@ -111,6 +111,12 @@ services:
   # - https://github.com/LesnyRumcajs/grpc_bench
   # - https://github.com/LesnyRumcajs/grpc_bench/discussions/441 (the most recent results I could find)
   # 'SayHello' is the test that matches the grpc_bench payload.
+  #
+  # CPU pinning (cpuset) keeps the 4-CPU server on a single CCD and the clients on
+  # non-overlapping cores, so the server never straddles CCDs or contends with clients.
+  # Ranges assume a 16C/32T CPU where the OS enumerates the 16 physical cores as logical
+  # 0-15 (CCD0 = 0-7, CCD1 = 8-15) and their SMT siblings as 16-31. Adjust to your topology
+  # (verify inside a container with: lscpu -e) and to your WSL2 vCPU count if on Docker Desktop.
 
   sample_rpc_benchmark_server:
     build:
@@ -119,6 +125,7 @@ services:
     command: server https://0.0.0.0:443/
     expose:
       - "443"
+    cpuset: "0-3"        # 4 physical cores on one CCD (server = the measured 4-core bottleneck)
     deploy:
       resources:
         limits:
@@ -131,6 +138,7 @@ services:
     depends_on:
       - sample_rpc_benchmark_server
     command: client -b calls -wait -s -n 6 https://sample_rpc_benchmark_server
+    cpuset: "8-31"       # 24 logical CPUs, disjoint from the server's 0-3 (4-7 left as a buffer)
     deploy:
       resources:
         limits:
@@ -143,6 +151,7 @@ services:
     depends_on:
       - sample_rpc_benchmark_server
     command: client -b streams -wait -s -n 6 -l rpc,grpc,signalr,jsonrpc https://sample_rpc_benchmark_server
+    cpuset: "8-31"       # 24 logical CPUs, disjoint from the server's 0-3 (4-7 left as a buffer)
     deploy:
       resources:
         limits:

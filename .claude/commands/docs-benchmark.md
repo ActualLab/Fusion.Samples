@@ -7,13 +7,31 @@ description: Run all benchmarks and update Benchmarks.md with results
 
 Run all benchmarks as specified in @Benchmarks.md and update the file with the latest results.
 
+## Windows loopback large MTU (REQUIRED on Windows)
+
+These benchmarks run over localhost, so Windows **loopback large MTU** gates their throughput.
+Enabling it roughly **doubles** localhost stream throughput and is required to reproduce the
+documented RpcBenchmark stream numbers; on recent Windows 11 builds the effective default throttles
+loopback ~2x. Toggle it with the repo's helper (elevated): `Set-LoopbackMode.ps1 enable|disable`
+(or `netsh int ipv4/ipv6 set gl loopbacklargemtu=enable|disable`).
+
+**Trade-off — the two benchmarks want opposite settings:**
+- **RpcBenchmark** → large MTU **ENABLED** (streams need it; gRPC/SignalR are fine).
+- **Run-Benchmark (Benchmark.csproj)** → large MTU **DISABLED** — with it enabled, its
+  many-short-connection HTTP/DB loopback path **hangs**.
+
+So: disable large MTU before Run-Benchmark, enable it before RpcBenchmark. Keep `loopbackexecutionmode`
+at its default (`inline`) — worker mode is not helpful. Also minimize background load (browsers, other
+app servers) for representative numbers.
+
 ## Instructions
 
 **Important:** Run all benchmarks sequentially, not in parallel. Running benchmarks in parallel causes file locking issues and skews results due to resource contention.
 
 1. Read @Benchmarks.md to understand the benchmark commands and current structure
 
-2. Run the **Run-Benchmark.cmd** benchmark (**2 times** sequentially, take best results) using a command from the corresponding section of @Benchmarks.md, which is similar to:
+2. **Disable loopback large MTU** (`Set-LoopbackMode.ps1 disable`), then run the **Run-Benchmark.cmd**
+   benchmark (**2 times** sequentially, take best results) using a command from the corresponding section of @Benchmarks.md, which is similar to:
    ```
    dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profile
    ```
@@ -21,7 +39,7 @@ Run all benchmarks as specified in @Benchmarks.md and update the file with the l
    - Local Services: Regular Service, Fusion Service
    - Remote Services: HTTP Client → Regular Service, HTTP Client → Fusion Service, ActualLab.Rpc Client → Fusion Service, Fusion Client → Fusion Service
 
-3. Run the **Run-RpcBenchmark.cmd** benchmarks (**once** each, using `-n 6` for 6 attempts per test):
+3. **Enable loopback large MTU** (`Set-LoopbackMode.ps1 enable`), then run the **Run-RpcBenchmark.cmd** benchmarks (**once** each, using `-n 6` for 6 attempts per test):
 
    Key options:
    - `-b calls|streams` - benchmark kind

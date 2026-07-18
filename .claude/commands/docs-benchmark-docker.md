@@ -12,6 +12,17 @@ Run RPC benchmarks in Docker containers and update Benchmarks.md with results.
 **Environment Check:** This command can only run when Claude is NOT running in Docker.
 Check the `AC_OS` environment variable - if it equals `Linux in Docker`, abort with an error message instructing the user to run this command from the host OS (use `c os` mode).
 
+## Environment notes
+
+- The Windows loopback large-MTU setting (see `/docs-benchmark`) is **irrelevant** here: Docker
+  benchmarks run container-to-container over the Docker bridge (Linux network stack), not Windows
+  loopback. No `Set-LoopbackMode` step is needed.
+- **Tested and NOT helpful (do not add):** CPU `cpuset` pinning of the 4-CPU server *hurt* results
+  (the `cpus:'4'` quota lets the scheduler place threads freely, which beats pinning; on Docker
+  Desktop/WSL2 the CCD/L3 topology is flattened anyway), and a jumbo (9000) Docker network MTU had
+  no effect (the benchmark is CPU-bound on the 4-core server, not network-bound). The compose config
+  intentionally stays at grpc_bench-standard `cpus:'4'`, default MTU.
+
 ## Instructions
 
 **Important:** Docker benchmarks are run only once (not 2 times like native benchmarks) since the Docker environment provides more consistent results.

@@ -1,36 +1,36 @@
 <#
 .SYNOPSIS
-  Enables or disables Windows TCP "loopback throughput mode" for localhost benchmarking.
+  Enables or disables Windows loopback "large MTU" - the setting that gates localhost
+  stream throughput for the RpcBenchmark.
 
 .DESCRIPTION
-  Windows exposes a global loopback processing setting (per IPv4/IPv6):
+  Windows exposes a global loopback large-MTU setting (per IPv4/IPv6):
 
-    loopbackexecutionmode = worker | inline | adaptive
-    loopbacklargemtu      = enable | disable
+    netsh int ipv4|ipv6 set gl loopbacklargemtu=enable|disable
 
-  The 'inline' mode favors LATENCY over THROUGHPUT and, combined with large-MTU disabled,
-  can cap localhost TCP bandwidth by ~20x (e.g. 0.7 GB/s vs 15 GB/s). On some Windows 11
-  builds this is the default, which severely skews localhost benchmarks (RpcBenchmark,
-  Benchmark) even though nothing changed in the app.
+  Enabling it roughly DOUBLES localhost stream throughput and is required to reproduce the
+  documented RpcBenchmark stream numbers (e.g. Stream100 ~43M vs ~19-25M when disabled). On some
+  Windows 11 builds the effective default throttles loopback throughput, so this must be enabled
+  explicitly for representative stream results.
 
-  This script toggles between:
-    enable   -> loopbackexecutionmode=worker,  loopbacklargemtu=enable   (throughput)
-    disable  -> loopbackexecutionmode=inline,   loopbacklargemtu=disable  (Windows default)
+  IMPORTANT TRADE-OFF: large MTU also breaks the many-short-connection HTTP loopback path - it can
+  HANG the plain Benchmark (Benchmark.csproj) HTTP/DB tests. So:
+    * RpcBenchmark  -> run with large MTU ENABLED  (streams need it; gRPC/SignalR are fine)
+    * Benchmark     -> run with large MTU DISABLED (its HTTP/DB path hangs otherwise)
 
-  The change is system-wide (IPv4 + IPv6) and PERSISTS across reboots.
-
-  IMPORTANT: it requires an ELEVATED PowerShell ("Run as administrator"). Without elevation
-  the change is impossible and the script reports an error.
+  The change is system-wide (IPv4 + IPv6) and PERSISTS across reboots. It requires an ELEVATED
+  ("Run as administrator") PowerShell; without elevation the change is impossible and this reports
+  an error.
 
 .PARAMETER Action
-  'enable' (aliases: on/worker/true) or 'disable' (aliases: off/inline/false).
+  'enable' (aliases: on/true) or 'disable' (aliases: off/false).
   If omitted, the script prints the current state and asks interactively.
 
 .EXAMPLE
-  .\Set-LoopbackMode.ps1 enable      # throughput mode (for benchmarking)
+  .\Set-LoopbackMode.ps1 enable      # before RpcBenchmark (streams)
 
 .EXAMPLE
-  .\Set-LoopbackMode.ps1 disable     # back to Windows default
+  .\Set-LoopbackMode.ps1 disable     # before Benchmark.csproj, or to restore the default
 
 .EXAMPLE
   .\Set-LoopbackMode.ps1             # prompt
@@ -44,9 +44,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 function Test-IsWindows {
-    # $IsWindows exists on PowerShell 6+; on Windows PowerShell 5.1 assume Windows.
     if (Test-Path Variable:\IsWindows) { return $IsWindows }
-    return $true
+    return $true  # Windows PowerShell 5.1 has no $IsWindows
 }
 
 function Test-Admin {
@@ -55,33 +54,30 @@ function Test-Admin {
         [Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-function Get-LoopbackState {
+function Get-LargeMtu {
     $out = netsh int ipv4 show global
-    $mode = (($out | Select-String 'Loopback Execution Mode') -split ':')[-1].Trim()
-    $mtu  = (($out | Select-String 'Loopback Large Mtu')       -split ':')[-1].Trim()
-    [pscustomobject]@{ ExecutionMode = $mode; LargeMtu = $mtu }
+    (($out | Select-String 'Loopback Large Mtu') -split ':')[-1].Trim()
 }
 
 if (-not (Test-IsWindows)) {
-    Write-Error "Loopback execution mode is a Windows-only setting; nothing to do on this OS."
+    Write-Error "Loopback large MTU is a Windows-only setting; nothing to do on this OS."
     exit 2
 }
 
 # Resolve the desired action (prompt if not provided).
 if ([string]::IsNullOrWhiteSpace($Action)) {
-    $cur = Get-LoopbackState
-    Write-Host "Current loopback state: ExecutionMode=$($cur.ExecutionMode), LargeMtu=$($cur.LargeMtu)"
-    $ans = Read-Host "Set THROUGHPUT (worker) mode? [Y]es / [N]o (restore default) / [C]ancel"
+    Write-Host "Current loopback large MTU: $(Get-LargeMtu)"
+    $ans = Read-Host "ENABLE large MTU (throughput; for RpcBenchmark streams)? [Y]es / [N]o (disable) / [C]ancel"
     switch -Regex ($ans.Trim()) {
-        '^(y|yes|e|enable|worker|on)$'   { $Action = 'enable' }
-        '^(n|no|d|disable|inline|off)$'  { $Action = 'disable' }
+        '^(y|yes|e|enable|on)$'   { $Action = 'enable' }
+        '^(n|no|d|disable|off)$'  { $Action = 'disable' }
         default { Write-Host "Cancelled - no changes made."; exit 0 }
     }
 }
 
 switch ($Action.Trim().ToLowerInvariant()) {
-    { $_ -in 'enable','on','worker','true','throughput' }  { $enable = $true }
-    { $_ -in 'disable','off','inline','false','default' }  { $enable = $false }
+    { $_ -in 'enable','on','true' }   { $enable = $true }
+    { $_ -in 'disable','off','false' } { $enable = $false }
     default {
         Write-Error "Unknown action '$Action'. Use 'enable' or 'disable'."
         exit 2
@@ -99,27 +95,24 @@ Open PowerShell via 'Run as administrator', then re-run:
     exit 1
 }
 
-$mode = if ($enable) { 'worker' } else { 'inline' }
-$mtu  = if ($enable) { 'enable' } else { 'disable' }
-
-Write-Host "Applying loopbackexecutionmode=$mode, loopbacklargemtu=$mtu (IPv4 + IPv6)..."
+$value = if ($enable) { 'enable' } else { 'disable' }
+Write-Host "Applying loopbacklargemtu=$value (IPv4 + IPv6)..."
 foreach ($fam in 'ipv4', 'ipv6') {
-    & netsh int $fam set gl loopbackexecutionmode=$mode | Out-Null
-    & netsh int $fam set gl loopbacklargemtu=$mtu       | Out-Null
+    & netsh int $fam set gl loopbacklargemtu=$value | Out-Null
 }
 
 # Verify the change actually took effect.
 Start-Sleep -Milliseconds 500
-$after = Get-LoopbackState
-$expectedMtu = if ($enable) { 'enabled' } else { 'disabled' }
-$ok = ($after.ExecutionMode -ieq $mode) -and ($after.LargeMtu -ieq $expectedMtu)
-
-Write-Host "Now: ExecutionMode=$($after.ExecutionMode), LargeMtu=$($after.LargeMtu)"
-if ($ok) {
-    Write-Host ("SUCCESS: loopback throughput mode is now {0}." -f ($(if ($enable) { 'ENABLED (worker)' } else { 'DISABLED (inline / default)' }))) -ForegroundColor Green
+$after = Get-LargeMtu
+$expected = if ($enable) { 'enabled' } else { 'disabled' }
+if ($after -ieq $expected) {
+    Write-Host ("SUCCESS: loopback large MTU is now {0}." -f $after.ToUpper()) -ForegroundColor Green
+    if ($enable) {
+        Write-Host "Reminder: run Benchmark.csproj with large MTU DISABLED (its HTTP/DB tests hang otherwise)." -ForegroundColor Yellow
+    }
     exit 0
 }
 else {
-    Write-Error "Verification FAILED - the setting did not change to the expected value. (Group Policy or another agent may be overriding it.)"
+    Write-Error "Verification FAILED - large MTU is '$after', expected '$expected'. (Group Policy or another agent may be overriding it.)"
     exit 3
 }

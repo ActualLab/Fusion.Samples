@@ -84,7 +84,8 @@ async Task RunClient()
     WriteLine($"Item count:         {ItemCount}");
     WriteLine($"Client concurrency: {ClientConcurrency} workers per client");
     WriteLine($"Writer count:       {WriterCount}");
-    LoopbackInfo.WarnIfLoopbackThrottled();
+    // NOTE: this benchmark intentionally runs with loopback large MTU DISABLED - large MTU hangs
+    // its many-connection HTTP/DB loopback path (see Benchmarks.md), so we don't warn about it here.
     var benchmarkRunner = new BenchmarkRunner("Initialize", ClientServices.LocalDbServiceFactory);
     await benchmarkRunner.Initialize(stopToken);
 

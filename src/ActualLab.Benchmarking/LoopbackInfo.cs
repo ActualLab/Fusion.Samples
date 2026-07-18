@@ -2,17 +2,22 @@ using System.Diagnostics;
 
 namespace ActualLab.Benchmarking;
 
-// These benchmarks talk over localhost (127.0.0.1), so the Windows "loopback execution mode"
-// directly gates their throughput. The default 'inline' mode favors latency over throughput and
-// can cap loopback bandwidth ~20x, which silently skews localhost benchmark results. This helper
-// warns (in red) when the machine isn't in the throughput-friendly 'worker' mode.
+// These benchmarks talk over localhost (127.0.0.1), so Windows loopback settings directly gate
+// their throughput. Enabling "loopback large MTU" (netsh int ipv4/ipv6 set gl loopbacklargemtu=enable)
+// roughly doubles loopback stream throughput and is required to reproduce the documented RpcBenchmark
+// stream results; when it's disabled, stream throughput is throttled ~2x. This helper warns (in red)
+// when large MTU is off.
+//
+// NOTE: large MTU also breaks the many-short-connection HTTP loopback path (it can hang the plain
+// Benchmark's HTTP/DB tests), so that benchmark is meant to run with large MTU DISABLED. Only the
+// RpcBenchmark (streams) needs it enabled. See Set-LoopbackMode.ps1 and Benchmarks.md.
 public static class LoopbackInfo
 {
     public const string FixScript = "Set-LoopbackMode.ps1";
 
-    // Returns the Windows loopback execution mode ("worker"/"inline"/"adaptive"), or null if it
-    // can't be determined (non-Windows, netsh missing/blocked, unexpected output).
-    public static string? TryGetWindowsExecutionMode()
+    // Returns whether Windows loopback large MTU is enabled, or null if it can't be determined
+    // (non-Windows, netsh missing/blocked, unexpected output).
+    public static bool? TryGetWindowsLargeMtuEnabled()
     {
         if (!OperatingSystem.IsWindows())
             return null;
@@ -31,11 +36,11 @@ public static class LoopbackInfo
                 return null;
             }
             foreach (var line in output.Split('\n')) {
-                if (line.IndexOf("Loopback Execution Mode", StringComparison.OrdinalIgnoreCase) < 0)
+                if (line.IndexOf("Loopback Large Mtu", StringComparison.OrdinalIgnoreCase) < 0)
                     continue;
                 var colon = line.IndexOf(':');
                 if (colon >= 0)
-                    return line[(colon + 1)..].Trim();
+                    return line[(colon + 1)..].Trim().StartsWith("enabled", StringComparison.OrdinalIgnoreCase);
             }
         }
         catch {
@@ -44,18 +49,17 @@ public static class LoopbackInfo
         return null;
     }
 
-    // Prints a red warning if Windows loopback isn't in throughput ('worker') mode.
+    // Prints a red warning if Windows loopback large MTU is disabled (throttles stream throughput).
     public static void WarnIfLoopbackThrottled()
     {
-        var mode = TryGetWindowsExecutionMode();
-        if (mode == null || string.Equals(mode, "worker", StringComparison.OrdinalIgnoreCase))
-            return;
+        if (TryGetWindowsLargeMtuEnabled() != false)
+            return; // enabled, or unknown/non-Windows - nothing to warn about
 
         var previous = ForegroundColor;
         ForegroundColor = ConsoleColor.Red;
         try {
-            WriteLine($"WARNING: Windows loopback execution mode is '{mode}', not 'worker'.");
-            WriteLine("  This throttles localhost throughput (~20x) and skews these benchmarks.");
+            WriteLine("WARNING: Windows loopback large MTU is disabled.");
+            WriteLine("  This throttles localhost stream throughput ~2x and understates these results.");
             WriteLine($"  Fix (elevated PowerShell): .\\{FixScript} enable");
         }
         finally {

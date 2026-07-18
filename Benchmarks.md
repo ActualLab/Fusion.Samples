@@ -115,47 +115,6 @@ Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 b
 | Stream100 | 4.49 GB/s | 2.59 GB/s | 1.39 GB/s |
 | Stream10K | 8.27 GB/s | 5.86 GB/s | 4.42 GB/s |
 
-## Fusion Core Microbenchmarks
-
-These are [BenchmarkDotNet](https://benchmarkdotnet.org) microbenchmarks from the
-[ActualLab.Fusion](https://github.com/ActualLab/Fusion) repository
-(`tests/ActualLab.Fusion.Tests.BenchmarkRunner`). Unlike the throughput benchmarks above, they measure
-the **single-threaded, per-operation cost** of Fusion's core compute-method primitives — cache hit,
-recompute + cache, and invalidation — with an otherwise empty method body, so the numbers reflect
-Fusion's own overhead rather than any user logic. The `Calls/s per core` column is `1 / Mean`, i.e. the
-single-thread operation rate (not aggregate throughput like the tables above).
-
-The measured service exposes plain compute methods that just return a completed task:
-
-```csharp
-public interface IBenchmarkComputeService : IComputeService
-{
-    [ComputeMethod] Task<Unit> Get(long key, CancellationToken ct);
-    [ComputeMethod] Task<Unit> Get(string key, CancellationToken ct);
-    [ComputeMethod] Task<Unit> Get(Session session, string key, CancellationToken ct);
-}
-```
-
-To run (from the ActualLab.Fusion repo):
-```powershell
-dotnet run -c Release --project tests/ActualLab.Fusion.Tests.BenchmarkRunner -- --filter '*CachedComputeMethodBenchmarks*' '*RecomputeComputeMethodBenchmarks*' '*RawInvalidationBenchmarks*'
-```
-
-Results below use an increased-precision job (10 warmup / 30 measured iterations, in-process toolchain)
-on .NET 10.0.8.
-
-| Operation | Calls/s per core | Mean | StdDev | Allocated |
-|-----------|------------------|------|--------|-----------|
-| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 50.68M | 19.73 ns | 0.12 ns | 32 B |
-| Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.90M | 28.65 ns | 0.16 ns | 32 B |
-| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 34.58M | 28.92 ns | 0.10 ns | 40 B |
-| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.04M | 490.1 ns | 34.62 ns | 1007 B |
-| Invalidation (activate + 1 call)<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
-
-A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`); the `long` key is
-cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +
-cache-fill is ~490 ns / ~1 KB, and invalidating a single compute-method instance is ~53 ns / 112 B.
-
 ## Docker-Based RPC Benchmarks
 
 These benchmarks run in Docker containers with CPU limits to measure **4-core server performance**.
@@ -200,3 +159,44 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 | gRPC | 11.79M items/s | 6.19M items/s | 140.40K items/s |
 | SignalR | 8.89M items/s | 5.08M items/s | 106.20K items/s |
 | StreamJsonRpc | 120.96K items/s | 120.96K items/s | 60.48K items/s |
+
+## Fusion Core Microbenchmarks
+
+These are [BenchmarkDotNet](https://benchmarkdotnet.org) microbenchmarks from the
+[ActualLab.Fusion](https://github.com/ActualLab/Fusion) repository
+(`tests/ActualLab.Fusion.Tests.BenchmarkRunner`). Unlike the throughput benchmarks above, they measure
+the **single-threaded, per-operation cost** of Fusion's core compute-method primitives — cache hit,
+recompute + cache, and invalidation — with an otherwise empty method body, so the numbers reflect
+Fusion's own overhead rather than any user logic. The `Calls/s per core` column is `1 / Mean`, i.e. the
+single-thread operation rate (not aggregate throughput like the tables above).
+
+The measured service exposes plain compute methods that just return a completed task:
+
+```csharp
+public interface IBenchmarkComputeService : IComputeService
+{
+    [ComputeMethod] Task<Unit> Get(long key, CancellationToken ct);
+    [ComputeMethod] Task<Unit> Get(string key, CancellationToken ct);
+    [ComputeMethod] Task<Unit> Get(Session session, string key, CancellationToken ct);
+}
+```
+
+To run (from the ActualLab.Fusion repo):
+```powershell
+dotnet run -c Release --project tests/ActualLab.Fusion.Tests.BenchmarkRunner -- --filter '*CachedComputeMethodBenchmarks*' '*RecomputeComputeMethodBenchmarks*' '*RawInvalidationBenchmarks*'
+```
+
+Results below use an increased-precision job (10 warmup / 30 measured iterations, in-process toolchain)
+on .NET 10.0.8.
+
+| Operation | Calls/s per core | Mean | StdDev | Allocated |
+|-----------|------------------|------|--------|-----------|
+| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 50.68M | 19.73 ns | 0.12 ns | 32 B |
+| Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.90M | 28.65 ns | 0.16 ns | 32 B |
+| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 34.58M | 28.92 ns | 0.10 ns | 40 B |
+| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.04M | 490.1 ns | 34.62 ns | 1007 B |
+| Invalidation (activate + 1 call)<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
+
+A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`); the `long` key is
+cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +
+cache-fill is ~490 ns / ~1 KB, and invalidating a single compute-method instance is ~53 ns / 112 B.

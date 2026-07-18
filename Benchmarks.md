@@ -122,7 +122,7 @@ These are [BenchmarkDotNet](https://benchmarkdotnet.org) microbenchmarks from th
 (`tests/ActualLab.Fusion.Tests.BenchmarkRunner`). Unlike the throughput benchmarks above, they measure
 the **single-threaded, per-operation cost** of Fusion's core compute-method primitives — cache hit,
 recompute + cache, and invalidation — with an otherwise empty method body, so the numbers reflect
-Fusion's own overhead rather than any user logic. The `calls/s` column is `1 / Mean`, i.e. the
+Fusion's own overhead rather than any user logic. The `Calls/s per core` column is `1 / Mean`, i.e. the
 single-thread operation rate (not aggregate throughput like the tables above).
 
 The measured service exposes plain compute methods that just return a completed task:
@@ -144,13 +144,13 @@ dotnet run -c Release --project tests/ActualLab.Fusion.Tests.BenchmarkRunner -- 
 Results below use an increased-precision job (10 warmup / 30 measured iterations, in-process toolchain)
 on .NET 10.0.8.
 
-| Operation | Mean | calls/s | StdDev | Allocated |
-|-----------|------|---------|--------|-----------|
-| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 19.73 ns | 50.68M calls/s | 0.12 ns | 32 B |
-| Cached hit, `string` key<br/>`Service.Get("key", default)` | 28.65 ns | 34.90M calls/s | 0.16 ns | 32 B |
-| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 28.92 ns | 34.58M calls/s | 0.10 ns | 40 B |
-| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 490.1 ns | 2.04M calls/s | 34.62 ns | 1007 B |
-| Invalidation, single instance<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 53.28 ns | 18.77M calls/s | 4.63 ns | 112 B |
+| Operation | Calls/s per core | Mean | StdDev | Allocated |
+|-----------|------------------|------|--------|-----------|
+| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 50.68M | 19.73 ns | 0.12 ns | 32 B |
+| Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.90M | 28.65 ns | 0.16 ns | 32 B |
+| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 34.58M | 28.92 ns | 0.10 ns | 40 B |
+| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.04M | 490.1 ns | 34.62 ns | 1007 B |
+| Invalidation, single instance<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
 
 A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`); the `long` key is
 cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +

@@ -215,11 +215,13 @@ for two interceptor kinds:
   protected override Func<Invocation, object?>? CreateTypedHandler<T>(Invocation _, MethodDef methodDef)
       => _ => methodDef.DefaultResult;
   ```
-- **Pass-through interceptor** — the interceptor installs no handler; the call "falls through" to the
-  wrapped target implementation, so it measures dispatch **plus** delegation to the real method:
+- **Pass-through interceptor** — interception is turned off, so no handler runs and the call "falls
+  through" to the wrapped target implementation; it measures dispatch **plus** delegation to the real
+  method:
   ```csharp
-  // ActualLab: no handler is installed; the call is forwarded to `target`
-  var proxy = Proxies.New(typeof(IService), passThroughInterceptor, target);
+  // ActualLab: with both flags off, the proxy forwards every call straight to the target
+  MustInterceptSyncCalls = false;
+  MustInterceptAsyncCalls = false;
   ```
 
 `No proxy` is a direct virtual call to the same target (its methods are marked `[MethodImpl(NoInlining)]`

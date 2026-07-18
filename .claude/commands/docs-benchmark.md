@@ -221,6 +221,44 @@ stable, so **skip unless explicitly asked**. Optimal client count (~12) was foun
 redis-benchmark -n 500000 -c 12 -t PING_INLINE,GET,SET
 ```
 
+## After updating Benchmarks.md — propagate to the Fusion docs
+
+Benchmarks.md is the **source of truth**. The sibling **ActualLab.Fusion** repo renders these numbers in
+its published docs, so after updating Benchmarks.md, propagate the changed numbers there too (ask the user
+whether to include the optional targets). For each file, update only the numbers that exist there and
+**recalculate any speedup ratios** whose inputs changed; preserve structure and explanatory text; do not
+copy the "how to run" instructions into the docs.
+
+**Core targets (always):**
+
+| Fusion doc | What lives there — numbers to update |
+|------------|--------------------------------------|
+| `docs/Performance.md` | The master mirror. Header **version + date**; PerformanceTest tables (multi + single, SQLite/Postgres) + speedups; Benchmark.cmd Local/Remote tables; RpcBenchmark Calls / Latency / Streams / Throughput (recompute GB/s & MB/s) + the two `<BarChart>` `data:[...]` arrays; the Micro-Benchmarks + Interception tables; Docker Calls/Latency/Streams + their two `<BarChart>` arrays; Redis. Keep the Benchmarks.md back-link at the tail. |
+| `docs/index.md` | Feature card "**N**M …per core" (use the **micro-benchmark** cache-hit rate, ~50M — not the perf-test single-reader) and the "…× faster than Redis" next to it; Compute-Services table (3 rows) + speedups; ActualLab.Rpc-vs table (Calls + Streaming) + speedup ranges + the "N× faster than gRPC/SignalR" caption. |
+| `README.md` | "over **N** million calls per second" headline; Benchmark Highlights table (3 rows) + speedups; ActualLab.Rpc-vs table; the interception bullet ("~5-7x faster than Castle…"). |
+| `docs/PartF-SS.md` | Benchmark.cmd Local + Remote tables + speedups; the "~N K / ~N K / ~Nx" prose in Key Takeaways. |
+| `docs/PartR.md` | The "~50M calls/s, or ~20ns per-call" line (micro-benchmark cache hit). |
+| `docs/ActualLab.Fusion-vs/gRPC.md` | Calls (Sum, GetUser) + Streams (1B/100B/10KB) vs gRPC + speedups. |
+| `docs/ActualLab.Fusion-vs/SignalR.md` | Calls (GetUser, SayHello) + Streams vs SignalR + speedups. |
+| `docs/ActualLab.Fusion-vs/Redis.md` | Remote (GetUser/GET) and Local (Cached lookup = Fusion Service) vs Redis + speedups. |
+
+**Optional targets (ask first):**
+
+| Fusion doc | Notes |
+|------------|-------|
+| `docs/slides/fusion-intro/slides.md` | The current deck's Performance table (all-cores cache hit, remote cache hit, plain RPC, streaming) + ratios. |
+| `docs/slides/fusion-intro-v1/slides.md` | Older deck — same numbers. Skip unless asked. |
+| `docs/video/actuallab-rpc-fastest-rpc-protocol-on-net.md` | Spoken-transcript numbers (e.g. "~350,000/s per core"). Skip unless asked. |
+
+Notes on specific numbers:
+- **"Per core" headlines** (index, PartR, slides) use the **micro-benchmark** cache-hit rate (~50M/core,
+  ~20ns), *not* the PerformanceTestRunner single-reader (~27M/core — a heavier full `UserService.Get`).
+  Keep those two distinct.
+- The PerformanceTest **"Without Fusion" baselines** are not produced by the current runner (that block is
+  disabled), so reuse the existing baselines and just recompute the speedups.
+- Keep the Benchmarks.md ⇄ Performance.md cross-links (top of Benchmarks.md → Performance; tail of
+  Performance.md → Benchmarks.md).
+
 ## Output format (RPC benchmarks)
 
 Take the final value after the `->` arrow, e.g.:

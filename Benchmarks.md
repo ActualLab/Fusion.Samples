@@ -5,6 +5,9 @@
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
 
+> 📊 A rendered version of these results — with charts and framework comparisons — is at
+> [**fusion.actuallab.net/Performance**](https://fusion.actuallab.net/Performance).
+
 ## Test Environment
 
 | Component | Specification |
@@ -286,6 +289,6 @@ Async call — `Task<int> IntTask(int a, CancellationToken ct)`:
 
 The no-handler variant costs almost the same as the pass-through one (dispatch is the same; only the
 handler differs), confirming the interception dispatch itself is the bulk of the cost. Overall,
-ActualLab's interception is **~5-7x faster than Castle DynamicProxy** and allocates far less
-(0-32 B/call vs 96-168 B/call) — which is why Fusion can afford to wrap every compute method and RPC
-call in a proxy.
+ActualLab's interception is **~5-7x faster than Castle DynamicProxy** — and only **~2-3x slower than a
+plain (non-intercepted) virtual call** — while allocating far less (0-32 B/call vs 96-168 B/call). That's
+why Fusion can afford to wrap every compute method and RPC call in a proxy.

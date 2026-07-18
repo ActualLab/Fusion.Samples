@@ -213,7 +213,7 @@ Concurrent readers hit the method while a single mutator continuously invalidate
 (1000 users); reads are served from Fusion's cache, so the backing database barely matters. Best of
 several runs:
 
-| Scenario | PostgreSQL (Npgsql) | SQLite |
+| Scenario | PostgreSQL | SQLite |
 |----------|---------------------|--------|
 | Multithreaded — 640 readers + 1 mutator | 533.85M calls/s | 498.92M calls/s |
 | Single-threaded — 1 reader, no mutators | 26.74M calls/s | 26.77M calls/s |

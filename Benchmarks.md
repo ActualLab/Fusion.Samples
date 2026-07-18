@@ -200,3 +200,52 @@ on .NET 10.0.8.
 A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`); the `long` key is
 cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +
 cache-fill is ~490 ns / ~1 KB, and invalidating a single compute-method instance is ~53 ns / 112 B.
+
+### Interception & proxy overhead
+
+Fusion builds its compute methods, RPC clients, etc. on **method interception** via generated proxies.
+This benchmark measures the per-call cost of ActualLab's proxies against
+[Castle DynamicProxy](https://github.com/castleproject/Core) — the most common .NET interception library —
+for two interceptor kinds:
+
+- **Simple interceptor** — the interceptor produces the result itself (returns the method's default
+  value) and never touches an underlying implementation, so it measures pure interception dispatch:
+  ```csharp
+  // ActualLab: CreateTypedHandler returns a handler that yields the result directly
+  protected override Func<Invocation, object?>? CreateTypedHandler<T>(Invocation _, MethodDef methodDef)
+      => _ => methodDef.DefaultResult;
+  ```
+- **Pass-through interceptor** — the interceptor installs no handler; the call "falls through" to the
+  wrapped target implementation, so it measures dispatch **plus** delegation to the real method:
+  ```csharp
+  // ActualLab: no handler is installed; the call is forwarded to `target`
+  var proxy = Proxies.New(typeof(IService), passThroughInterceptor, target);
+  ```
+
+`No proxy` is a direct virtual call to the same target (its methods are marked `[MethodImpl(NoInlining)]`
+so the baseline is a real, non-inlined call). Numbers are single-threaded (`Calls/s per core` = `1 / Mean`),
+in-process, .NET 10.0.8.
+
+Sync call — `int Int(int a)`:
+
+| Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
+|---------------|------------------|------|--------|-----------|
+| No proxy (direct virtual call) | 751.4M | 1.33 ns | 0.07 ns | – |
+| ActualLab, simple interceptor | 405.9M | 2.46 ns | 0.02 ns | 24 B |
+| ActualLab, pass-through | 255.3M | 3.92 ns | 0.08 ns | 24 B |
+| Castle DynamicProxy, simple | 60.42M | 16.55 ns | 0.20 ns | 128 B |
+| Castle DynamicProxy, pass-through | 49.49M | 20.21 ns | 0.20 ns | 160 B |
+
+Async call — `Task<int> IntTask(int a, CancellationToken ct)`:
+
+| Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
+|---------------|------------------|------|--------|-----------|
+| No proxy (direct virtual call) | 897.2M | 1.11 ns | 0.02 ns | – |
+| ActualLab, simple interceptor | 246.4M | 4.06 ns | 0.03 ns | 32 B |
+| ActualLab, pass-through | 179.2M | 5.58 ns | 0.05 ns | 32 B |
+| Castle DynamicProxy, simple | 51.12M | 19.56 ns | 0.27 ns | 160 B |
+| Castle DynamicProxy, pass-through | 44.47M | 22.48 ns | 0.28 ns | 160 B |
+
+ActualLab's interception is **~5-7x faster than Castle DynamicProxy** and allocates far less
+(0-32 B/call vs 96-160 B/call) — which is why Fusion can afford to wrap every compute method and RPC
+call in a proxy.

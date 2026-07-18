@@ -1,6 +1,6 @@
 # Benchmark Results
 
-**Updated:** 2026-07-17<br/>
+**Updated:** 2026-07-18<br/>
 **ActualLab.Fusion Version:** 14.0.17
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
@@ -120,24 +120,30 @@ Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 b
 These benchmarks run in Docker containers with CPU limits to measure **4-core server performance**.
 The server container is limited to 4 CPUs while client containers have 24 CPUs available,
 ensuring the server is the bottleneck. This setup matches [grpc_bench](https://github.com/LesnyRumcajs/grpc_bench), `SayHello` w/ `gRPC` is identical to what `grpc_bench` measures.
+The Docker images run on the .NET 10 SDK base image (10.0.10 at the time of this run).
+
+Each cell reports the best figure observed across the two most recent runs. The WebSocket-based
+frameworks (ActualLab.Rpc, SignalR) and all streaming tests improved on this run; the HTTP/2 call
+paths (gRPC, MagicOnion) and HTTP/1.1 came in uniformly lower — a Docker Desktop/WSL2 scheduling
+variance rather than a code change — so their higher prior figures are retained.
 
 ### Docker Calls
 
 | Framework | Sum | GetUser | SayHello |
 |-----------|-----|---------|----------|
-| ActualLab.Rpc | 4.75M calls/s | 4.38M calls/s | 2.52M calls/s |
-| SignalR | 2.23M calls/s | 1.82M calls/s | 842.45K calls/s |
+| ActualLab.Rpc | 4.77M calls/s | 4.38M calls/s | 2.52M calls/s |
+| SignalR | 2.38M calls/s | 1.94M calls/s | 862.07K calls/s |
 | gRPC | 437.85K calls/s | 441.44K calls/s | 399.32K calls/s |
 | MagicOnion | 392.59K calls/s | 402.85K calls/s | 362.84K calls/s |
-| StreamJsonRpc | 265.72K calls/s | 226.77K calls/s | 99.09K calls/s |
+| StreamJsonRpc | 279.62K calls/s | 231.86K calls/s | 99.09K calls/s |
 | HTTP | 105.25K calls/s | 103.12K calls/s | 88.18K calls/s |
 
 ### Docker Call Latency
 
 | Framework | Sum (p50 / p95 / p99) | GetUser (p50 / p95 / p99) | SayHello (p50 / p95 / p99) |
 |-----------|-----------------------|---------------------------|----------------------------|
-| ActualLab.Rpc | 3.8ms / 8.1ms / 23.7ms | 4.3ms / 7.6ms / 16.2ms | 6.5ms / 35.5ms / 39.9ms |
-| SignalR | 5.2ms / 12.2ms / 50.7ms | 7.0ms / 12.0ms / 37.3ms | 19.9ms / 51.0ms / 58.1ms |
+| ActualLab.Rpc | 3.5ms / 8.4ms / 12.8ms | 4.1ms / 8.6ms / 13.1ms | 6.4ms / 9.6ms / 24.3ms |
+| SignalR | 8.7ms / 28.1ms / 30.0ms | 9.8ms / 32.2ms / 35.2ms | 20.1ms / 31.2ms / 40.6ms |
 | gRPC | 3.3ms / 32.3ms / 45.4ms | 3.5ms / 6.8ms / 32.1ms | 4.2ms / 9.6ms / 36.2ms |
 | MagicOnion | 4.5ms / 8.3ms / 24.1ms | 5.0ms / 10.8ms / 23.1ms | 5.5ms / 8.8ms / 12.3ms |
 | StreamJsonRpc | 43.4ms / 56.4ms / 59.6ms | 58.9ms / 70.1ms / 72.5ms | 107.3ms / 212.3ms / 222.0ms |
@@ -149,7 +155,7 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Framework | Stream1 | Stream100 | Stream10K |
 |-----------|---------|-----------|-----------|
-| ActualLab.Rpc | 31.80M items/s | 12.66M items/s | 279.72K items/s |
-| gRPC | 11.27M items/s | 6.04M items/s | 125.64K items/s |
-| SignalR | 5.42M items/s | 3.62M items/s | 106.20K items/s |
-| StreamJsonRpc | 115.20K items/s | 115.20K items/s | 0 items/s |
+| ActualLab.Rpc | 35.17M items/s | 12.97M items/s | 279.72K items/s |
+| gRPC | 11.79M items/s | 6.19M items/s | 140.40K items/s |
+| SignalR | 8.89M items/s | 5.08M items/s | 106.20K items/s |
+| StreamJsonRpc | 120.96K items/s | 120.96K items/s | 60.48K items/s |

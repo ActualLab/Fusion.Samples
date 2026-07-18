@@ -60,7 +60,22 @@ ENV DbHost=host.docker.internal
 ENTRYPOINT ["dotnet", "/samples/artifacts/bin/Benchmark/release/Samples.Benchmark.dll"]
 
 # Create RpcBenchmark sample image
-FROM build AS sample_rpc_benchmark
+# Lean, self-contained build of ONLY the RpcBenchmark project (+ its project refs).
+# The shared `build` stage compiles the whole solution, which drags in TodoApp/Host's
+# npm + TypeScript UI build; the RPC benchmark needs none of that. Building it standalone
+# sidesteps that dependency entirely (grpc protoc comes from the Grpc.Tools NuGet package).
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS rpc_benchmark_build
+RUN apt update \
+    && apt install -y --no-install-recommends libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
+RUN dotnet dev-certs https
+WORKDIR /samples
+COPY ["src/", "src/"]
+COPY ["*.props", "."]
+COPY Samples.sln .
+RUN dotnet build -c:Release src/RpcBenchmark/RpcBenchmark.csproj
+
+FROM rpc_benchmark_build AS sample_rpc_benchmark
 ENTRYPOINT ["dotnet", "/samples/artifacts/bin/RpcBenchmark/release/Samples.RpcBenchmark.dll"]
 
 # Websites

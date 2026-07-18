@@ -17,6 +17,12 @@ Check the `AC_OS` environment variable - if it equals `Linux in Docker`, abort w
 - The Windows loopback large-MTU setting (see `/docs-benchmark`) is **irrelevant** here: Docker
   benchmarks run container-to-container over the Docker bridge (Linux network stack), not Windows
   loopback. No `Set-LoopbackMode` step is needed.
+- **Build:** the `sample_rpc_benchmark` image has its own lean build stage (`rpc_benchmark_build`)
+  that compiles ONLY `src/RpcBenchmark/RpcBenchmark.csproj`, not the whole solution. The shared
+  `build` stage compiles `Samples.sln`, which drags in TodoApp/Host's npm + TypeScript UI build
+  (and would fail here without Node). The benchmark needs none of that, so it builds standalone
+  (grpc protoc comes from the Grpc.Tools NuGet package). Just `docker-compose build
+  sample_rpc_benchmark_server sample_rpc_benchmark_calls sample_rpc_benchmark_streams`.
 - **Tested and NOT helpful (do not add):** CPU `cpuset` pinning of the 4-CPU server *hurt* results
   (the `cpus:'4'` quota lets the scheduler place threads freely, which beats pinning; on Docker
   Desktop/WSL2 the CCD/L3 topology is flattened anyway), and a jumbo (9000) Docker network MTU had

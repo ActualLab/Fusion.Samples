@@ -160,15 +160,19 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 | SignalR | 8.89M items/s | 5.08M items/s | 106.20K items/s |
 | StreamJsonRpc | 120.96K items/s | 120.96K items/s | 60.48K items/s |
 
-## Fusion Core Microbenchmarks
+## Fusion Repository Benchmarks
 
-These are [BenchmarkDotNet](https://benchmarkdotnet.org) microbenchmarks from the
-[ActualLab.Fusion](https://github.com/ActualLab/Fusion) repository
-(`tests/ActualLab.Fusion.Tests.BenchmarkRunner`). Unlike the throughput benchmarks above, they measure
-the **single-threaded, per-operation cost** of Fusion's core compute-method primitives — cache hit,
-recompute + cache, and invalidation — with an otherwise empty method body, so the numbers reflect
-Fusion's own overhead rather than any user logic. The `Calls/s per core` column is `1 / Mean`, i.e. the
-single-thread operation rate (not aggregate throughput like the tables above).
+These benchmarks come from the [ActualLab.Fusion](https://github.com/ActualLab/Fusion) repository and
+measure Fusion's own overhead — compute-method caching, invalidation, and interception — rather than any
+user logic. All numbers below are on .NET 10.0.8, AMD Ryzen 9 9950X3D (16 physical / 32 logical cores).
+
+### Micro Benchmarks
+
+These [BenchmarkDotNet](https://benchmarkdotnet.org) micro-benchmarks
+(`tests/ActualLab.Fusion.Tests.BenchmarkRunner`) measure the **single-threaded, per-operation cost** of
+Fusion's core compute-method primitives — cache hit, recompute + cache, and invalidation — with an
+otherwise empty method body. The `Calls/s per core` column is `1 / Mean`, i.e. the single-thread operation
+rate (not aggregate throughput).
 
 The measured service exposes plain compute methods that just return a completed task:
 
@@ -201,7 +205,26 @@ A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`)
 cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +
 cache-fill is ~490 ns / ~1 KB, and invalidating a single compute-method instance is ~53 ns / 112 B.
 
-### Interception & proxy overhead
+### Multithreaded Test
+
+A higher-level load test (`tests/ActualLab.Fusion.Tests.PerformanceTestRunner`, run via
+`Run-PerformanceTest.cmd net10.0 npgsql|sqlite`) drives a real `UserService.Get(userId)` compute method.
+Concurrent readers hit the method while a single mutator continuously invalidates and rewrites entries
+(1000 users); reads are served from Fusion's cache, so the backing database barely matters. Best of
+several runs:
+
+| Scenario | PostgreSQL (Npgsql) | SQLite |
+|----------|---------------------|--------|
+| Multithreaded — 640 readers + 1 mutator | 533.85M calls/s | 498.92M calls/s |
+| Single-threaded — 1 reader, no mutators | 26.74M calls/s | 26.77M calls/s |
+
+Because cached reads never touch the database, PostgreSQL and SQLite land within a few percent of each
+other. The single-threaded figure (~27M calls/s per core) matches the cache-hit micro-benchmark above;
+multithreaded, Fusion serves ~half a billion cached compute calls/s across all cores. SQLite's
+multithreaded number is noisier run-to-run — its single writer lock contends with the readers — so its
+peak takes more runs to reach.
+
+### Proxy and Interception Benchmarks
 
 Fusion builds its compute methods, RPC clients, etc. on **method interception** via generated proxies.
 This benchmark measures the per-call cost of ActualLab's proxies against
@@ -242,10 +265,10 @@ Sync call — `int Int(int a)`:
 | Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
 |---------------|------------------|------|--------|-----------|
 | No proxy (direct virtual call) | 763.7M | 1.31 ns | 0.04 ns | – |
-| ActualLab, simple interceptor | 386.0M | 2.59 ns | 0.01 ns | 24 B |
+| **ActualLab, simple interceptor** | **386.0M** | **2.59 ns** | **0.01 ns** | **24 B** |
 | ActualLab, pass-through | 255.3M | 3.92 ns | 0.07 ns | 24 B |
 | ActualLab, no-handler (`CreateHandler` → null) | 249.1M | 4.01 ns | 0.04 ns | 24 B |
-| Castle DynamicProxy, simple | 61.94M | 16.15 ns | 0.17 ns | 128 B |
+| **Castle DynamicProxy, simple** | **61.94M** | **16.15 ns** | **0.17 ns** | **128 B** |
 | Castle DynamicProxy, pass-through | 50.24M | 19.90 ns | 0.17 ns | 160 B |
 
 Async call — `Task<int> IntTask(int a, CancellationToken ct)`:
@@ -253,10 +276,10 @@ Async call — `Task<int> IntTask(int a, CancellationToken ct)`:
 | Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
 |---------------|------------------|------|--------|-----------|
 | No proxy (direct virtual call) | 889.9M | 1.12 ns | 0.02 ns | – |
-| ActualLab, simple interceptor | 241.1M | 4.15 ns | 0.04 ns | 32 B |
+| **ActualLab, simple interceptor** | **241.1M** | **4.15 ns** | **0.04 ns** | **32 B** |
 | ActualLab, pass-through | 177.3M | 5.64 ns | 0.04 ns | 32 B |
 | ActualLab, no-handler (`CreateHandler` → null) | 169.9M | 5.88 ns | 0.06 ns | 32 B |
-| Castle DynamicProxy, simple | 51.60M | 19.38 ns | 0.22 ns | 160 B |
+| **Castle DynamicProxy, simple** | **51.60M** | **19.38 ns** | **0.22 ns** | **160 B** |
 | Castle DynamicProxy, pass-through | 45.05M | 22.19 ns | 0.28 ns | 168 B |
 
 The no-handler variant costs almost the same as the pass-through one (dispatch is the same; only the

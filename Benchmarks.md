@@ -62,6 +62,35 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 | ActualLab.Rpc Client → Fusion Service | 7.82M calls/s | **~76x** |
 | Fusion Client → Fusion Service | 230.16M calls/s | **~2,239x** |
 
+### What each scenario means
+
+All scenarios call the *same* `UserService.Get(userId)`. What differs is **who calls it and over what
+transport** — which is exactly what the numbers above are measuring.
+
+**Local (in-process, no network):**
+- **Regular Service** — a plain method; every call runs the EF Core query against the database. This is
+  the DB-bound baseline.
+- **Fusion Service** — the same method marked `[ComputeMethod]`. Results are cached in memory, so repeat
+  calls are served from Fusion's cache without touching the database.
+
+**Remote (a client calls the server over a network transport):**
+- **HTTP Client → Regular Service** — a conventional REST/HTTP call to the plain service; each call
+  round-trips to the server and hits the DB. The typical web-API baseline.
+- **HTTP Client → Fusion Service** — a REST/HTTP call to the Fusion-cached service. The server answers
+  from cache, but every call still pays the HTTP round-trip plus JSON (de)serialization — so the ceiling
+  is the HTTP transport, not Fusion.
+- **ActualLab.Rpc Client → Fusion Service** — the same remote call, but over **ActualLab.Rpc** (Fusion's
+  own RPC protocol on a persistent WebSocket) instead of HTTP. It still makes a real network round-trip
+  per call, but the protocol is far leaner than HTTP/REST — hence ~7.8M vs ~305K calls/s.
+- **Fusion Client → Fusion Service** — a **Fusion client** (a *Compute Service Client*). It doesn't proxy
+  every call over the wire: it keeps a client-side `Computed<T>` cache mirroring the server's and the
+  server pushes invalidations to it. So after the first call, repeat calls are served from the client's
+  local cache with **no** network round-trip at all (until the server invalidates that value) — which is
+  why it approaches local Fusion-Service speed (~230M calls/s).
+
+In short: `ActualLab.Rpc Client` = the fastest way to make a *real* remote call every time;
+`Fusion Client` = eliminating most of those remote calls entirely via client-side caching + invalidation.
+
 ## Run-RpcBenchmark.cmd
 
 This benchmark compares **ActualLab.Rpc** with **gRPC**, **SignalR**, and other RPC frameworks.

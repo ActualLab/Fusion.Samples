@@ -150,7 +150,7 @@ on .NET 10.0.8.
 | Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.90M | 28.65 ns | 0.16 ns | 32 B |
 | Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 34.58M | 28.92 ns | 0.10 ns | 40 B |
 | Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.04M | 490.1 ns | 34.62 ns | 1007 B |
-| Invalidation, single instance<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
+| Invalidation (activate + 1 invalidating call)<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
 
 A cache hit costs ~20-29 ns and one small allocation (the returned `Task<Unit>`); the `long` key is
 cheaper than `string`/`Session`-keyed variants (no string hashing, smaller key). A full recompute +

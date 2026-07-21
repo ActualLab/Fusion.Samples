@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Samples.HelloRpc;
 using ActualLab.Rpc;
@@ -30,8 +30,8 @@ async Task RunServer()
     builder.Services.AddSingleton<RpcOutboundCallOptions>(c => RpcOutboundCallOptions.Default with {
         RouterFactory = methodDef => {
             if (methodDef.Service.Type == typeof(IClientNotifier)) // Special router for IClientNotifier
-                return args => RpcPeerRef.FromAddress(args.Get<string>(0));
-            return args => RpcPeerRef.Default; // The default one otherwise
+                return args => RpcRef.FromAddress(args.Get<string>(0));
+            return args => RpcRef.Default; // The default one otherwise
         }
     });
     var app = builder.Build();

@@ -30,6 +30,7 @@ public static class SystemSettings
             RuntimeInfo.IsServer = true;
             RpcDiagnosticsOptions.Default = RpcDiagnosticsOptions.Default with {
                 CallTracerFactory = _ => null,
+                MustPropagateAmbientActivityContext = false,
             };
 
             // ActualLab.Rpc serialization formats

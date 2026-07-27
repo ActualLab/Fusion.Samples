@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ActualLab.Api;
 using ActualLab.Collections;
 using ActualLab.Fusion.Authentication;
-using ActualLab.Serialization.Internal;
 using ActualLab.Trimming;
 using MessagePack.Formatters;
 using MessagePack.ImmutableCollection;
@@ -14,9 +13,6 @@ using Samples.TodoApp.UI;
 // MessagePack resolves collection formatters through reflection (DynamicGenericResolver /
 // ImmutableCollectionResolver), so every such formatter the auth types use must be kept.
 if (CodeKeeper.AlwaysFalse) {
-    // Commands that return nothing complete with a System.Reactive.Unit result, whose
-    // MessagePack formatter is resolved reflectively - keep its ctor under full trim.
-    CodeKeeper.Keep<UnitMessagePackFormatter>();
     // MemoryPack's built-in PriorityQueue<,> formatter target, initialized at startup.
     CodeKeeper.Keep<PriorityQueue<object, object>>();
     // User.Claims / JsonCompatibleIdentities are ApiMap<string,string>.

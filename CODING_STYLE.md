@@ -286,6 +286,42 @@ Members within a class should be ordered as follows:
 12. All other nested types.
     Use `// Nested types` comment to separate this section.
 
+#### Method order within a section
+
+The list above decides *which* section a method lands in. Within a
+section, order by call direction:
+
+- **Never place a callee above its caller.** This is the strong rule: if
+  `A` calls `B` and both live in the same section, `A` comes first.
+  Reading top-to-bottom then follows the flow of control instead of
+  jumping backwards. Mutual recursion is the only real exception — put
+  the entry point first.
+- **When two methods don't call each other, the higher-level one goes
+  first.** The more a method is a general-purpose helper rather than a
+  step in what the class actually does, the lower it belongs.
+- **Pure utilities go last** in their section — small, stateless, "could
+  almost be an extension method" things: comparers, parsers, formatters.
+- **Public methods are the entry points**, so they run roughly in order
+  of use: what an outside caller reaches for first comes first.
+
+Example — the private section of `RpcBenchmark`'s `ClientFactories`.
+`CreateClientFactory` is what the class does; `CreateBaseServiceCollection`
+is a helper it calls, so it goes last:
+
+```csharp
+    // Private methods
+
+    private Func<ITestService> CreateClientFactory<TClient>()
+        where TClient : class, ITestService
+    {
+        var services = CreateBaseServiceCollection();
+        // ...
+    }
+
+    private IServiceCollection CreateBaseServiceCollection()
+    { /* ... */ }
+```
+
 For typical RPC API (interface):
 1. Read methods go first.
    Typically, these are `[ComputeMethod]` methods.

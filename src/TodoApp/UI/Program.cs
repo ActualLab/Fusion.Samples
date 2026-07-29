@@ -7,6 +7,7 @@ using ActualLab.Trimming;
 using MessagePack.Formatters;
 using MessagePack.ImmutableCollection;
 using Samples.TodoApp.UI;
+using ActualLab.Compliance;
 
 // Retain serialization code that full trimming can't trace because it's reached only
 // via reflection. Never runs - the branch exists so the trimmer sees the references.
@@ -28,7 +29,7 @@ try {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
     ClientStartup.ConfigureServices(builder.Services, builder);
     var host = builder.Build();
-    StaticLog.Factory = host.Services.LoggerFactory();
+    StaticLog.Factory = host.Services.LoggerFactory().Sanitizing();
     await host.RunAsync();
 }
 catch (Exception error) {

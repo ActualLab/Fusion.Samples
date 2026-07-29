@@ -30,7 +30,6 @@ public class ChatService(
         Chat_Post command, CancellationToken cancellationToken = default)
     {
         var (text, session) = command;
-        var context = CommandContext.GetCurrent();
         if (Invalidation.IsActive) {
             _ = PseudoGetAnyChatTail();
             return default!;

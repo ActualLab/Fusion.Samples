@@ -4,7 +4,6 @@ using ActualLab.Fusion.Blazor.Authentication;
 using ActualLab.Fusion.EntityFramework;
 using ActualLab.Fusion.Server;
 using ActualLab.IO;
-using ActualLab.RestEase;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Server;
 using AspNet.Security.OAuth.GitHub;
@@ -135,10 +134,6 @@ void ConfigureServices()
     fusion.AddService<IComposerService, ComposerService>();
     fusion.AddService<IScreenshotService, ScreenshotService>();
     fusion.AddService<IChatService, ChatService>();
-
-    // RestEase clients
-    var restEase = services.AddRestEase();
-    restEase.AddClient<IForismaticClient>();
 
     // Data protection
     services.AddScoped(c => c.GetRequiredService<IDbContextFactory<AppDbContext>>().CreateDbContext());

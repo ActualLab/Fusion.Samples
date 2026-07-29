@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using Samples.Blazor.Abstractions;
 using ActualLab.Fusion.Authentication;
 using ActualLab.Fusion.EntityFramework;
@@ -9,10 +8,22 @@ namespace Samples.Blazor.Server.Services;
 public class ChatService(
     IAuth auth,
     IAuthBackend authBackend,
-    IForismaticClient forismaticClient,
     IServiceProvider services)
     : DbServiceBase<AppDbContext>(services), IChatService
 {
+    private static readonly string[] Quotes = [
+        "The only way to do great work is to love what you do.",
+        "Simplicity is the ultimate sophistication.",
+        "Programs must be written for people to read, and only incidentally for machines to execute.",
+        "There are only two hard things in computer science: cache invalidation and naming things.",
+        "Premature optimization is the root of all evil.",
+        "Talk is cheap. Show me the code.",
+        "Any sufficiently advanced technology is indistinguishable from magic.",
+        "Making it work is easy; making it fast is harder; making it simple is hardest.",
+        "A distributed system is one where a machine you've never heard of can break your own.",
+        "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.",
+    ];
+
     // Commands
 
     public virtual async Task<ChatMessage> Post(
@@ -25,7 +36,7 @@ public class ChatService(
             return default!;
         }
 
-        text = await NormalizeText(text, cancellationToken);
+        text = NormalizeText(text);
         var user = await auth.GetUser(session, cancellationToken).Require();
 
         await using var dbContext = await DbHub.CreateOperationDbContext(cancellationToken);
@@ -107,13 +118,6 @@ public class ChatService(
         }
     }
 
-    private async ValueTask<string> NormalizeText(
-        string text, CancellationToken cancellationToken = default)
-    {
-        if (!string.IsNullOrEmpty(text))
-            return text;
-        var json = await forismaticClient.GetQuote(cancellationToken: cancellationToken);
-        var jObject = JObject.Parse(json);
-        return jObject.Value<string>("quoteText")!;
-    }
+    private static string NormalizeText(string text)
+        => text.IsNullOrEmpty() ? Quotes[Random.Shared.Next(Quotes.Length)] : text;
 }

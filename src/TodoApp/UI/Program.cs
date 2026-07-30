@@ -24,9 +24,6 @@ if (CodeKeeper.AlwaysFalse) {
     // and this sample never stores option values, so no value-type formatters are needed either.
     CodeKeeper.Keep<ImmutableArrayFormatter<SessionInfo>>();
     CodeKeeper.KeepSerializable<SessionInfo>();
-    // ParameterComparerProvider instantiates comparers reflectively, and this one is named
-    // only inside [ParameterComparer(typeof(...))] - the trimmer keeps the type but drops
-    // its unused parameterless constructor, so CreateInstance would NRE at render time.
     CodeKeeper.Keep<ByValueParameterComparer>();
 }
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ActualLab.Api;
 using ActualLab.Collections;
 using ActualLab.Fusion.Authentication;
-using ActualLab.Fusion.Blazor;
 using ActualLab.Trimming;
 using MessagePack.Formatters;
 using MessagePack.ImmutableCollection;
@@ -24,7 +23,6 @@ if (CodeKeeper.AlwaysFalse) {
     // and this sample never stores option values, so no value-type formatters are needed either.
     CodeKeeper.Keep<ImmutableArrayFormatter<SessionInfo>>();
     CodeKeeper.KeepSerializable<SessionInfo>();
-    CodeKeeper.Keep<ByValueParameterComparer>();
 }
 
 try {

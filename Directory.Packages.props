@@ -2,13 +2,20 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>14.2.34</ActualLabFusionVersion>
-    <AspNetCoreVersion>[10.0.1,)</AspNetCoreVersion>
+    <ActualLabFusionVersion>14.2.39</ActualLabFusionVersion>
+    <!-- The .NET 11 preview these samples target. ActualLab.* net11.0 assets bind to it,
+         so the direct references below have to match or NuGet reports a downgrade. -->
+    <DotNet11Version>[11.0.0-preview.6.26359.118,)</DotNet11Version>
+    <AspNetCoreVersion>$(DotNet11Version)</AspNetCoreVersion>
     <BlazorVersion>$(AspNetCoreVersion)</BlazorVersion>
+    <BlazorVersion10>[10.0.1,)</BlazorVersion10>
     <BlazoriseVersion>1.8.9</BlazoriseVersion>
-    <EntityFrameworkCoreVersion>[10.0.1,)</EntityFrameworkCoreVersion>
-    <EntityFrameworkCoreNpgsqlVersion>[10.0.0,)</EntityFrameworkCoreNpgsqlVersion>
-    <MicrosoftExtensionsVersion>[10.0.0,)</MicrosoftExtensionsVersion>
+    <!-- efcore.pg 11 pins EF Core to 11 exactly, so every EF package here follows it -->
+    <EntityFrameworkCoreVersion>$(DotNet11Version)</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreNpgsqlVersion>[11.0.0-preview.6,)</EntityFrameworkCoreNpgsqlVersion>
+    <MicrosoftExtensionsVersion>$(DotNet11Version)</MicrosoftExtensionsVersion>
+    <!-- Aspire's Extensions libraries ship on their own 10.x train - no .NET 11 preview exists -->
+    <MicrosoftExtensionsVersion10>[10.0.0,)</MicrosoftExtensionsVersion10>
     <MemoryPackVersion>1.21.4</MemoryPackVersion>
     <OpenTelemetryVersion>[1.14.0,)</OpenTelemetryVersion>
     <AspireSdkVersion>13.1.0</AspireSdkVersion>
@@ -62,8 +69,8 @@
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireSdkVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion10)" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(MicrosoftExtensionsVersion10)" />
   </ItemGroup>
   <ItemGroup>
     <!-- OpenTelemetry - used only in TodoApp sample -->

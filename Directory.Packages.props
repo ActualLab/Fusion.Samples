@@ -2,7 +2,7 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>14.2.41</ActualLabFusionVersion>
+    <ActualLabFusionVersion>14.2.45</ActualLabFusionVersion>
     <!-- The .NET 11 preview these samples target. ActualLab.* net11.0 assets bind to it,
          so the direct references below have to match or NuGet reports a downgrade. -->
     <DotNet11Version>[11.0.0-preview.6.26359.118,)</DotNet11Version>

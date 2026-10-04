@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using ActualLab.Diagnostics;
+using ActualLab.Interception.Serialization;
 using ActualLab.OS;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Clients;
@@ -36,7 +37,7 @@ public static class SystemSettings
             // ActualLab.Rpc serialization formats
             RpcNerdbankSerializationFormat.Register();
             var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
-                () => new RpcByteArgumentSerializerV4(MemoryPackByteSerializer.Default),
+                () => new ByteArgumentListSerializer(MemoryPackByteSerializer.Default),
                 peer => new RpcByteMessageSerializerV5(peer));
             var allFormats = RpcSerializationFormat.All.Add(custom);
             var key = (Symbol)serializationFormat.ToLowerInvariant();
@@ -54,7 +55,7 @@ public static class SystemSettings
             };
 
             // RPC argument and message serializer tweaks
-            RpcArgumentSerializer.CopyThreshold = 1024; // Used only by (compute methods + remote computed cache)
+            ArgumentListSerializer.CopyThreshold = 1024; // Used only by (compute methods + remote computed cache)
 
             // WebSocketChannel<RpcMessage> settings.
             // They're here mostly for convenience - the values here are the same as the default ones.

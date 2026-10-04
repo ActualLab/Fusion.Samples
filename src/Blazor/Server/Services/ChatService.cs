@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Samples.Blazor.Server.Services;
 
+[DeferredInvalidationMode(DeferredInvalidationMode.Replicated)]
 public class ChatService(
     IAuth auth,
     IAuthBackend authBackend,
@@ -30,11 +31,6 @@ public class ChatService(
         Chat_Post command, CancellationToken cancellationToken = default)
     {
         var (text, session) = command;
-        if (Invalidation.IsActive) {
-            _ = PseudoGetAnyChatTail();
-            return default!;
-        }
-
         text = NormalizeText(text);
         var user = await auth.GetUser(session, cancellationToken).Require();
 
@@ -46,6 +42,8 @@ public class ChatService(
         };
         await dbContext.ChatMessages.AddAsync(message, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        Invalidation.Defer(() => _ = PseudoGetAnyChatTail());
         return message;
     }
 
@@ -107,14 +105,14 @@ public class ChatService(
     {
         var context = CommandContext.GetCurrent();
         await context.InvokeRemainingHandlers(cancellationToken);
-        if (Invalidation.IsActive) {
-            // Built-in AuthBackend_SignIn command handler sets this flag:
-            var isNewUser = context.Operation.Items.KeylessGet(false);
-            if (isNewUser) {
-                _ = GetUserCount(default);
-                _ = GetActiveUserCount(default);
-            }
-        }
+
+        // This used to run only for a new user, via a flag the built-in AuthBackend_SignIn handler
+        // published through Operation.Items. That's gone, so both counts are invalidated on every
+        // sign-in - a recompute that usually returns the same number.
+        Invalidation.Defer(() => {
+            _ = GetUserCount(default);
+            _ = GetActiveUserCount(default);
+        });
     }
 
     private static string NormalizeText(string text)

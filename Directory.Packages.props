@@ -2,7 +2,7 @@
 <Project ToolsVersion="latest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Constants -->
   <PropertyGroup>
-    <ActualLabFusionVersion>14.4.16</ActualLabFusionVersion>
+    <ActualLabFusionVersion>15.0.8</ActualLabFusionVersion>
     <!-- The .NET 11 preview these samples target. ActualLab.* net11.0 assets bind to it,
          so the direct references below have to match or NuGet reports a downgrade. -->
     <DotNet11Version>[11.0.0-rc.1.26425.128,)</DotNet11Version>
@@ -12,8 +12,8 @@
     <BlazoriseVersion>1.8.9</BlazoriseVersion>
     <!-- EF Core trails DotNet11Version: efcore.pg's newest preview exact-pins EF Core to
          preview.6, so every EF package here has to stay on that build. -->
-    <EntityFrameworkCoreVersion>[11.0.0-preview.6.26359.118,)</EntityFrameworkCoreVersion>
-    <EntityFrameworkCoreNpgsqlVersion>[11.0.0-preview.6,)</EntityFrameworkCoreNpgsqlVersion>
+    <EntityFrameworkCoreVersion>[11.0.0-rc.1.26425.128,)</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreNpgsqlVersion>[11.0.0-rc.1.1,)</EntityFrameworkCoreNpgsqlVersion>
     <MicrosoftExtensionsVersion>$(DotNet11Version)</MicrosoftExtensionsVersion>
     <!-- Aspire's Extensions libraries ship on their own 10.x train - no .NET 11 preview exists -->
     <MicrosoftExtensionsVersion10>[10.0.0,)</MicrosoftExtensionsVersion10>

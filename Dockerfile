@@ -1,6 +1,6 @@
 # Samples
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 RUN apt update \
     && apt install -y --no-install-recommends python3 python3-pip libatomic1 \
     && rm -rf /var/lib/apt/lists/*
@@ -64,7 +64,7 @@ ENTRYPOINT ["dotnet", "/samples/artifacts/bin/Benchmark/release/Samples.Benchmar
 # The shared `build` stage compiles the whole solution, which drags in TodoApp/Host's
 # npm + TypeScript UI build; the RPC benchmark needs none of that. Building it standalone
 # sidesteps that dependency entirely (grpc protoc comes from the Grpc.Tools NuGet package).
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS rpc_benchmark_build
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS rpc_benchmark_build
 RUN apt update \
     && apt install -y --no-install-recommends libatomic1 \
     && rm -rf /var/lib/apt/lists/*
@@ -84,7 +84,7 @@ FROM build AS publish
 WORKDIR /samples
 RUN dotnet publish -c:Release --no-build --no-restore src/Blazor/Server/Server.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS runtime
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 WORKDIR /app
 COPY --from=publish /samples/artifacts/publish/Blazor.Server/release .
@@ -103,7 +103,7 @@ ENTRYPOINT ["dotnet", "/app/Samples.Blazor.Server.dll"]
 # protoc tool segfaults there). Used by deploy/docker-compose.prod.yml.
 
 # Blazor sample website
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_blazor
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS web_build_blazor
 # python3 + libatomic1 are needed by the WASM native relinking during Release publish
 RUN apt-get update \
     && apt-get install -y --no-install-recommends python3 libatomic1 \
@@ -115,7 +115,7 @@ COPY ["*.props", "."]
 COPY Samples.sln .
 RUN dotnet publish -c:Release -o /publish src/Blazor/Server/Server.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS web_blazor
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS web_blazor
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 ENV Logging__Console__FormatterName=
 ENV Server__GitHubClientId=Iv23liclgDFiYO8LJoHM
@@ -125,7 +125,7 @@ COPY --from=web_build_blazor /publish .
 ENTRYPOINT ["dotnet", "Samples.Blazor.Server.dll"]
 
 # TodoApp sample website (its Host build runs npm for the optional TypeScript UI)
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web_build_todoapp
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS web_build_todoapp
 # nodejs/npm for the TypeScript UI; python3/libatomic1 for WASM native relinking
 RUN apt-get update \
     && apt-get install -y --no-install-recommends nodejs npm python3 libatomic1 \
@@ -137,7 +137,7 @@ COPY ["*.props", "."]
 COPY Samples.sln .
 RUN dotnet publish -c:Release -o /publish src/TodoApp/Host/Host.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS web_todoapp
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS web_todoapp
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 ENV Logging__Console__FormatterName=
 WORKDIR /app

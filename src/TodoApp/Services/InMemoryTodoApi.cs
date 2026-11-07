@@ -19,7 +19,9 @@ public class InMemoryTodoApi : ITodoApi
         var oldItem = oldItems.FirstOrDefault(i => i.Id == todo.Id);
         var items = _items = oldItems.RemoveAll(i => i.Id == todo.Id).Add(todo);
 
-        using var invalidating = Invalidation.Begin();
+        // GetSummary has no dependencies, so only its explicit invalidation can trigger its consolidation,
+        // and a regular one invalidates its consolidation target too
+        using var invalidating = Invalidation.Begin(bypassConsolidation: true);
         // Invalidation logic
         _ = Get(session, todo.Id, default);
         if (items.Count != oldItems.Count) {
@@ -39,7 +41,9 @@ public class InMemoryTodoApi : ITodoApi
         if (items == oldItems)
             return; // Nothing to invalidate
 
-        using var invalidating = Invalidation.Begin();
+        // GetSummary has no dependencies, so only its explicit invalidation can trigger its consolidation,
+        // and a regular one invalidates its consolidation target too
+        using var invalidating = Invalidation.Begin(bypassConsolidation: true);
         // Invalidation logic
         _ = Get(session, id, default);
         _ = PseudoListIds(session);

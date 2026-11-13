@@ -4,6 +4,8 @@
     <AssemblyName>Samples.RpcBenchmark</AssemblyName>
     <RootNamespace>Samples.RpcBenchmark</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- NBMsgPack110: property initializers w/o [DefaultValue] in benchmark contracts -->
+    <NoWarn>$(NoWarn);NBMsgPack110</NoWarn>
     <!--
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     -->

@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using ActualLab.Fusion.Server;
 using ActualLab.IO;
 using ActualLab.Rpc;

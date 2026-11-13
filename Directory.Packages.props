@@ -15,11 +15,9 @@
     <EntityFrameworkCoreVersion>[11.0.0-rc.3.26522.148,)</EntityFrameworkCoreVersion>
     <EntityFrameworkCoreNpgsqlVersion>[11.0.0-rc.3,)</EntityFrameworkCoreNpgsqlVersion>
     <MicrosoftExtensionsVersion>$(DotNet11Version)</MicrosoftExtensionsVersion>
-    <!-- Aspire's Extensions libraries ship on their own 10.x train - no .NET 11 preview exists -->
-    <MicrosoftExtensionsVersion10>[10.0.0,)</MicrosoftExtensionsVersion10>
-    <MemoryPackVersion>1.21.4</MemoryPackVersion>
-    <OpenTelemetryVersion>[1.14.0,)</OpenTelemetryVersion>
-    <AspireSdkVersion>13.1.0</AspireSdkVersion>
+    <MemoryPackVersion>1.22.0</MemoryPackVersion>
+    <OpenTelemetryVersion>[1.21.0,)</OpenTelemetryVersion>
+    <AspireSdkVersion>13.6.5</AspireSdkVersion>
   </PropertyGroup>
   <!-- Fusion packages -->
   <ItemGroup>
@@ -40,7 +38,7 @@
   </ItemGroup>
   <!-- Other packages -->
   <ItemGroup>
-    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" />
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="11.0.0" />
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazorise" Version="$(BlazoriseVersion)" />
     <PackageVersion Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />
@@ -59,19 +57,19 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(EntityFrameworkCoreNpgsqlVersion)" />
-    <PackageVersion Include="Pastel" Version="7.0.1" />
+    <PackageVersion Include="Pastel" Version="8.0.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
-    <PackageVersion Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageVersion Include="System.Drawing.Common" Version="11.0.0" />
     <PackageVersion Include="UAParser" Version="3.1.47" />
   </ItemGroup>
   <!-- Aspire - used only in TodoApp sample -->
   <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireSdkVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion10)" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(MicrosoftExtensionsVersion10)" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(MicrosoftExtensionsVersion)" />
   </ItemGroup>
   <ItemGroup>
     <!-- OpenTelemetry - used only in TodoApp sample -->
@@ -82,26 +80,21 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="$(OpenTelemetryVersion)" />
-    <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.4" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.3" />
   </ItemGroup>
   <!-- RpcBenchmark-specific packages -->
   <ItemGroup>
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.76.0" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.76.0" />
-    <PackageVersion Include="MagicOnion" Version="7.0.8" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.85.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.85.0" />
+    <PackageVersion Include="MagicOnion" Version="7.11.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Ookii.CommandLine" Version="5.0.0" />
-    <PackageVersion Include="StreamJsonRpc" Version="2.22.23" />
-  </ItemGroup>
-  <!-- Tutorial-specific -->
-  <ItemGroup>
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
+    <PackageVersion Include="StreamJsonRpc" Version="2.26.150" />
   </ItemGroup>
   <!-- Build-time only -->
   <ItemGroup>
     <PackageVersion Include="MemoryPack.Generator" Version="$(MemoryPackVersion)" PrivateAssets="all" />
     <PackageVersion Include="RestEase.SourceGenerator" Version="1.6.4" PrivateAssets="all" />
-    <PackageVersion Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
+    <PackageVersion Include="PolySharp" Version="1.17.1" PrivateAssets="all" />
   </ItemGroup>
 </Project>

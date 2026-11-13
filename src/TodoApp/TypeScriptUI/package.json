@@ -6,8 +6,8 @@
     "watch": "node build.mjs --watch"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "@actuallab/core": "^15.1.30",
     "@actuallab/rpc": "^15.1.30",
     "@actuallab/fusion": "^15.1.30",
@@ -15,9 +15,9 @@
     "@actuallab/fusion-react": "^15.1.30"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0",
-    "typescript": "^5.7.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0"
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   }
 }

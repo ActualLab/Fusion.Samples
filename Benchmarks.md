@@ -1,7 +1,7 @@
 # Benchmark Results
 
-**Updated:** 2026-07-18<br/>
-**ActualLab.Fusion Version:** 14.0.17
+**Updated:** 2026-11-14<br/>
+**ActualLab.Fusion Version:** 15.1.38
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
 
@@ -15,7 +15,7 @@ This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
 | **CPU** | AMD Ryzen 9 9950X3D 16-Core Processor |
 | **RAM** | 96 GB DDR5 |
 | **OS** | Windows 11 |
-| **.NET Version** | 10.0.8 |
+| **.NET Version** | 11.0.0 |
 
 Note that Ryzen 9 9950X3D has 32 logical cores due to SMT.
 
@@ -50,17 +50,21 @@ dotnet run -c Release --project src/Benchmark/Benchmark.csproj --no-launch-profi
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| Regular Service | 171.05K calls/s | |
-| Fusion Service | 344.98M calls/s | **~2,017x** |
+| Regular Service | 161.23K calls/s | |
+| Fusion Service | 330.53M calls/s | **~2,050x** |
 
 ### Remote Services
 
 | Test | Result | Speedup |
 |------|--------|---------|
-| HTTP Client → Regular Service | 102.82K calls/s | |
-| HTTP Client → Fusion Service | 304.87K calls/s | **~3.0x** |
-| ActualLab.Rpc Client → Fusion Service | 7.82M calls/s | **~76x** |
-| Fusion Client → Fusion Service | 230.16M calls/s | **~2,239x** |
+| HTTP Client → Regular Service | 103.88K calls/s | |
+| HTTP Client → Fusion Service | 365.18K calls/s | **~3.5x** |
+| ActualLab.Rpc Client → Fusion Service | 7.81M calls/s | **~75x** |
+| Fusion Client → Fusion Service | 226.05M calls/s | **~2,176x** |
+
+The Regular Service rows depend on PostgreSQL: these figures are from a dedicated `postgres` container
+(PostgreSQL 17.5, `docker-compose.yml` settings). The HTTP rows vary a lot between tries on Windows
+loopback (one test can range from 10K to 100K+ calls/s), so each cell is the best try.
 
 ### What each scenario means
 
@@ -81,12 +85,12 @@ transport** — which is exactly what the numbers above are measuring.
   is the HTTP transport, not Fusion.
 - **ActualLab.Rpc Client → Fusion Service** — the same remote call, but over **ActualLab.Rpc** (Fusion's
   own RPC protocol on a persistent WebSocket) instead of HTTP. It still makes a real network round-trip
-  per call, but the protocol is far leaner than HTTP/REST — hence ~7.8M vs ~305K calls/s.
+  per call, but the protocol is far leaner than HTTP/REST — hence ~7.8M vs ~365K calls/s.
 - **Fusion Client → Fusion Service** — a **Fusion client** (a *Compute Service Client*). It doesn't proxy
   every call over the wire: it keeps a client-side `Computed<T>` cache mirroring the server's and the
   server pushes invalidations to it. So after the first call, repeat calls are served from the client's
   local cache with **no** network round-trip at all (until the server invalidates that value) — which is
-  why it approaches local Fusion-Service speed (~230M calls/s).
+  why it approaches local Fusion-Service speed (~226M calls/s).
 
 In short: `ActualLab.Rpc Client` = the fastest way to make a *real* remote call every time;
 `Fusion Client` = eliminating most of those remote calls entirely via client-side caching + invalidation.
@@ -113,17 +117,24 @@ dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Sum | 9.91M calls/s | 1.28M calls/s | 4.85M calls/s |
-| GetUser | 8.75M calls/s | 1.24M calls/s | 4.05M calls/s |
-| SayHello | 6.04M calls/s | 1.16M calls/s | 2.16M calls/s |
+| Sum | 9.97M calls/s | 842.95K calls/s | 4.84M calls/s |
+| GetUser | 8.91M calls/s | 848.30K calls/s | 4.28M calls/s |
+| SayHello | 5.95M calls/s | 808.67K calls/s | 2.23M calls/s |
+
+_gRPC call throughput is lower on .NET 11.0.0 than it was on .NET 10.0.8 (1.28M / 1.24M / 1.16M calls/s
+with the same benchmark), even with the pipe scheduler fix described below._
 
 ### Call Latency
 
 | Test | ActualLab.Rpc (p50 / p95 / p99) | gRPC (p50 / p95 / p99) | SignalR (p50 / p95 / p99) |
 |------|----------------------------------|------------------------|---------------------------|
-| Sum | 1.8ms / 2.4ms / 6.1ms | 3.4ms / 4.5ms / 12.1ms | 5.1ms / 16.4ms / 22.7ms |
-| GetUser | 2.0ms / 2.6ms / 6.0ms | 3.5ms / 4.4ms / 11.0ms | 6.1ms / 7.8ms / 13.3ms |
-| SayHello | 2.9ms / 3.4ms / 6.8ms | 3.5ms / 4.4ms / 10.5ms | 11.7ms / 16.2ms / 20.5ms |
+| Sum | 1.7ms / 2.7ms / 10.4ms | 25.0ms / 62.5ms / 63.6ms | 4.4ms / 22.1ms / 56.0ms |
+| GetUser | 2.0ms / 2.6ms / 7.3ms | 24.2ms / 26.2ms / 59.0ms | 5.4ms / 6.6ms / 11.3ms |
+| SayHello | 2.9ms / 3.4ms / 15.7ms | 25.4ms / 34.3ms / 60.9ms | 10.3ms / 14.2ms / 18.3ms |
+
+Latency depends on the worker count the parameter search picks (it maximizes throughput), so it
+isn't comparable between runs that ended up with different worker counts: gRPC ran with 23,200
+workers here.
 
 ### Streams
 
@@ -131,11 +142,9 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Stream1 | 99.96M items/s | 43.78M items/s | 17.97M items/s |
-| Stream100 | 44.89M items/s | 25.87M items/s | 13.90M items/s |
-| Stream10K | 807.84K items/s | 572.76K items/s | 432.00K items/s |
-
-_gRPC stream figures retained from the previous run — they were higher than this run's noisier gRPC-over-loopback results._
+| Stream1 | 104.98M items/s | 39.51M items/s | 22.36M items/s |
+| Stream100 | 45.89M items/s | 19.94M items/s | 14.78M items/s |
+| Stream10K | 808.92K items/s | 648.00K items/s | 402.48K items/s |
 
 ### Throughput
 
@@ -143,9 +152,9 @@ Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 b
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
 |------|---------------|------|---------|
-| Stream1 | 99.96 MB/s | 43.78 MB/s | 17.97 MB/s |
-| Stream100 | 4.49 GB/s | 2.59 GB/s | 1.39 GB/s |
-| Stream10K | 8.27 GB/s | 5.86 GB/s | 4.42 GB/s |
+| Stream1 | 104.98 MB/s | 39.51 MB/s | 22.36 MB/s |
+| Stream100 | 4.59 GB/s | 1.99 GB/s | 1.48 GB/s |
+| Stream10K | 8.28 GB/s | 6.64 GB/s | 4.12 GB/s |
 
 ### .NET 11 Pipe Scheduler Fix
 
@@ -181,42 +190,41 @@ ActualLab.Rpc is not affected.
 These benchmarks run in Docker containers with CPU limits to measure **4-core server performance**.
 The server container is limited to 4 CPUs while client containers have 24 CPUs available,
 ensuring the server is the bottleneck. This setup matches [grpc_bench](https://github.com/LesnyRumcajs/grpc_bench), `SayHello` w/ `gRPC` is identical to what `grpc_bench` measures.
-The Docker images run on the .NET 10 SDK base image (10.0.10 at the time of this run).
+The Docker images run on the .NET 11 SDK base image (11.0.0 at the time of this run).
 
 > **External cross-check.** grpc_bench's own
 > [.NET gRPC result on an i9-13900KF @ 5.5 GHz](https://github.com/LesnyRumcajs/grpc_bench/discussions/441)
 > (4-CPU server — a desktop CPU with per-core throughput close to the 9950X3D) is **~402K req/s**,
-> essentially identical to our `SayHello` gRPC figure of **399.32K** below. Same library (grpc-dotnet),
+> close to our `SayHello` gRPC figure of **441.37K** below. Same library (grpc-dotnet),
 > same 4-CPU setup — which confirms our gRPC numbers are measured fairly. gRPC-dotnet is the *fastest*
-> framework in that grpc_bench run, and ActualLab.Rpc's `SayHello` (**2.52M**) is still **~6.3× faster**
+> framework in that grpc_bench run, and ActualLab.Rpc's `SayHello` (**2.46M**) is still **~6.1× faster**
 > than it.
 
-Each cell reports the best figure observed across the two most recent runs. The WebSocket-based
-frameworks (ActualLab.Rpc, SignalR) and all streaming tests improved on this run; the HTTP/2 call
-paths (gRPC, MagicOnion) and HTTP/1.1 came in uniformly lower — a Docker Desktop/WSL2 scheduling
-variance rather than a code change — so their higher prior figures are retained.
+All figures are from a single run on .NET 11.0.0. HTTP was run with fixed parameters
+(`-w 5400 -cc 150`), because its parameter search crashes the client. gRPC and SignalR stream rows
+are from a second pass: in the first one their Stream10K test stalled (0 items/s on most tries).
 
 ### Docker Calls
 
 | Framework | Sum | GetUser | SayHello |
 |-----------|-----|---------|----------|
-| ActualLab.Rpc | 4.77M calls/s | 4.38M calls/s | 2.52M calls/s |
-| SignalR | 2.38M calls/s | 1.94M calls/s | 862.07K calls/s |
-| gRPC | 437.85K calls/s | 441.44K calls/s | 399.32K calls/s |
-| MagicOnion | 392.59K calls/s | 402.85K calls/s | 362.84K calls/s |
-| StreamJsonRpc | 279.62K calls/s | 231.86K calls/s | 99.09K calls/s |
-| HTTP | 105.25K calls/s | 103.12K calls/s | 88.18K calls/s |
+| ActualLab.Rpc | 5.25M calls/s | 4.13M calls/s | 2.46M calls/s |
+| SignalR | 2.42M calls/s | 2.02M calls/s | 931.18K calls/s |
+| gRPC | 483.52K calls/s | 467.10K calls/s | 441.37K calls/s |
+| MagicOnion | 351.54K calls/s | 342.24K calls/s | 329.68K calls/s |
+| StreamJsonRpc | 332.66K calls/s | 263.40K calls/s | 114.41K calls/s |
+| HTTP | 93.08K calls/s | 93.87K calls/s | 92.56K calls/s |
 
 ### Docker Call Latency
 
 | Framework | Sum (p50 / p95 / p99) | GetUser (p50 / p95 / p99) | SayHello (p50 / p95 / p99) |
 |-----------|-----------------------|---------------------------|----------------------------|
-| ActualLab.Rpc | 3.5ms / 8.4ms / 12.8ms | 4.1ms / 8.6ms / 13.1ms | 6.4ms / 9.6ms / 24.3ms |
-| SignalR | 8.7ms / 28.1ms / 30.0ms | 9.8ms / 32.2ms / 35.2ms | 20.1ms / 31.2ms / 40.6ms |
-| gRPC | 3.3ms / 32.3ms / 45.4ms | 3.5ms / 6.8ms / 32.1ms | 4.2ms / 9.6ms / 36.2ms |
-| MagicOnion | 4.5ms / 8.3ms / 24.1ms | 5.0ms / 10.8ms / 23.1ms | 5.5ms / 8.8ms / 12.3ms |
-| StreamJsonRpc | 43.4ms / 56.4ms / 59.6ms | 58.9ms / 70.1ms / 72.5ms | 107.3ms / 212.3ms / 222.0ms |
-| HTTP | 33.9ms / 51.4ms / 54.9ms | 34.2ms / 44.3ms / 45.9ms | 30.4ms / 44.0ms / 45.5ms |
+| ActualLab.Rpc | 7.1ms / 12.2ms / 22.3ms | 8.9ms / 12.9ms / 17.5ms | 15.1ms / 18.9ms / 20.6ms |
+| SignalR | 7.8ms / 11.6ms / 16.0ms | 9.2ms / 17.4ms / 28.8ms | 20.4ms / 25.9ms / 31.6ms |
+| gRPC | 4.2ms / 5.6ms / 8.8ms | 4.4ms / 5.9ms / 25.0ms | 4.5ms / 7.9ms / 21.5ms |
+| MagicOnion | 38.4ms / 47.5ms / 49.0ms | 37.1ms / 46.8ms / 48.4ms | 41.9ms / 54.9ms / 55.7ms |
+| StreamJsonRpc | 53.6ms / 85.9ms / 87.6ms | 69.7ms / 98.9ms / 105.3ms | 165.1ms / 247.4ms / 250.7ms |
+| HTTP | 40.2ms / 65.6ms / 67.6ms | 33.6ms / 43.4ms / 44.8ms | 37.5ms / 61.2ms / 62.9ms |
 
 ### Docker Streams
 
@@ -224,16 +232,16 @@ Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte item
 
 | Framework | Stream1 | Stream100 | Stream10K |
 |-----------|---------|-----------|-----------|
-| ActualLab.Rpc | 35.17M items/s | 12.97M items/s | 279.72K items/s |
-| gRPC | 11.79M items/s | 6.19M items/s | 140.40K items/s |
-| SignalR | 8.89M items/s | 5.08M items/s | 106.20K items/s |
-| StreamJsonRpc | 120.96K items/s | 120.96K items/s | 60.48K items/s |
+| ActualLab.Rpc | 37.77M items/s | 13.33M items/s | 285.12K items/s |
+| gRPC | 13.42M items/s | 7.27M items/s | 149.04K items/s |
+| SignalR | 9.71M items/s | 5.50M items/s | 155.52K items/s |
+| StreamJsonRpc | 127.44K items/s | 127.44K items/s | 63.72K items/s |
 
 ## Fusion Repository Benchmarks
 
 These benchmarks come from the [ActualLab.Fusion](https://github.com/ActualLab/Fusion) repository and
 measure Fusion's own overhead — compute-method caching, invalidation, and interception — rather than any
-user logic. All numbers below are on .NET 10.0.8, AMD Ryzen 9 9950X3D (16 physical / 32 logical cores).
+user logic. All numbers below are on .NET 11.0.0, AMD Ryzen 9 9950X3D (16 physical / 32 logical cores).
 
 ### Micro Benchmarks
 
@@ -260,37 +268,37 @@ dotnet run -c Release --project tests/ActualLab.Fusion.Tests.BenchmarkRunner -- 
 ```
 
 Results below use an increased-precision job (10 warmup / 30 measured iterations, in-process toolchain)
-on .NET 10.0.8.
+on .NET 11.0.0.
 
 | Operation | Calls/s per core | Mean | StdDev | Allocated |
 |-----------|------------------|------|--------|-----------|
-| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 50.68M | 19.73 ns | 0.12 ns | 32 B |
-| Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.90M | 28.65 ns | 0.16 ns | 32 B |
-| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 34.58M | 28.92 ns | 0.10 ns | 40 B |
-| Invalidation (activate + 1 call)<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 18.77M | 53.28 ns | 4.63 ns | 112 B |
-| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.04M | 490.1 ns | 34.62 ns | 1007 B |
+| Cached hit, `long` key<br/>`Service.Get(0L, default)` | 47.08M | 21.24 ns | 0.20 ns | 32 B |
+| Cached hit, `string` key<br/>`Service.Get("key", default)` | 34.35M | 29.11 ns | 0.22 ns | 32 B |
+| Cached hit, `Session` + `string` key<br/>`Service.Get(session, "key", default)` | 31.52M | 31.73 ns | 0.39 ns | 40 B |
+| Invalidation (activate + 1 call)<br/>`using (Invalidation.Begin())`<br/>`    Service.Get(key, default)` | 19.74M | 50.65 ns | 5.73 ns | 112 B |
+| Recompute + cache (fresh key each call)<br/>`Service.Get(i++, default)` | 2.02M | 495.3 ns | 28.51 ns | 1021 B |
 
-A cache hit costs ~20-29 ns and one small allocation (the `ArgumentList` holding the call's arguments,
+A cache hit costs ~21-32 ns and one small allocation (the `ArgumentList` holding the call's arguments,
 which is why the extra-argument `Session` + `string` variant allocates more); the `long` key is cheaper
 than `string`/`Session`-keyed variants (no string hashing, smaller key). Invalidating a single
-compute-method instance is ~53 ns / 112 B, and a full recompute + cache-fill is ~490 ns / ~1 KB (rows
+compute-method instance is ~51 ns / 112 B, and a full recompute + cache-fill is ~495 ns / ~1 KB (rows
 ordered to mirror a value's real lifecycle: hit → invalidation → recompute).
 
 ### Multithreaded Test
 
 A higher-level load test (`tests/ActualLab.Fusion.Tests.PerformanceTestRunner`, run via
-`Run-PerformanceTest.cmd net10.0 npgsql|sqlite`) drives a real `UserService.Get(userId)` compute method.
+`Run-PerformanceTest.cmd net11.0 npgsql|sqlite`) drives a real `UserService.Get(userId)` compute method.
 Concurrent readers hit the method while a single mutator continuously invalidates and rewrites entries
 (1000 users); reads are served from Fusion's cache, so the backing database barely matters. Best of
 several runs:
 
 | Scenario | PostgreSQL | SQLite |
 |----------|---------------------|--------|
-| Multithreaded — 640 readers + 1 mutator | 533.85M calls/s | 498.92M calls/s |
-| Single-threaded — 1 reader, no mutators | 26.74M calls/s | 26.77M calls/s |
+| Multithreaded — 640 readers + 1 mutator | 510.40M calls/s | 476.00M calls/s |
+| Single-threaded — 1 reader, no mutators | 26.07M calls/s | 23.18M calls/s |
 
 Because cached reads never touch the database, PostgreSQL and SQLite land within a few percent of each
-other. The single-threaded figure (~27M calls/s per core) matches the cache-hit micro-benchmark above;
+other. The single-threaded figure (~23-26M calls/s per core) is a full `UserService.Get` cache hit;
 multithreaded, Fusion serves ~half a billion cached compute calls/s across all cores. SQLite's
 multithreaded number is noisier run-to-run — its single writer lock contends with the readers — so its
 peak takes more runs to reach.
@@ -329,32 +337,32 @@ for three interceptor kinds:
 
 `No proxy` is a direct virtual call to the same target (its methods are marked `[MethodImpl(NoInlining)]`
 so the baseline is a real, non-inlined call). Numbers are single-threaded (`Calls/s per core` = `1 / Mean`),
-in-process, .NET 10.0.8.
+in-process, .NET 11.0.0.
 
 Sync call — `int Int(int a)`:
 
 | Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
 |---------------|------------------|------|--------|-----------|
-| No proxy (direct virtual call) | 763.7M | 1.31 ns | 0.04 ns | – |
-| **ActualLab, simple interceptor** | **386.0M** | **2.59 ns** | **0.01 ns** | **24 B** |
-| ActualLab, pass-through | 255.3M | 3.92 ns | 0.07 ns | 24 B |
-| ActualLab, no-handler (`CreateHandler` → null) | 249.1M | 4.01 ns | 0.04 ns | 24 B |
-| **Castle DynamicProxy, simple** | **61.94M** | **16.15 ns** | **0.17 ns** | **128 B** |
-| Castle DynamicProxy, pass-through | 50.24M | 19.90 ns | 0.17 ns | 160 B |
+| No proxy (direct virtual call) | 869.1M | 1.15 ns | 0.01 ns | – |
+| **ActualLab, simple interceptor** | **404.0M** | **2.48 ns** | **0.03 ns** | **24 B** |
+| ActualLab, pass-through | 265.3M | 3.77 ns | 0.04 ns | 24 B |
+| ActualLab, no-handler (`CreateHandler` → null) | 263.8M | 3.79 ns | 0.05 ns | 24 B |
+| **Castle DynamicProxy, simple** | **63.30M** | **15.80 ns** | **0.21 ns** | **128 B** |
+| Castle DynamicProxy, pass-through | 48.95M | 20.43 ns | 0.27 ns | 160 B |
 
 Async call — `Task<int> IntTask(int a, CancellationToken ct)`:
 
 | Proxy variant | Calls/s per core | Mean | StdDev | Allocated |
 |---------------|------------------|------|--------|-----------|
-| No proxy (direct virtual call) | 889.9M | 1.12 ns | 0.02 ns | – |
-| **ActualLab, simple interceptor** | **241.1M** | **4.15 ns** | **0.04 ns** | **32 B** |
-| ActualLab, pass-through | 177.3M | 5.64 ns | 0.04 ns | 32 B |
-| ActualLab, no-handler (`CreateHandler` → null) | 169.9M | 5.88 ns | 0.06 ns | 32 B |
-| **Castle DynamicProxy, simple** | **51.60M** | **19.38 ns** | **0.22 ns** | **160 B** |
-| Castle DynamicProxy, pass-through | 45.05M | 22.19 ns | 0.28 ns | 168 B |
+| No proxy (direct virtual call) | 871.5M | 1.15 ns | 0.05 ns | – |
+| **ActualLab, simple interceptor** | **241.0M** | **4.15 ns** | **0.04 ns** | **32 B** |
+| ActualLab, pass-through | 175.7M | 5.69 ns | 0.04 ns | 32 B |
+| ActualLab, no-handler (`CreateHandler` → null) | 175.2M | 5.71 ns | 0.07 ns | 32 B |
+| **Castle DynamicProxy, simple** | **51.92M** | **19.26 ns** | **0.17 ns** | **160 B** |
+| Castle DynamicProxy, pass-through | 43.74M | 22.86 ns | 0.33 ns | 168 B |
 
 The no-handler variant costs almost the same as the pass-through one (dispatch is the same; only the
 handler differs), confirming the interception dispatch itself is the bulk of the cost. Overall,
-ActualLab's interception is **~5-7x faster than Castle DynamicProxy** — and only **~2-3x slower than a
+ActualLab's interception is **~4-6x faster than Castle DynamicProxy** — and only **~2-4x slower than a
 plain (non-intercepted) virtual call** — while allocating far less (0-32 B/call vs 96-168 B/call). That's
 why Fusion can afford to wrap every compute method and RPC call in a proxy.

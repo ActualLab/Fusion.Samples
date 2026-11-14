@@ -147,6 +147,35 @@ Throughput is computed as `items/s × item_size`. Stream10K uses 10KB = 10,240 b
 | Stream100 | 4.49 GB/s | 2.59 GB/s | 1.39 GB/s |
 | Stream10K | 8.27 GB/s | 5.86 GB/s | 4.42 GB/s |
 
+### .NET 11 Pipe Scheduler Fix
+
+.NET 11 changed `PipeScheduler.ThreadPool` (System.IO.Pipelines) to queue work items with
+`preferLocal: true` instead of `preferLocal: false`. Under load, pipe readers such as the SignalR
+client's send loop now run almost immediately and flush tiny batches, so the number of socket sends
+per call grows several times.
+
+`RpcBenchmark` works around this on .NET 11+: `PipeSchedulerFix` (`src/ActualLab.Benchmarking`)
+replaces the scheduler behind `PipeScheduler.ThreadPool` with one that uses the global thread pool
+queue, as .NET 10 did. It is on by default; set the `ActualLab_PipeSchedulerFix` environment variable
+to `0` or `false` to turn it off.
+
+The table below is only an illustration that the fix works. It is a separate, shorter run
+(`test -b calls -l <library> -f msgpack6c -n 3`, Sum test, .NET 11.0.0, loopback large MTU disabled),
+so its numbers are not comparable with the tables above.
+
+| Library | Fix on | Fix off | Change |
+|---------|--------|---------|--------|
+| SignalR | 4.86M calls/s | 0.81M calls/s | 6.0x |
+| gRPC | 808K - 910K calls/s | 754K - 782K calls/s | +3% to +21% |
+| MagicOnion | 833K calls/s | 716K calls/s | +16% |
+| StreamJsonRpc | 477K calls/s | 449K calls/s | +6% |
+| ActualLab.Rpc | 8.29M calls/s | 8.34M calls/s | none |
+
+The fix changes SignalR numbers dramatically: without it, SignalR call throughput on .NET 11 is about
+6x lower than on .NET 10. gRPC and MagicOnion seem to gain too, but gRPC results over Windows loopback
+vary by 20-30% between runs, so two on/off pairs are not enough to state the size of that gain.
+ActualLab.Rpc is not affected.
+
 ## Docker-Based RPC Benchmarks
 
 These benchmarks run in Docker containers with CPU limits to measure **4-core server performance**.

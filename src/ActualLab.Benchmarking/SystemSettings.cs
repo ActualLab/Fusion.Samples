@@ -20,6 +20,9 @@ public static class SystemSettings
             if (_isApplied)
                 return;
 
+            // .NET 11+: PipeScheduler.ThreadPool fix - must be applied before any pipe is created
+            var isPipeSchedulerFixApplied = PipeSchedulerFix.TryApply();
+
             // Thread pool
             ThreadPool.GetMinThreads(out var currentMinWorkerThreads, out var currentMinIOThreads);
             currentMinWorkerThreads = Math.Max(currentMinWorkerThreads, minWorkerThreads);
@@ -77,7 +80,10 @@ public static class SystemSettings
             WriteLine("System-wide settings:");
             WriteLine($"  .NET version:         {RuntimeInfo.DotNet.VersionString ?? RuntimeInformation.FrameworkDescription}");
             WriteLine($"  Thread pool settings: {currentMinWorkerThreads}+ worker, {currentMinIOThreads}+ I/O threads");
-            WriteLine($"  RPC transport:        {rpcTransport} (affects only ActualLab.Rpc tests)");
+            if (PipeSchedulerFix.IsNeeded)
+                WriteLine($"  Pipe scheduler fix:   {(isPipeSchedulerFixApplied ? "on" : "off")} "
+                    + $"({PipeSchedulerFix.EnvVarName}=0 turns it off)");
+            WriteLine($"  RPC transport:       {rpcTransport} (affects only ActualLab.Rpc tests)");
             WriteLine($"  Serialization format: {selectedFormat.Key} (affects only ActualLab.Rpc tests)");
             WriteLine($"  ActualLab.Fusion:     v{typeof(Computed).Assembly.GetInformationalVersion()}");
             LoopbackInfo.WarnIfLoopbackThrottled();

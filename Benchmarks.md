@@ -294,11 +294,11 @@ several runs:
 
 | Scenario | PostgreSQL | SQLite |
 |----------|---------------------|--------|
-| Multithreaded — 640 readers + 1 mutator | 521.39M calls/s | 487.46M calls/s |
-| Single-threaded — 1 reader, no mutators | 26.25M calls/s | 23.18M calls/s |
+| Multithreaded — 640 readers + 1 mutator | 535.40M calls/s | 487.46M calls/s |
+| Single-threaded — 1 reader, no mutators | 26.97M calls/s | 23.74M calls/s |
 
 Because cached reads never touch the database, PostgreSQL and SQLite land within a few percent of each
-other. The single-threaded figure (~23-26M calls/s per core) is a full `UserService.Get` cache hit;
+other. The single-threaded figure (~24-27M calls/s per core) is a full `UserService.Get` cache hit;
 multithreaded, Fusion serves ~half a billion cached compute calls/s across all cores. SQLite's
 multithreaded number is noisier run-to-run — its single writer lock contends with the readers — so its
 peak takes more runs to reach.

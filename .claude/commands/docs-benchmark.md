@@ -24,7 +24,7 @@ ones. If the user says "all", run them all in the order below.
 | 4 | Fusion Micro Benchmarks (BDN) | ActualLab.Fusion repo | ~2 min | — |
 | 5 | Fusion Multithreaded Test (npgsql + sqlite) | ActualLab.Fusion repo | ~5 min | PostgreSQL running |
 | 6 | Fusion Proxy & Interception (BDN) | ActualLab.Fusion repo | ~8 min | — |
-| 7 | Reference Redis benchmark | host `redis-benchmark` | ~1 min | Redis running; usually **skipped** (stable) |
+| 7 | Reference Redis benchmark | Docker (`redis` image) | ~4 min | Docker; usually **skipped** (stable) |
 
 The **ActualLab.Fusion** repo is a sibling of this one (e.g. `D:\Projects\ActualLab.Fusion` on Windows,
 `/proj/ActualLab.Fusion` in Docker). Groups 4–6 are run from there, not from the Samples repo.
@@ -213,13 +213,18 @@ keep the "simple" interceptor rows bolded (the primary comparison).
 
 ## Group 7 — Reference Redis benchmark (usually skipped)
 
-Baseline using the `redis-benchmark` tool on the same machine (500K requests, best of 5). Results are
-stable, so **skip unless explicitly asked**. Optimal client count (~12) was found via binary search over
-1–1000. Run PING_INLINE, GET, SET and update the Reference Redis table.
+Peak `GET` throughput of Redis on the same machine, in the same setup as the Docker RPC benchmarks:
+server container limited to 4 CPUs, clients in separate containers. Results are stable, so **skip unless
+explicitly asked**. The exact commands and client counts are in the "Reference Redis Benchmark" section
+of @Benchmarks.md. Rules:
 
-```
-redis-benchmark -n 500000 -c 12 -t PING_INLINE,GET,SET
-```
+- Run each case for 10s (`timeout 10 redis-benchmark ... -n 2000000000`) with a 15s hard timeout, 2 runs,
+  take the best. The rate is the first `overall:` value of the last progress line (the second one is
+  latency); for several clients, add the rates up.
+- Use several single-threaded client containers. Don't use `redis-benchmark --threads`: it stalls here.
+- Sample `docker stats` for the server and report its CPU; the 6-I/O-thread rows must be at ~400%.
+- Per-core figures = throughput / saturated cores. Redis rows in `docs/ActualLab.Fusion-vs/Redis.md` and
+  the `docs/index.md` feature card are derived from this table and the Docker Calls table.
 
 ## After updating Benchmarks.md — propagate to the Fusion docs
 
@@ -240,7 +245,7 @@ copy the "how to run" instructions into the docs.
 | `docs/PartR.md` | The "~50M calls/s, or ~20ns per-call" line (micro-benchmark cache hit). |
 | `docs/ActualLab.Fusion-vs/gRPC.md` | Calls (Sum, GetUser) + Streams (1B/100B/10KB) vs gRPC + speedups. |
 | `docs/ActualLab.Fusion-vs/SignalR.md` | Calls (GetUser, SayHello) + Streams vs SignalR + speedups. |
-| `docs/ActualLab.Fusion-vs/Redis.md` | Remote (GetUser/GET) and Local (Cached lookup = Fusion Service) vs Redis + speedups. |
+| `docs/ActualLab.Fusion-vs/Redis.md` | Remote (Docker GetUser vs Redis GET, with and without pipelining) and Local (micro-benchmark cache hit vs Redis per-core GET) + speedups. |
 
 **Optional targets (ask first):**
 

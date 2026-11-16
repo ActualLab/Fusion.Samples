@@ -64,6 +64,47 @@ public static class Benchmarks
         return sum / duration;
     }
 
+    public static async Task<double> ItemFrequency<TWorker>(
+        TWorker[] workers,
+        double duration,
+        CancellationToken cancellationToken,
+        Func<TWorker, Func<CancellationToken, Task>> workerOperationFactory,
+        Func<TWorker, long> workerItemCountGetter,
+        Func<TWorker, Task>? workerReadyFactory = null)
+    {
+        // Counts the items workers get inside the measurement window, so an operation spanning
+        // one of its boundaries contributes only the items that arrived inside
+        var timeRangeSource = TaskCompletionSourceExt.New<(CpuTimestamp MeasuresAt, CpuTimestamp EndsAt)>();
+        var tasks = new Task<long>[workers.Length];
+        for (var i = 0; i < workers.Length; i++) {
+            var worker = workers[i];
+            tasks[i] = CallCount(timeRangeSource.Task, cancellationToken, workerOperationFactory.Invoke(worker));
+            if (workerReadyFactory != null)
+                await workerReadyFactory.Invoke(worker).ConfigureAwait(false);
+        }
+        var measuresAt = CpuTimestamp.Now + PreMeasureWarmup;
+        var endsAt = measuresAt + TimeSpan.FromSeconds(duration);
+        timeRangeSource.SetResult((measuresAt, endsAt));
+
+        await Task.Delay((measuresAt - CpuTimestamp.Now).Positive(), cancellationToken).ConfigureAwait(false);
+        var startedAt = CpuTimestamp.Now;
+        var startItemCount = GetItemCount();
+        await Task.Delay((endsAt - CpuTimestamp.Now).Positive(), cancellationToken).ConfigureAwait(false);
+        var elapsed = CpuTimestamp.Now - startedAt;
+        var itemCount = GetItemCount() - startItemCount;
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+        return itemCount / elapsed.TotalSeconds;
+
+        long GetItemCount()
+        {
+            var sum = 0L;
+            foreach (var worker in workers)
+                sum += workerItemCountGetter.Invoke(worker);
+            return sum;
+        }
+    }
+
     public static async Task<long> CallCount(
         Task<(CpuTimestamp MeasuresAt, CpuTimestamp EndsAt)> timeRangeTask,
         CancellationToken cancellationToken,

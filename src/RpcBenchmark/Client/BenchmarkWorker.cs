@@ -10,7 +10,10 @@ public class BenchmarkWorker(ITestService client)
     public const int DelayEveryM = 0;
     public const int DelayEveryL = 0;
 
+    private long _itemCount;
+
     public readonly ITestService Client = client;
+    public long ItemCount => Volatile.Read(ref _itemCount);
 
     public Task WhenReady()
         => Client is IHasWhenReady hasWhenReady
@@ -46,9 +49,7 @@ public class BenchmarkWorker(ITestService client)
             Count = StreamLength,
         };
         var items = await Client.GetItems(request, cancellationToken).ConfigureAwait(false);
-        var count = await items.CountAsync(cancellationToken).ConfigureAwait(false);
-        if (count != StreamLength)
-            throw new InvalidOperationException("Wrong result.");
+        await ReadStream(items, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task Stream100(CancellationToken cancellationToken)
@@ -59,9 +60,7 @@ public class BenchmarkWorker(ITestService client)
             Count = StreamLength,
         };
         var items = await Client.GetItems(request, cancellationToken).ConfigureAwait(false);
-        var count = await items.CountAsync(cancellationToken).ConfigureAwait(false);
-        if (count != StreamLength)
-            throw new InvalidOperationException("Wrong result.");
+        await ReadStream(items, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task Stream10K(CancellationToken cancellationToken)
@@ -72,7 +71,16 @@ public class BenchmarkWorker(ITestService client)
             Count = StreamLength,
         };
         var items = await Client.GetItems(request, cancellationToken).ConfigureAwait(false);
-        var count = await items.CountAsync(cancellationToken).ConfigureAwait(false);
+        await ReadStream(items, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected async Task ReadStream<T>(IAsyncEnumerable<T> items, CancellationToken cancellationToken)
+    {
+        var count = 0;
+        await foreach (var _ in items.WithCancellation(cancellationToken).ConfigureAwait(false)) {
+            count++;
+            _itemCount++;
+        }
         if (count != StreamLength)
             throw new InvalidOperationException("Wrong result.");
     }

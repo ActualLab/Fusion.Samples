@@ -69,13 +69,12 @@ public class BenchmarkRunner : BenchmarkRunnerBase<double>
             await GetCallFrequency(partDuration, cancellationToken).ConfigureAwait(false);
     }
 
-    protected override async Task<double> Benchmark(CancellationToken cancellationToken)
-    {
-        var callFrequency = await GetCallFrequency(Command.Duration, cancellationToken).ConfigureAwait(false);
-        if (Command.Benchmark == BenchmarkKind.Streams)
-            callFrequency *= BenchmarkWorker.StreamLength;
-        return callFrequency;
-    }
+    protected override Task<double> Benchmark(CancellationToken cancellationToken)
+        => Command.Benchmark == BenchmarkKind.Streams
+            ? Benchmarks.ItemFrequency(
+                Workers, Command.Duration, cancellationToken,
+                _currentOperationFactory, w => w.ItemCount, w => w.WhenReady())
+            : GetCallFrequency(Command.Duration, cancellationToken);
 
     private Task<double> GetCallFrequency(double duration, CancellationToken cancellationToken)
         => Benchmarks.CallFrequency(Workers, duration, cancellationToken, _currentOperationFactory, w => w.WhenReady());

@@ -202,12 +202,10 @@ public static class ParameterSearcher
             await Task.Delay(50, cancellationToken);
 
             // Measure
-            var throughput = await Benchmarks.CallFrequency(
-                workers, testDuration, cancellationToken, operationFactory);
-            if (benchmarkKind == BenchmarkKind.Streams)
-                throughput *= BenchmarkWorker.StreamLength;
-
-            return throughput;
+            return benchmarkKind == BenchmarkKind.Streams
+                ? await Benchmarks.ItemFrequency(
+                    workers, testDuration, cancellationToken, operationFactory, w => w.ItemCount)
+                : await Benchmarks.CallFrequency(workers, testDuration, cancellationToken, operationFactory);
         }
         catch (Exception ex) when (ex is NotSupportedException or NotImplementedException) {
             return -1; // Signal that this framework doesn't support the operation

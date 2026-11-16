@@ -44,12 +44,8 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
         };
         var callOptions = new CallOptions(cancellationToken: cancellationToken);
         var stream = GrpcClient.GetItems(request, callOptions);
-        var count = await stream.ResponseStream
-            .ReadAllAsync(cancellationToken)
-            .CountAsync(cancellationToken)
+        await ReadStream(stream.ResponseStream.ReadAllAsync(cancellationToken), cancellationToken)
             .ConfigureAwait(false);
-        if (count != StreamLength)
-            throw new InvalidOperationException("Wrong result.");
     }
 
     public override async Task Stream100(CancellationToken cancellationToken)
@@ -61,12 +57,8 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
         };
         var callOptions = new CallOptions(cancellationToken: cancellationToken);
         var stream = GrpcClient.GetItems(request, callOptions);
-        var count = await stream.ResponseStream
-            .ReadAllAsync(cancellationToken)
-            .CountAsync(cancellationToken)
+        await ReadStream(stream.ResponseStream.ReadAllAsync(cancellationToken), cancellationToken)
             .ConfigureAwait(false);
-        if (count != StreamLength)
-            throw new InvalidOperationException("Wrong result.");
     }
 
     public override async Task Stream10K(CancellationToken cancellationToken)
@@ -78,11 +70,7 @@ public sealed class GrpcBenchmarkWorker(ITestService client) : BenchmarkWorker(c
         };
         var callOptions = new CallOptions(cancellationToken: cancellationToken);
         var stream = GrpcClient.GetItems(request, callOptions);
-        var count = await stream.ResponseStream
-            .ReadAllAsync(cancellationToken)
-            .CountAsync(cancellationToken)
+        await ReadStream(stream.ResponseStream.ReadAllAsync(cancellationToken), cancellationToken)
             .ConfigureAwait(false);
-        if (count != StreamLength)
-            throw new InvalidOperationException("Wrong result.");
     }
 }

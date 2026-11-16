@@ -25,10 +25,15 @@ public partial class ServerCommand : BenchmarkCommandBase
 
     public override async Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
-        Url = Url.NormalizeBaseUrl();
+        Url = NormalizeUrl(Url);
         var (transport, format) = ParseSerializationFormat();
         SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
-        WriteLine($"Starting server @ {Url}");
+        var http2Url = GetHttp2Url(Url);
+        var http2Port = new Uri(http2Url).Port;
+        var hasHttp2Url = !string.Equals(http2Url, Url, StringComparison.Ordinal);
+        WriteLine(hasHttp2Url
+            ? $"Starting server @ {Url} (HTTP/1.1) and {http2Url} (HTTP/2), no TLS"
+            : $"Starting server @ {Url}");
 
         var builder = WebApplication.CreateBuilder();
         WebApplication app;
@@ -61,7 +66,12 @@ public partial class ServerCommand : BenchmarkCommandBase
             builder.WebHost.ConfigureKestrel(kestrel => {
                 kestrel.AddServerHeader = false;
                 kestrel.ConfigureEndpointDefaults(listen => {
-                    listen.Protocols = HttpProtocols.Http1 | HttpProtocols.Http2;
+                    if (!hasHttp2Url)
+                        listen.Protocols = HttpProtocols.Http1 | HttpProtocols.Http2;
+                    else if (listen.IPEndPoint?.Port == http2Port)
+                        listen.Protocols = HttpProtocols.Http2;
+                    else
+                        listen.Protocols = HttpProtocols.Http1;
                 });
                 var limits = kestrel.Limits;
                 limits.MaxConcurrentConnections = 20_000;
@@ -114,6 +124,8 @@ public partial class ServerCommand : BenchmarkCommandBase
                 return Microsoft.AspNetCore.Http.Results.Ok();
             });
             app.Urls.Add(Url);
+            if (hasHttp2Url)
+                app.Urls.Add(http2Url);
         }
         catch (Exception error) {
             await Error.WriteLineAsync($"WebApplication configuration failed: {error.Message}");

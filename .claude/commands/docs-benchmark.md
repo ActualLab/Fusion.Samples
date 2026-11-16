@@ -113,17 +113,17 @@ time:
 docker-compose build sample_rpc_benchmark_server sample_rpc_benchmark_calls sample_rpc_benchmark_streams
 docker-compose run --rm --remove-orphans --name rpc_bench_server sample_rpc_benchmark_server
 # calls (one framework at a time):
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s -f msgpack6c -n 4 -l rpc        https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l signalr    https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l grpc       https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l magiconion https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l jsonrpc    https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l http       https://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s -f msgpack6c -n 4 -l rpc        http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l signalr    http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l grpc       http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l magiconion http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l jsonrpc    http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_calls   client -b calls   -s            -n 6 -l http       http://sample_rpc_benchmark_server
 # streams (one framework at a time):
-docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s -f msgpack6c -n 4 -l rpc        https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l grpc       https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l signalr    https://sample_rpc_benchmark_server
-docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l jsonrpc    https://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s -f msgpack6c -n 4 -l rpc        http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l grpc       http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l signalr    http://sample_rpc_benchmark_server
+docker-compose run --rm sample_rpc_benchmark_streams client -b streams -s            -n 6 -l jsonrpc    http://sample_rpc_benchmark_server
 ```
 
 **HTTP/SignalR may crash during `-s` parameter search (socket exhaustion).** If so, retry without `-s`

@@ -116,9 +116,11 @@ services:
     build:
       context: .
       target: sample_rpc_benchmark
-    command: server https://0.0.0.0:443/
+    # No TLS by default: HTTP/1.1 is served on port 80, HTTP/2 on port 81; add "-tls" to both commands to use TLS
+    command: server http://0.0.0.0:80/
     expose:
-      - "443"
+      - "80"
+      - "81"
     deploy:
       resources:
         limits:
@@ -130,7 +132,7 @@ services:
       target: sample_rpc_benchmark
     depends_on:
       - sample_rpc_benchmark_server
-    command: client -b calls -wait -s -n 6 https://sample_rpc_benchmark_server
+    command: client -b calls -wait -s -n 6 http://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:
@@ -142,7 +144,7 @@ services:
       target: sample_rpc_benchmark
     depends_on:
       - sample_rpc_benchmark_server
-    command: client -b streams -wait -s -n 6 -l rpc,grpc,signalr,jsonrpc https://sample_rpc_benchmark_server
+    command: client -b streams -wait -s -n 6 -l rpc,grpc,signalr,jsonrpc http://sample_rpc_benchmark_server
     deploy:
       resources:
         limits:

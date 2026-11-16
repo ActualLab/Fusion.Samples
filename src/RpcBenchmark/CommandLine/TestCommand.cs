@@ -13,7 +13,11 @@ public partial class TestCommand : ClientCommand
     {
         var (transport, format) = ParseSerializationFormat();
         SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
-        var serverCommand = new ServerCommand() { Url = Url, SerializationFormat = SerializationFormat };
+        var serverCommand = new ServerCommand() {
+            Url = Url,
+            SerializationFormat = SerializationFormat,
+            Tls = Tls,
+        };
         _ = serverCommand.RunAsync(cancellationToken);
         return base.RunAsync(cancellationToken);
     }

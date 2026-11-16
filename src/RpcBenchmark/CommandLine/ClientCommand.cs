@@ -78,7 +78,7 @@ public partial class ClientCommand : BenchmarkCommandBase
 
     public override async Task<int> RunAsync(CancellationToken cancellationToken = default)
     {
-        Url = Url.NormalizeBaseUrl();
+        Url = NormalizeUrl(Url);
         var (transport, format) = ParseSerializationFormat();
         SystemSettings.Apply(MinWorkerThreads, MinIOThreads, transport, format);
 
@@ -88,6 +88,7 @@ public partial class ClientCommand : BenchmarkCommandBase
         }) { BaseAddress = new Uri(Url) };
         WriteLine("Client settings:");
         WriteLine($"  Server URL:           {Url}");
+        WriteLine($"  TLS:                  {(Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? "on" : "off")}");
         WriteLine($"  Test plan:            {WarmupDuration:N}s warmup, {TryCount} x {Duration:N}s runs");
         if (Search) {
             WriteLine($"  Parameter search:     enabled (per-framework auto-tuning)");

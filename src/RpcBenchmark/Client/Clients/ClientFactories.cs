@@ -17,6 +17,7 @@ namespace Samples.RpcBenchmark.Client;
 public sealed class ClientFactories
 {
     public readonly string BaseUrl;
+    public readonly string Http2Url;
     public readonly string RpcTransport;
     public readonly Func<ITestService> Rpc;
     public readonly Func<ITestService> SignalR;
@@ -39,6 +40,7 @@ public sealed class ClientFactories
     public ClientFactories(string baseUrl, string rpcTransport = "ws")
     {
         BaseUrl = baseUrl;
+        Http2Url = BenchmarkCommandBase.GetHttp2Url(baseUrl);
         RpcTransport = rpcTransport;
         Rpc = CreateClientFactory<ITestService>();
         SignalR = CreateClientFactory<SignalRTestClient>();
@@ -159,7 +161,7 @@ public sealed class ClientFactories
                     },
                 }
             };
-            return GrpcChannel.ForAddress(BaseUrl, channelOptions);
+            return GrpcChannel.ForAddress(Http2Url, channelOptions);
         });
 
         // StreamJsonRpc

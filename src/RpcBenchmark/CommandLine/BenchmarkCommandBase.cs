@@ -28,7 +28,33 @@ public abstract class BenchmarkCommandBase : AsyncCommandBase
     [Alias("f")]
     public string SerializationFormat { get; set; } = "msgpack6c";
 
+    [CommandLineArgument]
+    [Description("Use HTTPS (TLS) instead of plain HTTP. Passing an https:// URL has the same effect.")]
+    public bool Tls { get; set; }
+
+    public static string GetHttp2Url(string url)
+    {
+        // Without TLS Kestrel can't serve HTTP/1.1 and HTTP/2 on the same port, so HTTP/2 gets the next one
+        var uri = new Uri(url);
+        return uri.Scheme == Uri.UriSchemeHttps
+            ? url
+            : $"http://{uri.Host}:{uri.Port + 1}{uri.PathAndQuery}";
+    }
+
     // Protected methods
+
+    protected string NormalizeUrl(string url)
+    {
+        url = url.NormalizeBaseUrl();
+        if (!Tls)
+            return url;
+
+        // Keeps the port even when it's implicit: the server's and the client's URLs must map the same way
+        var uri = new Uri(url);
+        return uri.Scheme == Uri.UriSchemeHttp
+            ? $"https://{uri.Host}:{uri.Port}{uri.PathAndQuery}"
+            : url;
+    }
 
     protected (string Transport, string Format) ParseSerializationFormat()
     {

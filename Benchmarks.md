@@ -1,6 +1,6 @@
 # Benchmark Results
 
-**Updated:** 2026-11-14<br/>
+**Updated:** 2026-11-16<br/>
 **ActualLab.Fusion Version:** 15.1.38
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
@@ -149,6 +149,11 @@ RPC streaming:
 dotnet run -c Release --project src/RpcBenchmark/RpcBenchmark.csproj --no-launch-profile -- test -b streams -l rpc,grpc,signalr -f msgpack6c -s -n 6
 ```
 
+> The figures in this section were measured on 2026-11-14, when `RpcBenchmark` always used TLS and
+> stream tests counted whole streams. Since then no TLS became the default (`-tls` turns it on) and
+> stream tests count the items received inside the measurement window, so add `-tls` to the commands
+> above to reproduce these numbers. The Docker-based section below is measured with the new defaults.
+
 ### Calls
 
 | Test | ActualLab.Rpc | gRPC | SignalR |
@@ -224,54 +229,120 @@ ActualLab.Rpc is not affected.
 ## Docker-Based RPC Benchmarks
 
 These benchmarks run in Docker containers with CPU limits to measure **4-core server performance**.
-The server container is limited to 4 CPUs while client containers have 24 CPUs available,
-ensuring the server is the bottleneck. This setup matches [grpc_bench](https://github.com/LesnyRumcajs/grpc_bench), `SayHello` w/ `gRPC` is identical to what `grpc_bench` measures.
-The Docker images run on the .NET 11 SDK base image (11.0.0 at the time of this run).
+The server container is limited to 4 CPUs, the client container has 24 CPUs and runs on the same
+user-defined Docker network, so the server is the bottleneck. This is the setup
+[grpc_bench](https://github.com/LesnyRumcajs/grpc_bench) uses, and `SayHello` exchanges the same
+message as its `complex_proto` scenario. The Docker images run on the .NET 11 SDK base image (11.0.0).
 
-> **External cross-check.** grpc_bench's own
-> [.NET gRPC result on an i9-13900KF @ 5.5 GHz](https://github.com/LesnyRumcajs/grpc_bench/discussions/441)
-> (4-CPU server — a desktop CPU with per-core throughput close to the 9950X3D) is **~402K req/s**,
-> close to our `SayHello` gRPC figure of **441.37K** below. Same library (grpc-dotnet),
-> same 4-CPU setup — which confirms our gRPC numbers are measured fairly. gRPC-dotnet is the *fastest*
-> framework in that grpc_bench run, and ActualLab.Rpc's `SayHello` (**2.46M**) is still **~6.1× faster**
-> than it.
+How these figures were measured (2026-11-16):
 
-All figures are from a single run on .NET 11.0.0. HTTP was run with fixed parameters
-(`-w 5400 -cc 150`), because its parameter search crashes the client. gRPC and SignalR stream rows
-are from a second pass: in the first one their Stream10K test stalled (0 items/s on most tries).
+- **No TLS.** `RpcBenchmark` runs over plain HTTP by default now, as grpc_bench does; `-tls` turns
+  TLS on. Without TLS Kestrel can't serve HTTP/1.1 and HTTP/2 on one port, so the server listens on
+  two: port N for HTTP/1.1 (WebSocket-based frameworks, HTTP) and N+1 for HTTP/2 (gRPC, MagicOnion).
+- **Fixed parameters instead of the parameter search.** The search (`-s`) is the main source of
+  run-to-run noise, so every framework ran with its best known `-w` (workers) and `-cc` (workers per
+  connection) and with one nearby set; the better one is listed. With fixed parameters a run
+  reproduces within about 5%.
+- **6 tries of 5 s each, the best try is taken** (`-n 6`). Replies are deserialized and checked.
+- **Stream tests count items received inside the measurement window.** Earlier versions counted the
+  streams started inside the window and multiplied by the stream length, which quantized Stream10K
+  results.
+
+Each framework ran separately against a fresh server container:
+
+```
+server:  server http://0.0.0.0:80/
+client:  client -b calls   -l <library> -w <workers> -cc <concurrency> -n 6 http://sample_rpc_benchmark_server
+client:  client -b streams -l <library> -w <workers> -cc <concurrency> -n 6 http://sample_rpc_benchmark_server
+```
 
 ### Docker Calls
 
-| Framework | Sum | GetUser | SayHello |
-|-----------|-----|---------|----------|
-| ActualLab.Rpc | 5.25M calls/s | 4.13M calls/s | 2.46M calls/s |
-| SignalR | 2.42M calls/s | 2.02M calls/s | 931.18K calls/s |
-| gRPC | 483.52K calls/s | 467.10K calls/s | 441.37K calls/s |
-| MagicOnion | 351.54K calls/s | 342.24K calls/s | 329.68K calls/s |
-| StreamJsonRpc | 332.66K calls/s | 263.40K calls/s | 114.41K calls/s |
-| HTTP | 93.08K calls/s | 93.87K calls/s | 92.56K calls/s |
+| Framework | Workers x concurrency (connections) | Sum | GetUser | SayHello |
+|-----------|-------------------------------------|-----|---------|----------|
+| ActualLab.Rpc | 24,187 x 451 (54) | 5.62M calls/s | 4.36M calls/s | 2.54M calls/s |
+| SignalR | 19,800 x 213 (93) | 2.71M calls/s | 2.24M calls/s | 999.19K calls/s |
+| gRPC | 2,446 x 82 (30) | 625.64K calls/s | 602.70K calls/s | 567.12K calls/s |
+| MagicOnion | 1,793 x 78 (23) | 582.60K calls/s | 563.39K calls/s | 518.14K calls/s |
+| StreamJsonRpc | 17,400 x 237 (74) | 396.57K calls/s | 306.24K calls/s | 134.15K calls/s |
+| HTTP | 3,600 x 100 (36) | 146.06K calls/s | 147.05K calls/s | 130.46K calls/s |
+
+The second parameter set gave, in the same order (Sum / GetUser / SayHello): ActualLab.Rpc at
+20,559 x 386: 5.34M / 4.36M / 2.58M; SignalR at 20,700 x 231: 2.70M / 2.20M / 943.85K; gRPC at
+2,152 x 95: 620.47K / 592.71K / 552.94K; MagicOnion at 2,271 x 79: 581.63K / 566.40K / 510.41K;
+StreamJsonRpc at 23,400 x 225: 388.98K / 309.15K / 127.95K; HTTP at 5,400 x 150: 129.88K / 127.67K /
+123.39K.
 
 ### Docker Call Latency
 
+Same runs and parameters as in the table above.
+
 | Framework | Sum (p50 / p95 / p99) | GetUser (p50 / p95 / p99) | SayHello (p50 / p95 / p99) |
 |-----------|-----------------------|---------------------------|----------------------------|
-| ActualLab.Rpc | 7.1ms / 12.2ms / 22.3ms | 8.9ms / 12.9ms / 17.5ms | 15.1ms / 18.9ms / 20.6ms |
-| SignalR | 7.8ms / 11.6ms / 16.0ms | 9.2ms / 17.4ms / 28.8ms | 20.4ms / 25.9ms / 31.6ms |
-| gRPC | 4.2ms / 5.6ms / 8.8ms | 4.4ms / 5.9ms / 25.0ms | 4.5ms / 7.9ms / 21.5ms |
-| MagicOnion | 38.4ms / 47.5ms / 49.0ms | 37.1ms / 46.8ms / 48.4ms | 41.9ms / 54.9ms / 55.7ms |
-| StreamJsonRpc | 53.6ms / 85.9ms / 87.6ms | 69.7ms / 98.9ms / 105.3ms | 165.1ms / 247.4ms / 250.7ms |
-| HTTP | 40.2ms / 65.6ms / 67.6ms | 33.6ms / 43.4ms / 44.8ms | 37.5ms / 61.2ms / 62.9ms |
+| ActualLab.Rpc | 4.2ms / 7.4ms / 15.6ms | 5.2ms / 7.5ms / 16.8ms | 9.0ms / 14.5ms / 26.6ms |
+| SignalR | 7.1ms / 12.9ms / 26.7ms | 8.6ms / 11.9ms / 20.8ms | 18.1ms / 23.2ms / 26.0ms |
+| gRPC | 3.8ms / 6.0ms / 15.6ms | 3.9ms / 5.7ms / 19.0ms | 4.0ms / 12.7ms / 22.7ms |
+| MagicOnion | 2.9ms / 4.2ms / 18.0ms | 3.0ms / 4.9ms / 9.1ms | 3.2ms / 5.1ms / 22.0ms |
+| StreamJsonRpc | 35.2ms / 42.8ms / 45.3ms | 38.8ms / 50.4ms / 55.8ms | 88.2ms / 143.3ms / 153.1ms |
+| HTTP | 19.7ms / 29.8ms / 35.5ms | 16.0ms / 52.4ms / 53.7ms | 21.4ms / 33.5ms / 35.8ms |
+
+Latency grows with the number of calls in flight, so compare it together with the worker count:
+ActualLab.Rpc and SignalR run with about 10x more concurrent calls than gRPC here.
 
 ### Docker Streams
 
 Test names indicate item size: Stream1 = 1-byte items, Stream100 = 100-byte items, Stream10K = 10KB items.
 
-| Framework | Stream1 | Stream100 | Stream10K |
-|-----------|---------|-----------|-----------|
-| ActualLab.Rpc | 37.77M items/s | 13.33M items/s | 285.12K items/s |
-| gRPC | 13.42M items/s | 7.27M items/s | 149.04K items/s |
-| SignalR | 9.71M items/s | 5.50M items/s | 155.52K items/s |
-| StreamJsonRpc | 127.44K items/s | 127.44K items/s | 63.72K items/s |
+| Framework | Workers x concurrency (connections) | Stream1 | Stream100 | Stream10K |
+|-----------|-------------------------------------|---------|-----------|-----------|
+| ActualLab.Rpc | 270 x 5 (54) | 40.19M items/s | 18.64M items/s | 492.15K items/s |
+| gRPC | 561 x 15 (38) | 15.40M items/s | 9.42M items/s | 328.92K items/s |
+| SignalR | 108 x 1 (108) | 12.01M items/s | 6.97M items/s | 239.28K items/s |
+| StreamJsonRpc | 210 x 4 (53) | 162.62K items/s | 163.20K items/s | 94.63K items/s |
+
+The second parameter set gave (Stream1 / Stream100 / Stream10K): ActualLab.Rpc at 264 x 4: 39.43M /
+18.46M / 480.96K; gRPC at 348 x 7: 14.71M / 8.47M / 370.87K; SignalR at 135 x 1: 11.79M / 6.90M /
+231.89K; StreamJsonRpc at 177 x 4: 158.74K / 157.55K / 94.09K. MagicOnion and HTTP have no stream test.
+
+### TLS vs No TLS
+
+The same fixed parameters with `-tls` on both sides. "Gain" is how much faster the test runs without TLS.
+These runs predate item-based stream counting, so the stream rows are limited to Stream1 and Stream100,
+which that change does not affect.
+
+| Framework | Test | No TLS | TLS | Gain without TLS |
+|-----------|------|--------|-----|------------------|
+| ActualLab.Rpc | Sum | 5.62M calls/s | 5.10M calls/s | +10% |
+| ActualLab.Rpc | GetUser | 4.36M calls/s | 4.20M calls/s | +4% |
+| ActualLab.Rpc | SayHello | 2.54M calls/s | 2.46M calls/s | +3% |
+| SignalR | Sum | 2.70M calls/s | 2.48M calls/s | +9% |
+| SignalR | GetUser | 2.20M calls/s | 2.02M calls/s | +9% |
+| SignalR | SayHello | 943.85K calls/s | 885.87K calls/s | +7% |
+| gRPC | Sum | 625.64K calls/s | 533.73K calls/s | +17% |
+| gRPC | GetUser | 602.70K calls/s | 505.97K calls/s | +19% |
+| gRPC | SayHello | 567.12K calls/s | 473.30K calls/s | +20% |
+| MagicOnion | Sum | 581.63K calls/s | 493.74K calls/s | +18% |
+| MagicOnion | GetUser | 566.40K calls/s | 473.79K calls/s | +20% |
+| MagicOnion | SayHello | 510.41K calls/s | 438.04K calls/s | +17% |
+| ActualLab.Rpc | Stream1 | 40.51M items/s | 38.75M items/s | +5% |
+| ActualLab.Rpc | Stream100 | 18.95M items/s | 14.94M items/s | +27% |
+| gRPC | Stream1 | 15.05M items/s | 14.02M items/s | +7% |
+| gRPC | Stream100 | 9.36M items/s | 7.88M items/s | +19% |
+| SignalR | Stream1 | 11.80M items/s | 10.63M items/s | +11% |
+| SignalR | Stream100 | 6.75M items/s | 5.83M items/s | +16% |
+
+TLS costs 3-10% on calls for the WebSocket-based frameworks (ActualLab.Rpc, SignalR) and 17-20% for
+the HTTP/2-based ones (gRPC, MagicOnion). On streams the cost grows with the item size, because more
+bytes are encrypted per item.
+
+### Comparison with grpc_bench Servers
+
+[Benchmarks-gRPC.md](Benchmarks-gRPC.md) has the results of 26 gRPC servers from grpc_bench
+(Rust, Java, Kotlin, Scala, Go, .NET, C++, Swift, Node.js, Python) measured on the same machine in
+the same 4-CPU setup, on current versions of their libraries and with the load generator tuned until
+each server is saturated. The fastest of them, `rust_ntex`, reaches 1.06M `SayHello` calls/s.
+grpc_bench's own .NET server reaches 670K, which agrees with the 567K the gRPC test above measures
+on the same library with a less favorable client.
 
 ## Fusion Repository Benchmarks
 

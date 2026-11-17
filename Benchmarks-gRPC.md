@@ -1,7 +1,7 @@
 # gRPC Server Benchmarks (grpc_bench)
 
 **Measured:** 2026-11-15 to 2026-11-17<br/>
-**grpc_bench:** the `upgrade-2026-11` branch of [ActualLab/grpc_bench](https://github.com/ActualLab/grpc_bench/tree/upgrade-2026-11),
+**grpc_bench:** the `dev` branch of [ActualLab/grpc_bench](https://github.com/ActualLab/grpc_bench/tree/dev),
 which is upstream commit `ee8f9a7` (2026-11-06) with every tested server moved to current versions
 
 This page has the results of running gRPC servers from

@@ -23,6 +23,8 @@ The short version:
 - grpc-dotnet reaches 670K calls/s on .NET 11 with DATAS turned off. The gRPC test of `RpcBenchmark`,
   which uses the same library and its own .NET client, measures 567K.
 - ActualLab.Rpc's `SayHello` (2.54M calls/s on the same 4 CPUs) is 2.4x the fastest gRPC server here.
+- Over a real 5 Gbit/s LAN with a 2-CPU server, the fastest gRPC server reaches 400.7K calls/s, and
+  ActualLab.Rpc's `SayHello` reaches 1.07M, or 2.7x that. See [Real Network](#real-network).
 
 ## Test Environment
 
@@ -379,6 +381,67 @@ The two sides are not measured identically, and the differences favor the grpc_b
   rows use the best known parameters of its own client, with one nearby set as a check.
 - The `RpcBenchmark` client is one .NET process with 24 CPUs, in which workers share connections.
   For gRPC that is the least favorable client measured here (see [.NET Client](#net-client)).
+
+## Real Network
+
+These runs use a 5 Gbit/s LAN between two machines instead of one Docker network. The setup is described
+in [Real Network RPC Benchmarks](Benchmarks.md#real-network-rpc-benchmarks): the client is a separate PC
+with 32 logical CPUs, and the server runs in a Docker container, in a VM with 16 vCPUs, on an AMD Ryzen 7 8745HS Proxmox host. `iperf3`
+measures 4.74 Gbit/s of TCP throughput on this link. Measured on 2026-11-17.
+
+- **Server container:** `--cpus 2 --memory 8g`, `GRPC_SERVER_CPUS=2`, plain HTTP/2.
+- **Servers:** the fastest one per language from [the tuned results](#results-default-shape-vs-tuned)
+  with `tonic_client`: Rust, Java, .NET, Go, Scala, C++ and Swift.
+- **Load shapes:** each server first ran 4 shapes for 10 s. They were its best shape from the 4-CPU
+  tests and variations with fewer calls per connection, fewer connections and more load. The two best
+  shapes then ran once each for 15 s after a 5 s warmup.
+- **Client:** `tonic_client` with 16 CPUs, built as a native Windows program without jemalloc. In Docker
+  Desktop it reached 367.2K calls/s against `rust_ntex`, and the native build reached 402.4K with the
+  same shape in a direct comparison, so Docker's network path was limiting that server. The 10 s shape
+  trials ran with the Docker client.
+- **Server CPU** is read from the container's cgroup every second. 200% means both CPUs are busy.
+
+| Server | Best shape (connections x calls per connection) | Calls/s | p50 / p95 / p99 | Server CPU | Peak traffic, client rx / tx | Second shape |
+|--------|--------------------------------------------------|---------|-----------------|------------|------------------------------|--------------|
+| rust_ntex | 28 x 450 | 400.7K | 35.3 / 42.7 / 45.9 ms | 176% | 0.40 / 0.47 Gbit/s | 20 x 600: 399.6K |
+| java_vertx_grpc | 28 x 150 | 318.9K | 13.2 / 25.0 / 35.8 ms | 199% | 0.34 / 0.37 Gbit/s | 28 x 338: 305.8K |
+| dotnet_grpc | 20 x 450 | 284.8K | 26.7 / 70.0 / 80.6 ms | 200% | 0.29 / 0.34 Gbit/s | 28 x 450: 255.3K |
+| go_vtgrpc | 14 x 450 | 179.3K | 32.3 / 69.3 / 89.5 ms | 199% | 0.17 / 0.21 Gbit/s | 28 x 225: 178.7K |
+| scala_akka | 14 x 225 | 153.9K | 18.6 / 40.1 / 56.1 ms | 199% | 0.16 / 0.19 Gbit/s | 28 x 450: 148.5K |
+| cpp_grpc_mt | 2 x 240 | 150.9K | 2.9 / 4.1 / 15.2 ms | 200% | 0.15 / 0.17 Gbit/s | 4 x 240: 138.6K |
+| swift_grpc | 14 x 600 | 92.3K | 79.1 / 159.9 / 163.7 ms | 200% | 0.09 / 0.11 Gbit/s | 28 x 300: 92.0K |
+
+No run had failed calls.
+
+- Every server except `rust_ntex` is at its 2-CPU limit, and none of them uses more than a tenth of the
+  link. `rust_ntex` stays at 176%, with its two workers below full load, so 400.7K may be below its limit.
+- The best shapes have fewer calls in flight than on 4 CPUs. `dotnet_grpc` was best at 20 x 900 on 4 CPUs
+  and is best at 20 x 450 here.
+- `scala_akka` was much faster with `ghz` than with `tonic_client` in the 4-CPU tests. `ghz` wasn't run
+  here, so its figure may be low.
+
+### Comparison with RpcBenchmark over the Network
+
+`SayHello`, 2-CPU server, no TLS, the same network. The `RpcBenchmark` rows are from
+[Network Calls](Benchmarks.md#network-calls), and each is the better of its two parameter sets.
+
+| Server | Client and shape | Calls/s | ActualLab.Rpc is faster by |
+|--------|------------------|---------|----------------------------|
+| ActualLab.Rpc (RpcBenchmark) | RpcBenchmark, 35 x 563 | 1.07M | - |
+| SignalR (RpcBenchmark) | RpcBenchmark, 70 x 213 | 416.2K | 2.6x |
+| rust_ntex | tonic_client, 28 x 450 | 400.7K | 2.7x |
+| java_vertx_grpc | tonic_client, 28 x 150 | 318.9K | 3.4x |
+| gRPC (RpcBenchmark) | RpcBenchmark, 16 x 84 | 313.9K | 3.4x |
+| dotnet_grpc | tonic_client, 20 x 450 | 284.8K | 3.8x |
+| go_vtgrpc | tonic_client, 14 x 450 | 179.3K | 6.0x |
+| scala_akka | tonic_client, 14 x 225 | 153.9K | 7.0x |
+| cpp_grpc_mt | tonic_client, 2 x 240 | 150.9K | 7.1x |
+| swift_grpc | tonic_client, 14 x 600 | 92.3K | 11.6x |
+| HTTP (RpcBenchmark) | RpcBenchmark, 22 x 75 | 89.3K | 12.0x |
+
+The two sides are not measured identically. `RpcBenchmark` figures are the best of six 5 s tries, and
+grpc_bench figures are single 15 s runs, which favors the `RpcBenchmark` rows. The clients also differ:
+`RpcBenchmark` uses its own .NET client, and the grpc_bench servers use `tonic_client`.
 
 ## Versions
 

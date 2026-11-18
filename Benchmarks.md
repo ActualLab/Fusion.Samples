@@ -1,6 +1,6 @@
 # Benchmark Results
 
-**Updated:** 2026-11-16<br/>
+**Updated:** 2026-11-17<br/>
 **ActualLab.Fusion Version:** 15.1.38
 
 This page summarizes benchmark results from ActualLab.Fusion.Samples repository.
@@ -343,6 +343,146 @@ the same 4-CPU setup, on current versions of their libraries and with the load g
 each server is saturated. The fastest of them, `rust_ntex`, reaches 1.06M `SayHello` calls/s.
 grpc_bench's own .NET server reaches 670K, which agrees with the 567K the gRPC test above measures
 on the same library with a less favorable client.
+
+## Real Network RPC Benchmarks
+
+The benchmarks above run on one machine, over loopback or a Docker network. These run over a real
+5 Gbit/s LAN between two machines: the server is limited to **2 CPUs**, and the client runs on a
+separate PC with 32 logical CPUs. Measured on 2026-11-17, without TLS.
+
+| | Client | Server |
+|-|--------|--------|
+| **Machine** | AMD Ryzen AI MAX+ PRO 395 (16 cores / 32 logical CPUs), 96 GB RAM | VM on Proxmox VE 9.0.3, on an AMD Ryzen 7 8745HS host (8 cores / 16 logical CPUs) |
+| **OS** | Windows 11 Pro 26H2 (build 26300.9974) | Ubuntu 24.04.5, kernel 6.14.8-2-pve on the host and 6.8.0-149 in the VM |
+| **Resources** | the whole machine | VM: 16 vCPUs, 26 GB RAM. Server container: `--cpus 2 --memory 8g` |
+| **Network** | Realtek USB 5GbE adapter | Realtek RTL8157 USB 5GbE adapter (`cdc_ncm` driver), Linux bridge, virtio NIC with 8 queues |
+| **Runtime** | .NET 11.0.0, native process | .NET 11.0.0, Docker 29.10.0 |
+
+The server is three layers deep: a Docker container, inside a Linux VM, on a Proxmox host. The client is
+a plain Windows process on another PC, and a switch connects the two machines:
+
+```
+Client PC (Windows 11)
+  RpcBenchmark client or tonic_client: native process, no container
+  Realtek USB 5GbE adapter, 5 Gbit/s link
+        |
+Switch: 10 Gbit/s per port, about 100 Gbit/s total capacity
+        |
+Proxmox VE host (AMD Ryzen 7 8745HS, 8 cores / 16 logical CPUs, 30 GB RAM)
+  Realtek RTL8157 USB 5GbE adapter, 5 Gbit/s link, on a 10 Gbit/s USB port
+  Active-backup bond (the onboard 2.5 Gbit/s port is the standby and carries no traffic)
+  Linux bridge
+  tap device and vhost-net
+        |
+  Ubuntu 24.04 VM (16 vCPUs, 26 GB RAM, the only VM running on the host)
+    virtio NIC, 8 queues
+    Docker bridge network and published ports
+          |
+    Server container (--cpus 2 --memory 8g)
+      RpcBenchmark server or grpc_bench server
+```
+
+- **The 5 Gbit/s adapters are the slowest part of the network path.** The switch ports run at the adapters'
+  speed and have twice that capacity, and the switch's total capacity is far above this traffic.
+- **The 2-CPU limit applies to the container only.** It is a CPU quota, not a pinning to specific CPUs, so
+  the container's threads can run on any of the VM's 16 vCPUs. The host's `vhost` and USB work is outside
+  this limit, and so may be part of the VM's kernel network processing, so the whole path can use more
+  than 2 CPUs.
+- **All measured traffic crosses the physical network.** The client and the server share no machine.
+
+The MTU is 1500 on every hop. `iperf3` with 4 streams measures **4.74 Gbit/s** of TCP throughput in each
+direction, so 100-byte items can't exceed about 5.93M items/s even with no framing at all.
+
+How these figures were measured:
+
+- Each framework ran against a fresh server container, with **2 parameter sets** and **6 tries of 5 s
+  each**. The best try is listed, and the tables show the parameter set that won most tests (for
+  SignalR calls, where the two sets split the tests, the one with the higher `SayHello`).
+- The parameter sets come from a search (`-s`) with 1 s probes, run before the VM got its 8 network
+  queues. They may not be the best ones for the final setup.
+- **Server CPU** is read every second from the container's cgroup. 200% means both CPUs are busy. The
+  tests run in bursts with idle gaps, so the figure is the average over the seconds with at least half
+  of the peak value. Kernel network work in the VM may not be fully included in it.
+- **Network traffic** is the peak per-second rate on the client's adapter, including packet headers.
+- Stream10K was not run, because it saturates the 5 Gbit/s NICs at any server speed.
+
+```
+server:  docker run -d --name srv --cpus 2 --memory 8g -p 80:80 -p 81:81 sample_rpc_benchmark server http://0.0.0.0:80/
+client:  client -b calls   -l <library> -w <workers> -cc <concurrency> -n 6 http://<server>
+client:  client -b streams -l <library> -w <workers> -cc <concurrency> -n 6 http://<server>
+```
+
+### Network Calls
+
+| Framework | Workers x concurrency (connections) | Sum | GetUser | SayHello | Server CPU | Peak traffic, client rx / tx |
+|-----------|-------------------------------------|-----|---------|----------|------------|------------------------------|
+| ActualLab.Rpc | 19,653 x 563 (35) | 2.22M calls/s | 1.71M calls/s | 1.07M calls/s | 190-192% | 0.78 / 0.86 Gbit/s |
+| SignalR | 14,850 x 213 (70) | 1.06M calls/s | 764.92K calls/s | 416.16K calls/s | 187-192% | 1.23 / 1.11 Gbit/s |
+| gRPC | 1,305 x 84 (16) | 364.40K calls/s | 355.75K calls/s | 313.92K calls/s | 191-196% | 0.31 / 0.85 Gbit/s |
+| HTTP | 1,636 x 66 (25) | 98.42K calls/s | 103.78K calls/s | 81.52K calls/s | 189-194% | 0.29 / 0.29 Gbit/s |
+
+The second parameter set gave (Sum / GetUser / SayHello): ActualLab.Rpc at 19,653 x 535: 2.14M / 1.62M /
+1.06M; SignalR at 14,850 x 160: 1.06M / 793.00K / 406.14K; gRPC at 1,491 x 84: 362.49K / 338.24K /
+312.43K; HTTP at 1,636 x 75: 95.21K / 94.86K / 89.28K.
+
+Every call test is limited by the server's 2 CPUs, and none of them uses more than about a quarter of
+the link. Taking the better parameter set for each test, ActualLab.Rpc is 2.1-2.6x faster than SignalR,
+3.4-6.1x faster than gRPC and 12-23x faster than HTTP.
+
+### Network Call Latency
+
+Same runs and parameters as in the table above.
+
+| Framework | Sum (p50 / p95 / p99) | GetUser (p50 / p95 / p99) | SayHello (p50 / p95 / p99) |
+|-----------|-----------------------|---------------------------|----------------------------|
+| ActualLab.Rpc | 7.4ms / 20.4ms / 45.2ms | 9.1ms / 19.5ms / 30.1ms | 14.3ms / 25.4ms / 45.3ms |
+| SignalR | 12.0ms / 23.6ms / 46.5ms | 9.9ms / 35.0ms / 218.0ms | 32.6ms / 250.5ms / 260.1ms |
+| gRPC | 3.2ms / 6.7ms / 9.9ms | 2.7ms / 6.9ms / 12.4ms | 3.6ms / 5.1ms / 23.6ms |
+| HTTP | 15.3ms / 39.1ms / 213.9ms | 13.8ms / 40.8ms / 248.4ms | 15.1ms / 244.6ms / 246.9ms |
+
+Latency grows with the number of calls in flight, so compare it together with the worker count:
+ActualLab.Rpc runs with about 15x more concurrent calls than gRPC here.
+
+### Network Streams
+
+| Framework | Workers x concurrency (connections) | Stream1 | Server CPU | Peak client rx | Stream100 | Server CPU | Peak client rx | Wire bytes per Stream100 item |
+|-----------|-------------------------------------|---------|------------|----------------|-----------|------------|----------------|-------------------------------|
+| ActualLab.Rpc | 385 x 10 (39) | 18.51M items/s | 193% | 1.11 Gbit/s | 5.45M items/s | 145% | 4.91 Gbit/s | about 113 |
+| gRPC | 118 x 15 (8) | 7.79M items/s | 191% | 0.72 Gbit/s | 4.54M items/s | 191% | 4.37 Gbit/s | about 120 |
+| SignalR | 32 x 3 (11) | 4.98M items/s | 184% | 3.29 Gbit/s | 2.63M items/s | 153% | 4.53 Gbit/s | about 215 |
+
+The second parameter set gave (Stream1 / Stream100): ActualLab.Rpc at 385 x 7: 18.09M / 5.32M; gRPC at
+210 x 15: 7.49M / 4.52M; SignalR at 32 x 2: 4.85M / 2.34M. "Wire bytes per item" is the peak traffic
+divided by the peak item rate, so it is an estimate that includes TCP, IP and Ethernet headers.
+
+- **Stream1** is limited by the server's CPU for all three. ActualLab.Rpc delivers 2.4x as many items
+  as gRPC and 3.7x as many as SignalR.
+- **Stream100** is limited differently for each framework. ActualLab.Rpc reaches 92% of the 5.93M
+  items/s ceiling of the link and has CPU to spare. gRPC runs out of CPU at 4.54M items/s. SignalR uses
+  its default JSON protocol here, which encodes the 100 bytes as base64, so it needs about twice as many
+  bytes per item.
+
+### Effect of the VM's Network Queues
+
+The VM first ran with one virtio queue (the Proxmox default). During an ActualLab.Rpc call test one vCPU
+spent 93% of its time on network processing, so we set `queues=8` on its NIC. The same parameters on
+both setups:
+
+| Test | Parameters | 1 queue | 8 queues | Change |
+|------|------------|---------|----------|--------|
+| ActualLab.Rpc Sum | 19,653 x 563 | 1.91M calls/s | 2.22M calls/s | +16% |
+| ActualLab.Rpc GetUser | 19,653 x 563 | 1.25M calls/s | 1.71M calls/s | +37% |
+| ActualLab.Rpc SayHello | 19,653 x 563 | 992.58K calls/s | 1.07M calls/s | +8% |
+| ActualLab.Rpc Stream1 | 385 x 7 | 18.90M items/s | 18.09M items/s | -4% |
+| ActualLab.Rpc Stream100 | 385 x 7 | 5.04M items/s | 5.32M items/s | +6% |
+| SignalR Stream1 | 32 x 3 | 4.67M items/s | 4.98M items/s | +7% |
+| SignalR Stream100 | 32 x 3 | 2.39M items/s | 2.63M items/s | +10% |
+
+These results are not comparable with the Docker tables above: the server has 2 CPUs instead of 4, runs
+on a slower CPU inside a VM, and the client is a different machine.
+
+[Benchmarks-gRPC.md](Benchmarks-gRPC.md#real-network) has the results of 7 grpc_bench servers in the same
+setup. The fastest of them, `rust_ntex`, reaches 400.7K `SayHello` calls/s.
 
 ## Fusion Repository Benchmarks
 

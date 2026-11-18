@@ -24,8 +24,9 @@ public static class ParameterSearcher
             isCalls ? w => w.Sum : w => w.Stream100;
 
         // Initial values
-        var concurrency = isCalls ? 200 : 4;
-        var workers = isCalls ? cpuCount * 400 : cpuCount * 8;
+        // -w / -cc, when passed, are the starting point of the search
+        var concurrency = command.ClientConcurrency ?? (isCalls ? 200 : 4);
+        var workers = command.Workers ?? (isCalls ? cpuCount * 400 : cpuCount * 8);
 
         // Ranges
         var minWorkers = Math.Max(cpuCount, 1);

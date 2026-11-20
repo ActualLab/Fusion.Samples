@@ -425,19 +425,19 @@ No run had failed calls.
 `SayHello`, 2-CPU server, no TLS, the same network. The `RpcBenchmark` rows are from
 [Network Calls](Benchmarks.md#network-calls), and each is the better of its two parameter sets.
 
-| Server | Client and shape | Calls/s | ActualLab.Rpc is faster by |
-|--------|------------------|---------|----------------------------|
-| ActualLab.Rpc (RpcBenchmark) | RpcBenchmark, 35 x 563 | 1.07M | - |
-| SignalR (RpcBenchmark) | RpcBenchmark, 70 x 213 | 416.2K | 2.6x |
-| rust_ntex | tonic_client, 28 x 450 | 400.7K | 2.7x |
-| java_vertx_grpc | tonic_client, 28 x 150 | 318.9K | 3.4x |
-| gRPC (RpcBenchmark) | RpcBenchmark, 16 x 84 | 313.9K | 3.4x |
-| dotnet_grpc | tonic_client, 20 x 450 | 284.8K | 3.8x |
-| go_vtgrpc | tonic_client, 14 x 450 | 179.3K | 6.0x |
-| scala_akka | tonic_client, 14 x 225 | 153.9K | 7.0x |
-| cpp_grpc_mt | tonic_client, 2 x 240 | 150.9K | 7.1x |
-| swift_grpc | tonic_client, 14 x 600 | 92.3K | 11.6x |
-| HTTP (RpcBenchmark) | RpcBenchmark, 22 x 75 | 89.3K | 12.0x |
+| Server | Client and shape | Calls/s |
+|--------|------------------|---------|
+| ActualLab.Rpc (RpcBenchmark) | RpcBenchmark, 35 x 563 | 1.07M |
+| SignalR (RpcBenchmark) | RpcBenchmark, 70 x 213 | 416.2K |
+| rust_ntex | tonic_client, 28 x 450 | 400.7K |
+| java_vertx_grpc | tonic_client, 28 x 150 | 318.9K |
+| gRPC (RpcBenchmark) | RpcBenchmark, 16 x 84 | 313.9K |
+| dotnet_grpc | tonic_client, 20 x 450 | 284.8K |
+| go_vtgrpc | tonic_client, 14 x 450 | 179.3K |
+| scala_akka | tonic_client, 14 x 225 | 153.9K |
+| cpp_grpc_mt | tonic_client, 2 x 240 | 150.9K |
+| swift_grpc | tonic_client, 14 x 600 | 92.3K |
+| HTTP (RpcBenchmark) | RpcBenchmark, 22 x 75 | 89.3K |
 
 The two sides are not measured identically. `RpcBenchmark` figures are the best of six 5 s tries, and
 grpc_bench figures are single 15 s runs, which favors the `RpcBenchmark` rows. The clients also differ:

@@ -127,6 +127,8 @@ following agents in a chosen environment:
 - **xAI Grok** — `grok`
 - **Codename Goose** — `goose` (block/goose)
 - **OpenCode** — `opencode` (sst/opencode)
+- **Pi** — `pi` (pi.dev)
+- **Codex Desktop app** — `codex-app` (macOS host OS mode only)
 
 …in any of the following environments:
 
@@ -141,37 +143,43 @@ running and how to access projects.
 ## Agent Selector
 
 The agent is the optional first positional arg (or the `--agent:<name>`
-option); if omitted, `claude` is used. `--agent:` accepts the full agent names
-only (`claude`, `codex`, `grok`, `goose`, `opencode`). Entry points:
+option); if omitted, `AC_DEFAULT_AGENT` is used when set, otherwise `claude`.
+`--agent:` accepts the full agent names only (`claude`, `codex`, `grok`,
+`goose`, `opencode`, `pi`, `codex-app`). `codex-app` is macOS host OS mode
+only; it opens the selected workspace in the Codex Desktop app. Entry points:
 
 - `ai` — the launcher itself; Claude by default, or pick the agent explicitly.
-- `ai-codex` / `ai-grok` / `ai-goose` / `ai-opencode` — one-agent shortcuts (`= ai --agent:<name>`).
+- `ai-codex` / `ai-codex-app` / `ai-grok` / `ai-goose` / `ai-opencode` / `ai-pi` — one-agent shortcuts (`= ai --agent:<name>`).
 
 ```
 ai                 → claude,   Docker (default)
 ai codex           → codex,    Docker (positional form)
 ai-codex           → codex,    Docker (= ai --agent:codex)
+ai-codex-app os    → Codex Desktop, macOS host OS (= ai --agent:codex-app os)
 ai-grok os         → grok,     host OS
 ai-goose           → goose,    Docker (= ai --agent:goose)
 ai --agent:goose   → goose,    Docker (explicit)
 ai-opencode        → opencode, Docker (= ai --agent:opencode)
+ai-pi              → pi,       Docker (= ai --agent:pi)
 ai opencode wsl    → opencode, WSL
 ai wsl             → claude,   WSL
 ai os              → claude,   host OS  (default agent)
+ai codex-app os fwt feature1
+                   → create/configure the feature worktree, then open it in Codex Desktop (macOS)
 ai codex --dry-run → codex,    Docker (dry run)
 ```
 
 Inside the sandboxed Docker container, each agent is invoked in its
 "skip-approvals" mode (`claude --dangerously-skip-permissions`, `codex
 --full-auto`, `grok` as-is, `goose session` with `GOOSE_MODE=auto`,
-`opencode --auto`). On the host OS no such flag/mode is added — the agent runs
+`opencode --auto`; Pi requires no auto-approval flag). On the host OS no such flag/mode is added — the agent runs
 in its normal interactive/approval mode.
 
 ## Installation
 
-Run once after cloning AgentCli to make the `ai` / `ai-codex` / `ai-grok` /
-`ai-goose` / `ai-opencode` commands available everywhere and build the Docker
-image (which contains all five CLIs pre-installed):
+Run once after cloning AgentCli to make the `ai` / `ai-codex` / `ai-codex-app` /
+`ai-grok` / `ai-goose` / `ai-opencode` / `ai-pi` commands available everywhere and build
+the Docker image (which contains all six CLIs pre-installed):
 
 ```
 ./ai.ps1 install
@@ -180,20 +188,43 @@ image (which contains all five CLIs pre-installed):
 What `install` does, by host OS:
 - **Windows** — adds the AgentCli folder to the *user* `Path` environment
   variable so the entry-point `.cmd` files resolve in any new shell.
-- **macOS** — adds `alias ai=…`, `alias ai-codex=…`, `alias ai-grok=…`,
-  `alias ai-goose=…`, `alias ai-opencode=…` (pointing at the polyglot `.cmd`
+- **macOS** — adds `alias ai=…`, `alias ai-codex=…`, `alias ai-codex-app=…`,
+  `alias ai-grok=…`, `alias ai-goose=…`, `alias ai-opencode=…`, `alias ai-pi=…` (pointing at the polyglot `.cmd`
   files) to `~/.zshrc` and `chmod +x`'s them.
 - **Linux / WSL** — same as macOS, but the aliases go into `~/.bashrc`.
 
 After the PATH/alias step, `install` also links AgentCli's shared
-`.claude/{commands,skills}` into `~/.claude/{commands,skills}/team/` and
-triggers a Docker build of the AgentCli image (`claude-agentcli`). Install is
-idempotent — running it again only updates what's stale.
+`.claude/commands` and `.claude/skills` into the user's global Claude config,
+then triggers a Docker build of the AgentCli image (`claude-agentcli`).
+Install is idempotent — running it again only updates what's stale.
+
+The two folders are linked differently, because Claude Code discovers them
+differently:
+
+| Folder | Link | Why | Invoked as |
+|---|---|---|---|
+| `.claude/commands` | one link → `~/.claude/commands/team/` | commands recurse into subfolders, and the subfolder becomes a namespace | `/team:<name>` |
+| `.claude/skills` | one link *per skill* → `~/.claude/skills/<name>/` | skills are discovered exactly one level deep (`~/.claude/skills/<name>/SKILL.md`); a link to the whole folder is never scanned | `/<name>` |
+
+So shared skills are **not** namespaced — `/pair`, not `/team:pair`. If a
+personal skill in `~/.claude/skills/` already uses the same name, `install`
+leaves it alone and says so rather than overwriting it. Skills removed or
+renamed in AgentCli have their stale links pruned on the next `install`, and
+`uninstall` removes every link that points into AgentCli's skills folder
+(dangling ones included) while leaving your own skills untouched.
+
+Inside Docker these host links always dangle — they point at host paths the
+container doesn't have, on **every** OS including Windows, where Docker Desktop
+surfaces an NTFS junction as a symlink to an unmounted `/mnt/host/<drive>/…`.
+So the launcher bind-mounts AgentCli's source folders read-only on top of them:
+`.claude/commands` → `/home/claude/.claude/commands/team`, and each skill →
+`/home/claude/.claude/skills/<name>`.
 
 Re-open the shell (or `source ~/.zshrc` / `~/.bashrc`) before using `ai`.
 
 To undo everything `install` did — unregister those entry points, remove the
-`team` links, stop the AgentCli docker-compose stack, and remove the AgentCli Docker image:
+command and skill links, stop the AgentCli docker-compose stack, and remove the
+AgentCli Docker image:
 
 ```
 ./ai.ps1 uninstall
@@ -249,7 +280,7 @@ When running in Docker (`AC_OS` = `Linux in Docker`), the following tools are av
 | Category | Tools |
 |----------|-------|
 | **AI CLIs** | Claude Code, OpenAI Codex, xAI Grok, Codename Goose, OpenCode |
-| **.NET** | .NET 10 SDK, .NET 9 SDK, wasm-tools workload |
+| **.NET** | .NET 11 SDK, .NET 10 SDK, .NET 9 SDK, wasm-tools workload |
 | **Node.js** | Node.js 20, npm |
 | **Shell** | Zsh (default), Bash, PowerShell (`pwsh`) |
 | **Search** | ripgrep (`rg`), fd-find (`fdfind`), fzf |
@@ -282,7 +313,7 @@ When running in Docker, `/proj/<CurrentProject>/artifacts` path is mapped to `ar
 
 **Google Cloud credentials**: The `~/.gcp` folder is mounted read-only to `/home/claude/.gcp`. If `GOOGLE_APPLICATION_CREDENTIALS` is set on the host, it's automatically remapped to `/home/claude/.gcp/key.json` inside the container.
 
-**Container reuse**: By default, `c` reuses an existing Docker container for the current worktree (matched by the `worktree` label). If multiple containers exist, you'll be prompted to select one. Use `--new` to force creating a fresh container instead.
+**Container reuse**: By default, `ai` reuses an existing Docker container for the current worktree (matched by the `worktree` label). If multiple containers exist, you'll be prompted to select one. Use `--new` to force creating a fresh container instead.
 
 **Isolated mode**: Set `AC_CLAUDE_ISOLATE=true` (or `1`) to run with an isolated `.claude.json` config file. When enabled, the launcher copies `.claude.json` to `artifacts/claude-docker/.claude-{timestamp}.json` and mounts that copy instead of the original. Changes made inside the container are not synced back to the host's `.claude.json`. This is useful for parallel Claude instances or testing without affecting the main config.
 
@@ -331,7 +362,7 @@ projects sitting next to AgentCli are accessible at `/proj/<name>`.
 ## Launching from any folder
 
 The launcher does **not** require the current folder to be a sibling of
-AgentCli (or even a git repo). You can `c` from anywhere — your home dir,
+AgentCli (or even a git repo). You can run `ai` from anywhere — your home dir,
 a one-off scratch folder, a project under another drive — and it will work.
 
 The behavior splits along the Docker vs. OS/WSL line:
@@ -388,6 +419,31 @@ ai wt feature1   # Creates ActualLab.Fusion-feature1 if it doesn't exist and run
 ```
 
 The worktree is created using `git worktree add` from the main project directory.
+
+**Removing worktrees**: `ai rwt <suffix>` (or `ai wt rm <suffix>`) removes the worktree,
+its branch, and its ports/hosts/nginx config. When git cannot delete the folder (a process
+still writes into it), `rwt` deletes it itself.
+
+**`wt` subcommands**: `ls`/`list`, `rm`/`remove` and `prune` are reserved words after
+`wt`, so they cannot be worktree suffixes.
+
+```
+ai wt ls            # the project's worktrees, with dead worktree folders flagged
+ai wt rm <suffix>   # same as ai rwt <suffix>
+ai wt prune         # remove the dead folders marked `leftovers`
+ai wt prune --all   # remove every dead folder
+```
+
+**Dead worktree folders**: a `<project>-*` sibling folder that git no longer knows as a
+worktree — left by an interrupted removal, or re-created by an IDE saving its settings.
+`ai wt ls` marks each as one of:
+
+- `leftovers` — only IDE/OS/build leftovers (`.idea`, `.DS_Store`, `node_modules`, …)
+- `checkout` — a full tree whose `.git` file points at worktree metadata that is gone
+- `partial` — no `.git`, but other files remain
+
+`prune` asks for confirmation; `--yes` skips it. Git cannot tell whether a `checkout` or
+`partial` folder holds unsaved work, so look before using `--all`.
 
 # `roslynk` MCP (optional)
 

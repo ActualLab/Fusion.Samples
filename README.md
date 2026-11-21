@@ -91,7 +91,7 @@ and become its owner; participants post questions and upvote others', and the
 list re-sorts by votes in real time, with a trending panel highlighting the
 questions gaining votes right now. Everyone also signals their mood on a 5-emoji
 scale, rendered as a big generated SVG face plus a live distribution chart.
-It's built on .NET 10, Blazor (Server + WebAssembly), EF Core, and PostgreSQL.
+It's built on .NET 11, Blazor (Server + WebAssembly), EF Core, and PostgreSQL.
 
 It exists to compare real-time frameworks — the same app will be reimplemented
 on several stacks (plain .NET, SignalR, and more) to measure the code delta each
@@ -105,7 +105,7 @@ one produces; the Fusion version comes first. Like Board Games, it lives in its
 A real-time multiplayer board game app: play **Gomoku, Tic-Tac-Toe, Connect Four,
 Reversi, and Rock-Paper-Scissors** against others, with a live game lobby, in-game
 chat with user/game mentions, and online-presence tracking — all kept in sync
-automatically by Fusion, everywhere. It's built on .NET 10, Blazor (Server +
+automatically by Fusion, everywhere. It's built on .NET 11, Blazor (Server +
 WebAssembly), EF Core, and PostgreSQL, with GitHub / Microsoft sign-in.
 
 Unlike the samples above, it lives in its **own repository**:
@@ -148,7 +148,7 @@ measuring both call and streaming throughput on different payload sizes.
 
 ## Running Samples
 
-Build & run locally with [.NET 10 SDK](https://dotnet.microsoft.com/download):
+Build & run locally with [.NET 11 SDK](https://dotnet.microsoft.com/download):
 
 ```bash
 # Run this command first

@@ -188,13 +188,13 @@ mutators" (single-threaded peak), each internally best-of-3.
 
 ```
 # Build once, then call the exe directly 3× per DB:
-dotnet build -p:UseMultitargeting=true -c:Release -f:net10.0 tests/ActualLab.Fusion.Tests.PerformanceTestRunner/ActualLab.Fusion.Tests.PerformanceTestRunner.csproj
-exe=./artifacts/tests/bin/ActualLab.Fusion.Tests.PerformanceTestRunner/release_net10.0/ActualLab.Fusion.Tests.PerformanceTestRunner.exe
+dotnet build -p:UseMultitargeting=true -c:Release -f:net11.0 tests/ActualLab.Fusion.Tests.PerformanceTestRunner/ActualLab.Fusion.Tests.PerformanceTestRunner.csproj
+exe=./artifacts/tests/bin/ActualLab.Fusion.Tests.PerformanceTestRunner/release_net11.0/ActualLab.Fusion.Tests.PerformanceTestRunner.exe
 for i in 1 2 3; do "$exe" npgsql < /dev/null; done
 for i in 1 2 3; do "$exe" sqlite < /dev/null; done
 ```
 
-(Equivalently `Run-PerformanceTest.cmd net10.0 npgsql` / `sqlite`, which builds then runs once.) Update the
+(Equivalently `Run-PerformanceTest.cmd net11.0 npgsql` / `sqlite`, which builds then runs once.) Update the
 Multithreaded Test table (PostgreSQL + SQLite, multithreaded + single-threaded, best of runs).
 
 ### Group 6 — Proxy & Interception Benchmarks

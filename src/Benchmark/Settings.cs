@@ -12,7 +12,7 @@ public static class Settings
     public static readonly string DbConnectionString =
         "Server={0};Database=fusion_benchmark;Port=5432;" +
         "User Id=postgres;Password=postgres;" +
-        "Minimum Pool Size=20;Maximum Pool Size=200;Multiplexing=true";
+        "Minimum Pool Size=20;Maximum Pool Size=200";
 
     public static readonly int ItemCount = 1_000;
     public static readonly int CpuCount = (int)HardwareInfo.ProcessorCount;

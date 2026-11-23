@@ -34,6 +34,7 @@
     <PackageVersion Include="ActualLab.Serialization.NerdbankMessagePack" Version="$(ActualLabFusionVersion)" />
     <!-- Build-time only -->
     <PackageVersion Include="ActualLab.Generators" Version="$(ActualLabFusionVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageVersion Include="ActualLab.Rpc.TypeScript.Generator" Version="$(ActualLabFusionVersion)" PrivateAssets="all" />
   </ItemGroup>
   <!-- Other packages -->
   <ItemGroup>

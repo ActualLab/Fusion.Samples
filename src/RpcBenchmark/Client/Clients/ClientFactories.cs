@@ -65,7 +65,7 @@ public sealed class ClientFactories
 #endif
 
         if (typeof(TClient) == typeof(ITestService))
-            services.AddRpc().UseBenchmarkWireFormats().AddClient<ITestService>();
+            services.AddRpc().AddClient<ITestService>();
         else
             services.AddSingleton<TClient>();
         return () => {

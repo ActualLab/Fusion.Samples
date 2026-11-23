@@ -15,7 +15,6 @@ using ActualLab.Rpc.Server;
 // var minThreadCount = WorkerCount * 2;
 // ThreadPool.SetMinThreads(minThreadCount, minThreadCount);
 ThreadPool.SetMaxThreads(16_384, 16_384);
-RpcSerializationFormatResolver.Default = new("msgpack6c");
 
 var stopTokenSource = new CancellationTokenSource();
 var stopToken = stopTokenSource.Token;

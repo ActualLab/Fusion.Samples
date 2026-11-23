@@ -35,7 +35,6 @@
   <!-- Roslyn generators/analyzers -->
   <ItemGroup>
     <PackageReference Include="ActualLab.Generators" PrivateAssets="all" />
-    <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
     <PackageReference Include="RestEase.SourceGenerator" PrivateAssets="all" />
   </ItemGroup>
 </Project>

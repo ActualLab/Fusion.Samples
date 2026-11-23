@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using ActualLab.Compression;
 using ActualLab.Diagnostics;
 using ActualLab.Interception.Serialization;
 using ActualLab.OS;
@@ -13,6 +14,18 @@ public static class SystemSettings
 {
     private static readonly object Lock = new();
     private static bool _isApplied;
+
+    // You can play with your custom settings here
+    public static readonly RpcWireFormat CustomWireFormat = new("custom",
+        () => new ByteArgumentListSerializer(MessagePackByteSerializer.Default),
+        peer => new RpcByteMessageSerializerV5(peer),
+        DataFormat.Bytes);
+
+    public static string WireFormatKey { get; private set; } = RpcDefaultWireFormats.DefaultFormat.Key;
+
+    // Every RPC container (client or server) must call it, so all of them serve the same formats
+    public static RpcBuilder UseBenchmarkWireFormats(this RpcBuilder rpc)
+        => rpc.ConfigureWireFormats(ConfigureWireFormats);
 
     public static void Apply(int minWorkerThreads, int minIOThreads, string rpcTransport, string serializationFormat)
     {
@@ -37,20 +50,16 @@ public static class SystemSettings
                 MustPropagateAmbientActivityContext = false,
             };
 
-            // ActualLab.Rpc serialization formats
-            RpcNerdbankSerializationFormat.Register();
-            var custom = new RpcSerializationFormat("custom", // You can play with your custom settings here
-                () => new ByteArgumentListSerializer(MemoryPackByteSerializer.Default),
-                peer => new RpcByteMessageSerializerV5(peer));
-            var allFormats = RpcSerializationFormat.All.Add(custom);
-            var key = (Symbol)serializationFormat.ToLowerInvariant();
-            var selectedFormat = allFormats.FirstOrDefault(x => x.Key == key);
-            if (selectedFormat == null) {
-                Error.WriteLine($"Invalid serialization format: {key.Value}");
-                Error.WriteLine($"Supported formats: {RpcSerializationFormat.All.Select(x => x.Key).ToDelimitedString()}");
+            // ActualLab.Rpc wire formats
+            var key = serializationFormat.ToLowerInvariant();
+            var allFormats = new RpcWireFormatConfiguration();
+            ConfigureWireFormats(allFormats);
+            if (!allFormats.TryGetValue(key, out var selectedFormat)) {
+                Error.WriteLine($"Invalid serialization format: {key}");
+                Error.WriteLine($"Supported formats: {allFormats.Keys.ToDelimitedString()}");
                 throw new ArgumentOutOfRangeException(nameof(serializationFormat));
             }
-            RpcSerializationFormatResolver.Default = new RpcSerializationFormatResolver(selectedFormat.Key, allFormats);
+            WireFormatKey = selectedFormat.Key;
 
             // RPC call tracking tweaks
             RpcLimits.Default = RpcLimits.Default with {
@@ -89,5 +98,15 @@ public static class SystemSettings
             LoopbackInfo.WarnIfLoopbackThrottled();
             _isApplied = true;
         }
+    }
+
+    // Private methods
+
+    private static void ConfigureWireFormats(RpcWireFormatConfiguration formats)
+    {
+        formats.AddNerdbankMessagePack();
+        formats.AddCompressedVariants("lz4", LZ4ByteCodec.Default);
+        formats.Add(CustomWireFormat);
+        formats.DefaultFormat = formats[WireFormatKey];
     }
 }

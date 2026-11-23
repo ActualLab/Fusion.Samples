@@ -65,7 +65,7 @@ public sealed class ClientFactories
 #endif
 
         if (typeof(TClient) == typeof(ITestService))
-            services.AddRpc().AddClient<ITestService>();
+            services.AddRpc().UseBenchmarkWireFormats().AddClient<ITestService>();
         else
             services.AddSingleton<TClient>();
         return () => {
@@ -102,7 +102,7 @@ public sealed class ClientFactories
         services.AddSingleton(this);
 
         // Rpc
-        var rpc = services.AddRpc();
+        var rpc = services.AddRpc().UseBenchmarkWireFormats();
         if (string.Equals(RpcTransport, "http", StringComparison.OrdinalIgnoreCase))
             rpc.AddHttpClient(c => RpcHttpClientOptions.Default with {
                 HostUrlResolver = _ => BaseUrl,

@@ -1,5 +1,4 @@
 using System.Runtime.Serialization;
-using MemoryPack;
 using ActualLab.Rpc;
 using ActualLab.Rpc.Infrastructure;
 
@@ -12,9 +11,9 @@ public interface IGreeter : IRpcService
     Task<Message> SayHello(string name, CancellationToken cancellationToken = default);
 }
 
-[DataContract, MemoryPackable(GenerateType.VersionTolerant)]
+[DataContract]
 public sealed partial record Message(
-    [property: DataMember(Order = 0), MemoryPackOrder(0)] string Text
+    [property: DataMember(Order = 0)] string Text
     );
 
 public class Greeter(IClientNotifier clientNotifier) : IGreeter

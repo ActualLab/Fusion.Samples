@@ -1,12 +1,11 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using MemoryPack;
 using ActualLab.Rpc;
 
 namespace Samples.Blazor.Abstractions;
 
-[DataContract, MemoryPackable(GenerateType.VersionTolerant)]
-[method: JsonConstructor, MemoryPackConstructor]
+[DataContract]
+[method: JsonConstructor]
 public sealed partial class Screenshot(int width, int height, byte[] data, TimeSpan frameOffset = default)
 {
     public static readonly byte[] OnePixelData = Convert.FromBase64String(
@@ -15,10 +14,10 @@ public sealed partial class Screenshot(int width, int height, byte[] data, TimeS
         "Hh4eHh4eHh7/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QA" +
         "FAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/ALLAB//Z");
 
-    [DataMember, MemoryPackOrder(0)] public int Width { get; } = width;
-    [DataMember, MemoryPackOrder(1)] public int Height { get; } = height;
-    [DataMember, MemoryPackOrder(2)] public byte[] Data { get; } = data;
-    [DataMember, MemoryPackOrder(3)] public TimeSpan FrameOffset { get; init; } = frameOffset;
+    [DataMember] public int Width { get; } = width;
+    [DataMember] public int Height { get; } = height;
+    [DataMember] public byte[] Data { get; } = data;
+    [DataMember] public TimeSpan FrameOffset { get; init; } = frameOffset;
 
     public Screenshot() : this(1, 1, OnePixelData) { }
 }

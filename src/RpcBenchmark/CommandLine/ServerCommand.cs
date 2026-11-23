@@ -50,7 +50,7 @@ public partial class ServerCommand : BenchmarkCommandBase
                 hub.MaximumParallelInvocationsPerClient = 1000; // Can't be too high, otherwise SignalR fails!
                 hub.DisableImplicitFromServicesParameters = true;
             });
-            var rpc = services.AddRpc();
+            var rpc = services.AddRpc().UseBenchmarkWireFormats();
             rpc.AddWebSocketServer();
             rpc.AddHttpServer();
             services.AddGrpc(o => o.IgnoreUnknownServices = true);

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using MemoryPack;
 
 namespace Samples.HelloBlazorHybrid.Abstractions;
 
@@ -16,9 +15,9 @@ public interface IChatService : IComputeService
     Task<Unit> PseudoGetAnyTail();
 }
 
-[DataContract, MemoryPackable(GenerateType.VersionTolerant)]
+[DataContract]
 // ReSharper disable once InconsistentNaming
 public partial record Chat_Post(
-    [property: DataMember, MemoryPackOrder(0)] string Name,
-    [property: DataMember, MemoryPackOrder(1)] string Text
+    [property: DataMember] string Name,
+    [property: DataMember] string Text
     ) : ICommand<Unit>;

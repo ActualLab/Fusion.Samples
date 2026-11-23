@@ -14,8 +14,6 @@ using ActualLab.Compliance;
 // MessagePack resolves collection formatters through reflection (DynamicGenericResolver /
 // ImmutableCollectionResolver), so every such formatter the auth types use must be kept.
 if (CodeKeeper.AlwaysFalse) {
-    // MemoryPack's built-in PriorityQueue<,> formatter target, initialized at startup.
-    CodeKeeper.Keep<PriorityQueue<object, object>>();
     // User.Claims / JsonCompatibleIdentities are ApiMap<string,string>.
     CodeKeeper.Keep<GenericDictionaryFormatter<string, string, ApiMap<string, string>>>();
     // The Authentication page lists sessions (ImmutableArray<SessionInfo>). SessionInfo.Options

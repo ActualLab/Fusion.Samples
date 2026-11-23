@@ -29,11 +29,9 @@ public static class ClientStartup
         logging.AddFilter(typeof(IRemoteComputedCache).Namespace, LogLevel.Debug);
         logging.AddFilter(typeof(ComponentInfo).Namespace, LogLevel.Debug);
 
-        // Default RPC client serialization format
-        RpcSerializationFormatResolver.Default = new("msgpack6"); // msgpack6c, mempack6, json5, etc.
-
         // Fusion
         var fusion = services.AddFusion();
+        fusion.Rpc.ConfigureWireFormats(f => f.DefaultFormat = f["msgpack6"]); // msgpack6c, json5, etc.
         var baseUri = new Uri(builder.HostEnvironment.BaseAddress);
         fusion.Rpc.AddWebSocketClient(baseUri);
         // You may comment this out - the call below just enables RPC call logging

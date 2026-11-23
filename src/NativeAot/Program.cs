@@ -1,12 +1,10 @@
 using System.Reflection;
 using ActualLab.Interception;
 using ActualLab.Rpc;
-using MemoryPack;
 using MessagePack;
+using System.Text.Json.Serialization;
 using static System.Console;
 using ActualLab.Compliance;
-
-#pragma warning disable IL3050
 
 AppDomain.CurrentDomain.UnhandledException += (_, args) => {
     Error.WriteLine($"UNHANDLED: {args.ExceptionObject}");
@@ -17,6 +15,10 @@ AppDomain.CurrentDomain.FirstChanceException += (_, args) => {
     Error.Flush();
 };
 
+// E.g. "msgpack6c" (the default), "msgpack6", "json5", "json5np" - the built-in formats.
+// NativeAotFull shows the other serializers.
+var format = args.Length > 0 ? args[0] : RpcDefaultWireFormats.MessagePackV6C.Key;
+WriteLine($"RPC wire format: {format}");
 WriteLine($"RuntimeCodegen.Mode: {RuntimeCodegen.Mode}");
 WriteLine($"ArgumentList.UseGenerics: {ArgumentList.UseGenerics}");
 var l0 = ArgumentList.New();
@@ -29,6 +31,7 @@ WriteLine(l0.GetInvoker(m0).Invoke(null, l0));
 WriteLine(l2.GetInvoker(m2).Invoke(null, l2));
 WriteLine(l10.GetInvoker(m10).Invoke(null, l10));
 
+SystemJsonSerializer.TypeInfoResolver.Add(AppJsonContext.Default);
 var services = new ServiceCollection()
     .AddLogging(l => {
         l.SetMinimumLevel(LogLevel.Debug);
@@ -36,6 +39,7 @@ var services = new ServiceCollection()
         l.AddSanitizingLoggerFactory();
     })
     .AddFusion(fusion => {
+        fusion.Rpc.ConfigureWireFormats(f => f.DefaultFormat = f[format]);
         fusion.Rpc.AddWebSocketClient();
         // .AddDistributedService can't be used w/ a router returning Loopback connection for it (see below)
         fusion.AddServerAndClient<ITestService, TestService>();
@@ -81,9 +85,14 @@ public interface ITestService : IComputeService
     public Task<string> OnSayHello(SayHelloCommand command, CancellationToken cancellationToken = default);
 }
 
-[MemoryPackable(GenerateType.VersionTolerant), MessagePackObject(true)]
+// NativeAOT has no reflection-based System.Text.Json, so the json5 formats need the metadata
+// of the types the RPC calls carry; ActualLab's own types (e.g. Moment) and primitives are covered already
+[JsonSerializable(typeof(SayHelloCommand))]
+public sealed partial class AppJsonContext : JsonSerializerContext;
+
+[MessagePackObject(true)]
 public sealed partial record SayHelloCommand(
-    [property: MemoryPackOrder(0)] string Name
+    string Name
 ) : ICommand<string>;
 
 public class TestService : ITestService

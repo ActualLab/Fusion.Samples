@@ -1,5 +1,4 @@
 using System.Runtime.Serialization;
-using MemoryPack;
 using ActualLab.Fusion.Blazor;
 using MessagePack;
 
@@ -15,24 +14,24 @@ public interface ITodoApi : IComputeService
 
     // Queries
     [ComputeMethod]
-    public Task<TodoItem?> Get(Session session, Ulid id, CancellationToken cancellationToken = default);
+    public Task<TodoItem?> Get(Session session, string id, CancellationToken cancellationToken = default);
     [ComputeMethod]
-    public Task<Ulid[]> ListIds(Session session, int count, CancellationToken cancellationToken = default);
+    public Task<string[]> ListIds(Session session, int count, CancellationToken cancellationToken = default);
     [ComputeMethod(ConsolidationDelay = 0.5)]
     public Task<TodoSummary> GetSummary(Session session, CancellationToken cancellationToken = default);
 }
 
 // Data
 
-[DataContract, MemoryPackable, MessagePackObject(true)]
+[DataContract, MessagePackObject(true)]
 [ParameterComparer(typeof(ByValueParameterComparer))]
 public sealed partial record TodoItem(
-    [property: DataMember] Ulid Id,
+    [property: DataMember] string Id,
     [property: DataMember] string Title,
     [property: DataMember] bool IsDone = false
 );
 
-[DataContract, MemoryPackable, MessagePackObject(true)]
+[DataContract, MessagePackObject(true)]
 public sealed partial record TodoSummary(
     [property: DataMember] int Count,
     [property: DataMember] int DoneCount)
@@ -42,16 +41,16 @@ public sealed partial record TodoSummary(
 
 // Commands
 
-[DataContract, MemoryPackable, MessagePackObject(true)]
+[DataContract, MessagePackObject(true)]
 // ReSharper disable once InconsistentNaming
 public sealed partial record Todos_AddOrUpdate(
     [property: DataMember] Session Session,
     [property: DataMember] TodoItem Item
 ) : ISessionCommand<TodoItem>, IDelegatingCommand;
 
-[DataContract, MemoryPackable, MessagePackObject(true)]
+[DataContract, MessagePackObject(true)]
 // ReSharper disable once InconsistentNaming
 public sealed partial record Todos_Remove(
     [property: DataMember] Session Session,
-    [property: DataMember] Ulid Id
+    [property: DataMember] string Id
 ) : ISessionCommand<Unit>, IDelegatingCommand;

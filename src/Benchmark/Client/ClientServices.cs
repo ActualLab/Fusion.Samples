@@ -71,6 +71,7 @@ public static class ClientServices
     {
         var services = new ServiceCollection();
         var fusion = services.AddFusion();
+        fusion.Rpc.ConfigureWireFormats(f => f.DefaultFormat = f["msgpack6c"]);
         fusion.Rpc.AddWebSocketClient(BaseUrl);
 
         var restEase = services.AddRestEase();
